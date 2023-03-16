@@ -1,7 +1,10 @@
 import { Outlet } from "react-router-dom";
 import { Page } from "@geist-ui/core";
+import { ENV } from "./utils/config";
 
 function App() {
+  console.log(ENV);
+
   return (
     <Page>
       <Page.Header>
