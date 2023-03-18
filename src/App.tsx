@@ -1,22 +1,21 @@
 import { Outlet } from "react-router-dom";
-import { Page } from "@geist-ui/core";
 import { ENV } from "./utils/config";
 
-function App() {
-  console.log(ENV);
+import styles from "./assets/app.module.scss";
 
+function App() {
   return (
-    <Page>
-      <Page.Header>
-        <h2>头部</h2>
-      </Page.Header>
-      <Page.Content>
+    <div className={styles.layout}>
+      <div className={styles.header}>
+        <h2>🏠 {ENV.TITLE}</h2>
+      </div>
+      <div className={styles.content}>
         <Outlet />
-      </Page.Content>
-      <Page.Footer>
-        <h2>尾部</h2>
-      </Page.Footer>
-    </Page>
+      </div>
+      <div className={styles.footer}>
+        <p>Made with ❤️ by youranreus</p>
+      </div>
+    </div>
   );
 }
 

@@ -1,0 +1,21 @@
+.layout {
+  margin: 0 auto;
+  @apply tw-min-h-screen tw-max-w-[60%] tw-w-[960px] tw-flex tw-flex-col;
+
+  .header {
+    @apply tw-py-10;
+    h2 {
+      @apply tw-text-center tw-font-bold tw-text-5xl;
+    }
+  }
+
+  .content {
+    @apply tw-flex-1;
+  }
+
+  .footer {
+    p {
+      @apply tw-text-center tw-font-normal tw-text-sm tw-opacity-60;
+    }
+  }
+}

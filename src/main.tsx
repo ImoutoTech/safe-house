@@ -6,6 +6,7 @@ import { GeistProvider, CssBaseline } from "@geist-ui/core";
 import router from "./router/router";
 
 import "normalize.css";
+import "./assets/base.scss";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

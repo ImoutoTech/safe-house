@@ -5,4 +5,5 @@ export const ENV: ENVData = {
   TITLE: import.meta.env.SH_TITLE,
   MODE: import.meta.env.MODE,
   PROD: import.meta.env.PROD,
+  TOKEN_KEY: import.meta.env.SH_TOKEN_KEY,
 };
