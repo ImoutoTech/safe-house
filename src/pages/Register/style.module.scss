@@ -1,10 +1,10 @@
-.login {
+.register {
   @apply tw-w-full tw-h-[500px] tw-flex tw-justify-center tw-items-center;
 
   .container {
     @apply tw-w-[300px];
 
-    .register {
+    .login {
       @apply tw-leading-10;
     }
 
