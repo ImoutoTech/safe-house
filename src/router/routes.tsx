@@ -3,6 +3,10 @@ import App from "../App";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 
+import User from "@/pages/User";
+import Info from "@/pages/User/Info";
+import SubApp from "@/pages/User/SubApp";
+
 /**
  * 路由
  */
@@ -18,6 +22,20 @@ const routes: RouteObject[] = [
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/user",
+        element: <User />,
+        children: [
+          {
+            index: true,
+            element: <Info />,
+          },
+          {
+            path: "/user/app",
+            element: <SubApp />,
+          },
+        ],
       },
     ],
   },
