@@ -6,11 +6,11 @@
     @apply tw-py-10;
     h2 {
       @apply tw-text-center tw-font-bold tw-text-5xl;
-    }
-  }
 
-  .content {
-    @apply tw-flex-1;
+      a {
+        @apply tw-text-black;
+      }
+    }
   }
 
   .footer {
