@@ -1,7 +1,13 @@
 .info {
-  @apply tw-min-h-[500px] tw-flex tw-items-center;
+  @apply tw-min-h-[500px] tw-flex tw-items-center tw-flex-wrap;
+
+  .card-wrapper {
+    @apply tw-w-full tw-h-[200px];
+  }
 
   .info-card {
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+    margin: 0 auto 50px;
     @apply tw-w-[500px] tw-h-[150px] tw-bg-neutral-50 tw-rounded-xl tw-overflow-hidden tw-flex;
 
     .avatar {
@@ -32,5 +38,9 @@
         }
       }
     }
+  }
+
+  .addition {
+    @apply tw-text-center;
   }
 }

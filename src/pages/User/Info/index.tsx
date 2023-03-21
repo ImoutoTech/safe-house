@@ -1,11 +1,13 @@
-import { Display, Image, Tag, Spacer } from "@geist-ui/core";
+import { Image, Tag, Spacer, Text, Tooltip, Button } from "@geist-ui/core";
+import { LogOut } from "@geist-ui/icons";
 
+import { ENV } from "@/utils/config";
 import styles from "./style.module.scss";
 
 const Info = () => {
   return (
     <div className={styles.info}>
-      <Display shadow caption="User 的 🆔卡">
+      <div className={styles["card-wrapper"]}>
         <div className={styles["info-card"]}>
           <Image
             className={styles.avatar}
@@ -33,7 +35,23 @@ const Info = () => {
             </div>
           </div>
         </div>
-      </Display>
+        <div className={styles.addition}>
+          <Text type="secondary">
+            User 的ID卡，签发于
+            <Tooltip text="2023年x月x日" placement="right">
+              <Text b type="success" className="tw-ml-1 tw-opacity-50">
+                20天前
+              </Text>
+            </Tooltip>
+          </Text>
+        </div>
+
+        <div className={[styles.addition, "tw-my-12"].join(" ")}>
+          <Button icon={<LogOut />} type="abort" auto>
+            离开 {ENV.TITLE}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
