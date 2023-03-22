@@ -1,8 +1,46 @@
+import type { AxiosResponse } from "axios";
 export interface ENVData {
   TITLE: string;
   API_URL: string;
   MODE: string;
   PROD: boolean;
-  TOKEN_KEY: string;
+  LOCALHOST_PREFIX: string;
   [key: string]: string | boolean;
 }
+
+export interface UserInfo {
+  id: number;
+  nickname: string;
+  email: string;
+  avatar: string;
+  role: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TokenInfo {
+  email: string;
+  role: string;
+  id: number;
+  iat: number;
+  exp: number;
+}
+
+export interface LoginResult {
+  token: string;
+  refresh: string;
+  user: UserInfo;
+}
+
+export interface UserLoginParams {
+  email: string;
+  password: string;
+}
+
+export interface Restful<T> {
+  code: 0 | 100;
+  msg: string;
+  data: T;
+}
+
+export type AxiosResult<T> = Promise<AxiosResponse<Restful<T>, any>>;

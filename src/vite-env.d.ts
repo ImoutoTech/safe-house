@@ -3,7 +3,7 @@
 interface ImportMetaEnv {
   readonly SH_API_URL: string;
   readonly SH_TITLE: string;
-  readonly SH_TOKEN_KEY: string;
+  readonly SH_LOCALHOST_PREFIX: string;
 }
 
 interface ImportMeta {

@@ -19,7 +19,8 @@
     "paths": {
       "@": ["src"],
       "@/*": ["src/*"]
-    }
+    },
+    "types": ["qs"]
   },
   "include": ["src"],
   "exclude": ["./*.cjs"],
