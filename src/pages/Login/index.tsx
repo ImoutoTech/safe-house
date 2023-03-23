@@ -1,14 +1,73 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Input, Spacer, Button, Grid } from "@geist-ui/core";
 import { ENV } from "@/utils/config";
 
 import GlobalContext from "@/context";
+import cloneDeep from "lodash-es/cloneDeep";
+import { UserLogin } from "@/api";
+import { useRequest } from "ahooks";
+import { useToasts } from "@geist-ui/core";
 
 import styles from "./style.module.scss";
+import { UserLoginParams } from "@/types";
 
 const Login = () => {
+  const { setToast } = useToasts();
   const { globalData, updateGlobalData } = useContext(GlobalContext);
+  const [formData, setFormData] = useState<UserLoginParams>({
+    email: "",
+    password: "",
+  });
+
+  const [inputType, setInputType] = useState<
+    Record<string, "default" | "error">
+  >({
+    email: "default",
+    password: "default",
+  });
+
+  const handleInput = (field: "email" | "password", val: string) => {
+    const oriForm = cloneDeep(formData);
+    const oriType = cloneDeep(inputType);
+    oriForm[field] = val;
+    oriType[field] = "default";
+
+    setFormData(oriForm);
+    setInputType(oriType);
+  };
+
+  const {
+    data: result,
+    loading,
+    run,
+  } = useRequest(UserLogin, {
+    manual: true,
+  });
+
+  const submit = () => {
+    const emptyField = ["email", "password"].reduce(
+      (p: string[], c: string) => {
+        if (!formData[c]) {
+          return [...p, c];
+        }
+        return p;
+      },
+      [] as string[]
+    );
+
+    if (emptyField.length) {
+      const obj = cloneDeep(inputType);
+      emptyField.forEach((key) => {
+        obj[key] = "error";
+      });
+      setInputType(obj);
+      setToast({ text: "有什么忘了？", type: "error" });
+      return;
+    }
+
+    run(formData);
+  };
 
   useEffect(() => {
     updateGlobalData({
@@ -17,12 +76,28 @@ const Login = () => {
     });
   }, []);
 
+  useEffect(() => {
+    console.log(result);
+  }, [result]);
+
   return (
     <div className={styles.login}>
       <div className={styles.container}>
-        <Input placeholder="📮 邮箱" width={"100%"}></Input>
+        <Input
+          placeholder="📮 邮箱"
+          value={formData.email}
+          onChange={(e) => handleInput("email", e.target.value)}
+          width={"100%"}
+          type={inputType.email}
+        ></Input>
         <Spacer h={0.5}></Spacer>
-        <Input.Password placeholder="🔐 钥匙" width={"100%"}></Input.Password>
+        <Input.Password
+          placeholder="🔐 钥匙"
+          value={formData.password}
+          onChange={(e) => handleInput("password", e.target.value)}
+          width={"100%"}
+          type={inputType.password}
+        ></Input.Password>
         <Spacer h={0.5}></Spacer>
         <Grid.Container gap={2} justify="space-between">
           <Grid xs>
@@ -31,7 +106,13 @@ const Login = () => {
             </div>
           </Grid>
           <Grid xs className={styles.submit}>
-            <Button shadow auto type="secondary">
+            <Button
+              shadow
+              auto
+              type="secondary"
+              onClick={submit}
+              loading={loading}
+            >
               开门
             </Button>
           </Grid>

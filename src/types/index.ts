@@ -32,7 +32,7 @@ export interface LoginResult {
   user: UserInfo;
 }
 
-export interface UserLoginParams {
+export interface UserLoginParams extends Record<string, string> {
   email: string;
   password: string;
 }

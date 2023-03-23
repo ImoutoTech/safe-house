@@ -1,16 +1,25 @@
-import { useState } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 
 import GlobalContext from "./context";
+import storage from "./utils/storage";
 
 import styles from "./assets/app.module.scss";
-import { IGlobalData } from "./context/types";
+import type { IGlobalData } from "./context/types";
 import { ENV } from "./utils/config";
 
 function App() {
+  const navi = useNavigate();
+
   const [globalData, updateGlobalData] = useState<IGlobalData>({
     title: ENV.TITLE,
   });
+
+  useEffect(() => {
+    if (!storage.has("refresh_token") || !storage.has("access_token")) {
+      navi("/login");
+    }
+  }, []);
 
   return (
     <GlobalContext.Provider

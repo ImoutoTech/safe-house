@@ -20,7 +20,7 @@
       "@": ["src"],
       "@/*": ["src/*"]
     },
-    "types": ["qs"]
+    "types": ["qs", "lodash-es"]
   },
   "include": ["src"],
   "exclude": ["./*.cjs"],
