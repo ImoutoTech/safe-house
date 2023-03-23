@@ -1,6 +1,16 @@
 import API from "./base";
 import qs from "qs";
-import type { AxiosResult, UserInfo, Restful, UserLoginParams } from "@/types";
+import type {
+  AxiosResult,
+  LoginResult,
+  Restful,
+  UserInfo,
+  UserLoginParams,
+  UserRegisterParams,
+} from "@/types";
 
-export const UserLogin = (data: UserLoginParams): AxiosResult<UserInfo> =>
-  API.post<Restful<UserInfo>>("/user/login", qs.stringify(data));
+export const UserLogin = (data: UserLoginParams): AxiosResult<LoginResult> =>
+  API.post<Restful<LoginResult>>("/user/login", qs.stringify(data));
+
+export const UserRegister = (data: UserRegisterParams): AxiosResult<UserInfo> =>
+  API.post<Restful<UserInfo>>("/user/reg", qs.stringify(data));

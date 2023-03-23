@@ -37,6 +37,10 @@ export interface UserLoginParams {
   password: string;
 }
 
+export interface UserRegisterParams extends UserLoginParams {
+  nickname: string;
+}
+
 export interface Restful<T> {
   code: 0 | 100;
   msg: string;
