@@ -2,7 +2,7 @@ import { ENV } from "@/utils/config";
 import storage from "@/utils/storage";
 import axios from "axios";
 
-const baseUrl = ENV.API_URL;
+const baseUrl = ENV.PROXY_URL;
 
 const API = axios.create({
   baseURL: baseUrl,

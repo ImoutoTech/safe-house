@@ -6,4 +6,5 @@ export const ENV: ENVData = {
   MODE: import.meta.env.MODE,
   PROD: import.meta.env.PROD,
   LOCALHOST_PREFIX: import.meta.env.SH_LOCALHOST_PREFIX,
+  PROXY_URL: import.meta.env.SH_PROXY_URL,
 };

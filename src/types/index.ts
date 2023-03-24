@@ -5,6 +5,7 @@ export interface ENVData {
   MODE: string;
   PROD: boolean;
   LOCALHOST_PREFIX: string;
+  PROXY_URL: string;
   [key: string]: string | boolean;
 }
 
