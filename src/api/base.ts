@@ -10,7 +10,7 @@ const API = axios.create({
 
 API.interceptors.request.use((req) => {
   if (storage.has("access_token"))
-    req.headers.Authorization = "Bearer " + storage.get("access_token");
+    req.headers.Authorization = storage.get("access_token");
   return req;
 });
 

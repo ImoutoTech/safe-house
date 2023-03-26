@@ -36,14 +36,14 @@ const Info = () => {
           </div>
         </div>
         <div className={styles.addition}>
-          <Text type="secondary">
+          <Text span type="secondary">
             User 的ID卡，签发于
-            <Tooltip text="2023年x月x日" placement="right">
-              <Text b type="success" className="tw-ml-1 tw-opacity-50">
-                20天前
-              </Text>
-            </Tooltip>
           </Text>
+          <Tooltip text="2023年x月x日" placement="right">
+            <Text b type="success" className="tw-ml-1 tw-opacity-50">
+              20天前
+            </Text>
+          </Tooltip>
         </div>
 
         <div className={[styles.addition, "tw-my-12"].join(" ")}>

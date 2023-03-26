@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input, Spacer, Button, Grid } from "@geist-ui/core";
 import { ENV } from "@/utils/config";
 
@@ -11,9 +11,11 @@ import { useToasts } from "@geist-ui/core";
 
 import styles from "./style.module.scss";
 import { UserLoginParams } from "@/types";
+import storage from "@/utils/storage";
 
 const Login = () => {
   const { setToast } = useToasts();
+  const navi = useNavigate();
   const { globalData, updateGlobalData } = useContext(GlobalContext);
   const [formData, setFormData] = useState<UserLoginParams>({
     email: "",
@@ -77,7 +79,18 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    console.log(result);
+    if (!result) {
+      return;
+    }
+
+    if (result?.data.code === 0) {
+      storage.set("access_token", result.data.data.token);
+      storage.set("refresh_token", result.data.data.refresh);
+      setToast({ text: "登录成功", type: "success" });
+      navi("/user");
+    } else {
+      setToast({ text: result?.data.msg, type: "error" });
+    }
   }, [result]);
 
   return (

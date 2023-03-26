@@ -18,6 +18,8 @@ function App() {
   useEffect(() => {
     if (!storage.has("refresh_token") || !storage.has("access_token")) {
       navi("/login");
+    } else {
+      navi("/user");
     }
   }, []);
 
