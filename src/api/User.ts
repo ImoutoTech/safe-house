@@ -14,3 +14,6 @@ export const UserLogin = (data: UserLoginParams): AxiosResult<LoginResult> =>
 
 export const UserRegister = (data: UserRegisterParams): AxiosResult<UserInfo> =>
   API.post<Restful<UserInfo>>("/user/reg", qs.stringify(data));
+
+export const getUserData = (id: number): AxiosResult<UserInfo> =>
+  API.get<Restful<UserInfo>>(`/user/${id}`);

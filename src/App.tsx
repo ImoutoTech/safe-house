@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 
 import GlobalContext from "./context";
-import storage from "./utils/storage";
+import { hasLocalData } from "./utils";
 
 import styles from "./assets/app.module.scss";
 import type { IGlobalData } from "./context/types";
@@ -16,7 +16,7 @@ function App() {
   });
 
   useEffect(() => {
-    if (!storage.has("refresh_token") || !storage.has("access_token")) {
+    if (!hasLocalData()) {
       navi("/login");
     } else {
       navi("/user");

@@ -86,6 +86,15 @@ const Login = () => {
     if (result?.data.code === 0) {
       storage.set("access_token", result.data.data.token);
       storage.set("refresh_token", result.data.data.refresh);
+      storage.set("id", result.data.data.user.id);
+
+      const newGlobal = {
+        ...globalData,
+        userData: result.data.data.user,
+      };
+
+      updateGlobalData(newGlobal);
+
       setToast({ text: "登录成功", type: "success" });
       navi("/user");
     } else {

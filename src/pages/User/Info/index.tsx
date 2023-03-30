@@ -1,10 +1,29 @@
+import { useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { Image, Tag, Spacer, Text, Tooltip, Button } from "@geist-ui/core";
 import { LogOut } from "@geist-ui/icons";
 
+import GlobalContext from "@/context";
+
 import { ENV } from "@/utils/config";
 import styles from "./style.module.scss";
+import { hasLocalData } from "@/utils";
 
 const Info = () => {
+  const navi = useNavigate();
+  const { globalData, updateGlobalData } = useContext(GlobalContext);
+
+  useEffect(() => {
+    if (!hasLocalData()) {
+      navi("login");
+      return;
+    }
+
+    if (!globalData.userData) {
+      // 请求数据
+    }
+  }, []);
+
   return (
     <div className={styles.info}>
       <div className={styles["card-wrapper"]}>
