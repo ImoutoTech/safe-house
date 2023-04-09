@@ -1,6 +1,14 @@
 import { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Image, Tag, Text, Tooltip, Button, Loading } from "@geist-ui/core";
+import {
+  Image,
+  Tag,
+  Text,
+  Tooltip,
+  Button,
+  Loading,
+  Modal,
+} from "@geist-ui/core";
 import { LogOut } from "@geist-ui/icons";
 
 import GlobalContext from "@/context";
@@ -10,12 +18,13 @@ import styles from "./style.module.scss";
 import { hasLocalData, getDayjs } from "@/utils";
 import { getUserData } from "@/api";
 import storage from "@/utils/storage";
-import { useRequest } from "ahooks";
+import { useRequest, useBoolean } from "ahooks";
 
 const Info = () => {
   const navi = useNavigate();
   const dayjs = getDayjs();
   const { globalData, updateGlobalData } = useContext(GlobalContext);
+  const [logoutVisible, { toggle: toggleLogout }] = useBoolean(false);
 
   const {
     data: userData,
@@ -24,6 +33,12 @@ const Info = () => {
   } = useRequest(getUserData, {
     manual: true,
   });
+
+  const logout = () => {
+    storage.clearSelf();
+    toggleLogout();
+    window.location.reload();
+  };
 
   useEffect(() => {
     if (!hasLocalData()) {
@@ -97,10 +112,20 @@ const Info = () => {
           </div>
 
           <div className={[styles.addition, "tw-my-12"].join(" ")}>
-            <Button icon={<LogOut />} type="abort" auto>
+            <Button icon={<LogOut />} type="abort" auto onClick={toggleLogout}>
               离开 {ENV.TITLE}
             </Button>
           </div>
+
+          <Modal visible={logoutVisible} onClose={toggleLogout}>
+            <Modal.Title>看向门</Modal.Title>
+            <Modal.Subtitle>门缝中透出一丝光</Modal.Subtitle>
+            <Modal.Content>确认要离开 {ENV.TITLE} 吗</Modal.Content>
+            <Modal.Action passive onClick={({ close }) => close()}>
+              关上门
+            </Modal.Action>
+            <Modal.Action onClick={logout}>打开门</Modal.Action>
+          </Modal>
         </div>
       )}
     </div>
