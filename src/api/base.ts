@@ -9,9 +9,13 @@ const API = axios.create({
 });
 
 API.interceptors.request.use((req) => {
-  if (storage.has("access_token"))
+  if (storage.has("refresh_token") && storage.has("access_token"))
     req.headers.Authorization = storage.get("access_token");
   return req;
+});
+
+API.interceptors.response.use((res) => {
+  return res;
 });
 
 export default API;
