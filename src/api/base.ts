@@ -15,6 +15,21 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
+API.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    console.log("请求出错: ", error);
+    if (
+      error?.config?.url === "/user/refresh" &&
+      error?.response?.status === 401
+    ) {
+      storage.clearSelf();
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const refreshToken = (failedRequest: any) => {
   console.log("token已经失效,尝试刷新token");
