@@ -8,3 +8,5 @@ export const ENV: ENVData = {
   LOCALHOST_PREFIX: import.meta.env.SH_LOCALHOST_PREFIX,
   PROXY_URL: import.meta.env.SH_PROXY_URL,
 };
+
+export const TOKEN_EXPIRED_TEXT = "token 已经过期";

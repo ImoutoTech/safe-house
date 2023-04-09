@@ -1,6 +1,7 @@
-import { ENV } from "@/utils/config";
+import { ENV, TOKEN_EXPIRED_TEXT } from "@/utils/config";
 import storage from "@/utils/storage";
 import axios from "axios";
+import createAuthRefreshInterceptor from "axios-auth-refresh";
 
 const baseUrl = ENV.PROXY_URL;
 
@@ -14,8 +15,28 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-API.interceptors.response.use((res) => {
-  return res;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const refreshToken = (failedRequest: any) => {
+  console.log("token已经失效,尝试刷新token");
+  return axios
+    .get(`${baseUrl}/user/refresh`, {
+      headers: {
+        Authorization: storage.get("refresh_token"),
+      },
+    })
+    .then((res) => {
+      console.log("token刷新成功");
+      storage.set("access_token", res.data.data.token);
+      failedRequest.response.config.headers["Authorization"] =
+        res.data.data.token;
+      return Promise.resolve();
+    });
+};
+
+createAuthRefreshInterceptor(API, refreshToken, {
+  shouldRefresh: (error) =>
+    (error?.response?.data as Record<string, string>)?.msg ===
+    TOKEN_EXPIRED_TEXT,
 });
 
 export default API;
