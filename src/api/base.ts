@@ -19,11 +19,13 @@ API.interceptors.response.use(
   (res) => res,
   (error) => {
     console.log("请求出错: ", error);
+
     if (
       error?.config?.url === "/user/refresh" &&
       error?.response?.status === 401
     ) {
       storage.clearSelf();
+      window.location.reload();
     }
 
     return Promise.reject(error);
