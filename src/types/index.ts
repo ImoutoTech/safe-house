@@ -48,4 +48,5 @@ export interface Restful<T> {
   data: T;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AxiosResult<T> = Promise<AxiosResponse<Restful<T>, any>>;
