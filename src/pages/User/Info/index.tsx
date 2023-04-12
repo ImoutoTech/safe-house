@@ -13,7 +13,7 @@ import { LogOut } from "@geist-ui/icons";
 
 import GlobalContext from "@/context";
 
-import { ENV } from "@/utils/config";
+import { ENV, Role } from "@/utils/config";
 import styles from "./style.module.scss";
 import { hasLocalData, getDayjs } from "@/utils";
 import { getUserData } from "@/api";
@@ -82,12 +82,12 @@ const Info = () => {
 
               <div className={styles.footer}>
                 <div className={styles.item}>
-                  {globalData.userData.role === "1" && (
+                  {globalData.userData.role === Role.ADMIN && (
                     <Tag type="success" invert>
                       管理员
                     </Tag>
                   )}
-                  {globalData.userData.role === "0" && (
+                  {globalData.userData.role === Role.USER && (
                     <Tag type="lite">用户</Tag>
                   )}
                 </div>

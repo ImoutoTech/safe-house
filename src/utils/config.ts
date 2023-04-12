@@ -10,3 +10,8 @@ export const ENV: ENVData = {
 };
 
 export const TOKEN_EXPIRED_TEXT = "token 已经过期";
+
+export enum Role {
+  ADMIN = "0",
+  USER = "1",
+}
