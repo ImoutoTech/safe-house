@@ -10,7 +10,6 @@ import { UserRegisterParams } from "@/types";
 import cloneDeep from "lodash-es/cloneDeep";
 import { UserRegister } from "@/api";
 import { useRequest } from "ahooks";
-import storage from "@/utils/storage";
 
 const Register = () => {
   const { setToast } = useToasts();
@@ -123,7 +122,13 @@ const Register = () => {
             </div>
           </Grid>
           <Grid xs className={styles.submit}>
-            <Button shadow auto type="secondary" onClick={submit}>
+            <Button
+              shadow
+              auto
+              type="secondary"
+              onClick={submit}
+              loading={loading}
+            >
               加入
             </Button>
           </Grid>
