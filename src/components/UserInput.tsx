@@ -6,6 +6,7 @@ import { cloneDeep } from "lodash-es";
 export type UserInputSchema<T> = {
   title: keyof T;
   allowNull?: boolean;
+  password?: boolean;
   inputBindings: Record<string, string | boolean>;
 }[];
 
@@ -50,13 +51,24 @@ function UserInput<T extends Record<string, string>>(props: UserInputProps<T>) {
     <>
       {schema.map((item, index) => (
         <div key={item.title as string}>
-          <Input
-            {...item.inputBindings}
-            width={"100%"}
-            type={inputType[item.title]}
-            value={formData[item.title]}
-            onChange={(e) => handleInput(item.title, e.target.value)}
-          ></Input>
+          {item.password && (
+            <Input.Password
+              {...item.inputBindings}
+              width={"100%"}
+              type={inputType[item.title]}
+              value={formData[item.title]}
+              onChange={(e) => handleInput(item.title, e.target.value)}
+            ></Input.Password>
+          )}
+          {!item.password && (
+            <Input
+              {...item.inputBindings}
+              width={"100%"}
+              type={inputType[item.title]}
+              value={formData[item.title]}
+              onChange={(e) => handleInput(item.title, e.target.value)}
+            ></Input>
+          )}
           {index !== schema.length - 1 && <Spacer h={0.5}></Spacer>}
         </div>
       ))}

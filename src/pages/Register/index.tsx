@@ -1,15 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Input, Spacer, Button, Grid, useToasts } from "@geist-ui/core";
+import { Spacer, Button, Grid, useToasts } from "@geist-ui/core";
+import UserInput from "@/components/UserInput";
 import { ENV } from "@/utils/config";
 
 import GlobalContext from "@/context";
 
 import styles from "./style.module.scss";
 import { UserRegisterParams } from "@/types";
-import cloneDeep from "lodash-es/cloneDeep";
 import { UserRegister } from "@/api";
 import { useRequest } from "ahooks";
+import { REG_INPUT_SCHEMA } from "./constants";
 
 const Register = () => {
   const { setToast } = useToasts();
@@ -21,14 +22,6 @@ const Register = () => {
     nickname: "",
   });
 
-  const [inputType, setInputType] = useState<
-    Record<string, "default" | "error">
-  >({
-    email: "default",
-    password: "default",
-    nickname: "default",
-  });
-
   const {
     data: result,
     loading,
@@ -37,14 +30,8 @@ const Register = () => {
     manual: true,
   });
 
-  const handleInput = (field: keyof UserRegisterParams, val: string) => {
-    const oriForm = cloneDeep(formData);
-    const oriType = cloneDeep(inputType);
-    oriForm[field] = val;
-    oriType[field] = "default";
-
-    setFormData(oriForm);
-    setInputType(oriType);
+  const handleChange = (data: UserRegisterParams) => {
+    setFormData(data);
   };
 
   const submit = () => {
@@ -59,11 +46,6 @@ const Register = () => {
     );
 
     if (emptyField.length) {
-      const obj = cloneDeep(inputType);
-      emptyField.forEach((key) => {
-        obj[key] = "error";
-      });
-      setInputType(obj);
       setToast({ text: "有什么忘了？", type: "error" });
       return;
     }
@@ -94,26 +76,11 @@ const Register = () => {
   return (
     <div className={styles.register}>
       <div className={styles.container}>
-        <Input
-          placeholder="📮 邮箱"
-          width={"100%"}
-          value={formData.email}
-          onChange={(e) => handleInput("email", e.target.value)}
-        ></Input>
-        <Spacer h={0.5}></Spacer>
-        <Input
-          placeholder="🌍 用户名"
-          width={"100%"}
-          value={formData.nickname}
-          onChange={(e) => handleInput("nickname", e.target.value)}
-        ></Input>
-        <Spacer h={0.5}></Spacer>
-        <Input.Password
-          placeholder="🔐 钥匙"
-          width={"100%"}
-          value={formData.password}
-          onChange={(e) => handleInput("password", e.target.value)}
-        ></Input.Password>
+        <UserInput
+          initData={formData}
+          schema={REG_INPUT_SCHEMA}
+          onChange={handleChange}
+        ></UserInput>
         <Spacer h={0.5}></Spacer>
         <Grid.Container gap={2} justify="space-between">
           <Grid xs>
