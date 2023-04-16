@@ -6,6 +6,7 @@ import type {
   Restful,
   UserInfo,
   UserLoginParams,
+  UserModifyParams,
   UserRegisterParams,
 } from "@/types";
 
@@ -17,3 +18,9 @@ export const UserRegister = (data: UserRegisterParams): AxiosResult<UserInfo> =>
 
 export const getUserData = (id: number): AxiosResult<UserInfo> =>
   API.get<Restful<UserInfo>>(`/user/${id}`);
+
+export const updateUserData = (
+  id: number,
+  data: UserModifyParams
+): AxiosResult<UserInfo> =>
+  API.put<Restful<UserInfo>>(`/user/${id}`, qs.stringify(data));
