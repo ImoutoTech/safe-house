@@ -42,7 +42,11 @@ export interface UserRegisterParams extends UserLoginParams {
   nickname: string;
 }
 
-export type UserModifyParams = UserRegisterParams;
+export interface UserModifyParams {
+  email: string;
+  nickname: string;
+  [key: string]: string;
+}
 
 export interface Restful<T> {
   code: 0 | 100;
