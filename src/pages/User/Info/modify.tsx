@@ -32,6 +32,14 @@ const Modify = () => {
     run(globalData.userData?.id || storage.get("id"), formData);
   };
 
+  const handleCloseDialog = () => {
+    setFormData({
+      email: globalData.userData?.email || "",
+      nickname: globalData.userData?.nickname || "",
+    });
+    setVisible(false);
+  };
+
   useEffect(() => {
     if (!result) return;
 
@@ -71,7 +79,7 @@ const Modify = () => {
             onChange={onChangeData}
           ></UserInput>
         </Modal.Content>
-        <Modal.Action passive onClick={() => setVisible(false)}>
+        <Modal.Action passive onClick={handleCloseDialog}>
           取消
         </Modal.Action>
         <Modal.Action onClick={handleSubmit}>提交</Modal.Action>

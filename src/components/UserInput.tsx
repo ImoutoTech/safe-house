@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input, Spacer } from "@geist-ui/core";
 
 import { cloneDeep } from "lodash-es";
 
 export type UserInputSchema<T> = {
   title: keyof T;
+  allowNull?: boolean;
   inputBindings: Record<string, string | boolean>;
 }[];
 
@@ -16,7 +17,7 @@ interface UserInputProps<T extends Record<string, string>> {
 
 function UserInput<T extends Record<string, string>>(props: UserInputProps<T>) {
   const { onChange, initData, schema } = props;
-  const [formData, setFormData] = useState<T>(initData);
+  const [formData, setFormData] = useState<T>(cloneDeep(initData));
 
   const initInputType: Record<string, string> = {};
   Object.keys(initData).forEach((key) => (initInputType[key] = "default"));
@@ -29,13 +30,21 @@ function UserInput<T extends Record<string, string>>(props: UserInputProps<T>) {
     const oriForm = cloneDeep(formData);
     const oriType = cloneDeep(inputType);
     oriForm[field] = val as T[keyof T];
-    oriType[field] = "default";
+
+    const item = schema.find((obj) => obj.title === field);
+    if (item && item.allowNull !== undefined) {
+      oriType[field] = item.allowNull || val.length ? "default" : "error";
+    }
 
     setFormData(oriForm);
     setInputType(oriType);
 
     onChange && onChange(oriForm);
   };
+
+  useEffect(() => {
+    setFormData(props.initData);
+  }, [props.initData]);
 
   return (
     <>
@@ -44,6 +53,7 @@ function UserInput<T extends Record<string, string>>(props: UserInputProps<T>) {
           <Input
             {...item.inputBindings}
             width={"100%"}
+            type={inputType[item.title]}
             value={formData[item.title]}
             onChange={(e) => handleInput(item.title, e.target.value)}
           ></Input>
