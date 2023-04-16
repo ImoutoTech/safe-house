@@ -10,6 +10,7 @@ import {
   Modal,
 } from "@geist-ui/core";
 import { LogOut } from "@geist-ui/icons";
+import Modify from "./modify";
 
 import GlobalContext from "@/context";
 
@@ -115,6 +116,8 @@ const Info = () => {
             <Button icon={<LogOut />} type="abort" auto onClick={toggleLogout}>
               离开 {ENV.TITLE}
             </Button>
+
+            <Modify></Modify>
           </div>
 
           <Modal visible={logoutVisible} onClose={toggleLogout}>
