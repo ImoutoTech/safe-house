@@ -20,7 +20,11 @@ const Modify = () => {
     nickname: globalData.userData?.nickname || "",
   });
 
-  const { data: result, run } = useRequest(updateUserData, {
+  const {
+    data: result,
+    run,
+    loading,
+  } = useRequest(updateUserData, {
     manual: true,
   });
 
@@ -82,7 +86,9 @@ const Modify = () => {
         <Modal.Action passive onClick={handleCloseDialog}>
           取消
         </Modal.Action>
-        <Modal.Action onClick={handleSubmit}>提交</Modal.Action>
+        <Modal.Action onClick={handleSubmit} loading={loading}>
+          提交
+        </Modal.Action>
       </Modal>
     </>
   );
