@@ -35,17 +35,11 @@ const Register = () => {
   };
 
   const submit = () => {
-    const emptyField = ["email", "password", "nickname"].reduce(
-      (p: string[], c: string) => {
-        if (!formData[c]) {
-          return [...p, c];
-        }
-        return p;
-      },
-      [] as string[]
+    const hasEmptyField = ["email", "password", "nickname"].some(
+      (key) => !formData[key].length
     );
 
-    if (emptyField.length) {
+    if (hasEmptyField) {
       setToast({ text: "有什么忘了？", type: "error" });
       return;
     }

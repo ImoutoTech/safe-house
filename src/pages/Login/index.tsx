@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Input, Spacer, Button, Grid } from "@geist-ui/core";
+import { Spacer, Button, Grid } from "@geist-ui/core";
+import UserInput from "@/components/UserInput";
 import { ENV } from "@/utils/config";
 
 import GlobalContext from "@/context";
-import cloneDeep from "lodash-es/cloneDeep";
 import { UserLogin } from "@/api";
 import { useRequest } from "ahooks";
 import { useToasts } from "@geist-ui/core";
@@ -12,6 +12,7 @@ import { useToasts } from "@geist-ui/core";
 import styles from "./style.module.scss";
 import { UserLoginParams } from "@/types";
 import storage from "@/utils/storage";
+import { LOGIN_INPUT_SCHEMA } from "./constants";
 
 const Login = () => {
   const { setToast } = useToasts();
@@ -22,23 +23,6 @@ const Login = () => {
     password: "",
   });
 
-  const [inputType, setInputType] = useState<
-    Record<string, "default" | "error">
-  >({
-    email: "default",
-    password: "default",
-  });
-
-  const handleInput = (field: "email" | "password", val: string) => {
-    const oriForm = cloneDeep(formData);
-    const oriType = cloneDeep(inputType);
-    oriForm[field] = val;
-    oriType[field] = "default";
-
-    setFormData(oriForm);
-    setInputType(oriType);
-  };
-
   const {
     data: result,
     loading,
@@ -47,23 +31,16 @@ const Login = () => {
     manual: true,
   });
 
+  const handleChange = (data: UserLoginParams) => {
+    setFormData(data);
+  };
+
   const submit = () => {
-    const emptyField = ["email", "password"].reduce(
-      (p: string[], c: string) => {
-        if (!formData[c]) {
-          return [...p, c];
-        }
-        return p;
-      },
-      [] as string[]
+    const hasEmptyField = ["email", "password"].some(
+      (key) => !formData[key].length
     );
 
-    if (emptyField.length) {
-      const obj = cloneDeep(inputType);
-      emptyField.forEach((key) => {
-        obj[key] = "error";
-      });
-      setInputType(obj);
+    if (hasEmptyField) {
       setToast({ text: "有什么忘了？", type: "error" });
       return;
     }
@@ -105,21 +82,11 @@ const Login = () => {
   return (
     <div className={styles.login}>
       <div className={styles.container}>
-        <Input
-          placeholder="📮 邮箱"
-          value={formData.email}
-          onChange={(e) => handleInput("email", e.target.value)}
-          width={"100%"}
-          type={inputType.email}
-        ></Input>
-        <Spacer h={0.5}></Spacer>
-        <Input.Password
-          placeholder="🔐 钥匙"
-          value={formData.password}
-          onChange={(e) => handleInput("password", e.target.value)}
-          width={"100%"}
-          type={inputType.password}
-        ></Input.Password>
+        <UserInput
+          initData={formData}
+          schema={LOGIN_INPUT_SCHEMA}
+          onChange={handleChange}
+        ></UserInput>
         <Spacer h={0.5}></Spacer>
         <Grid.Container gap={2} justify="space-between">
           <Grid xs>

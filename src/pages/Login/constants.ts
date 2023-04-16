@@ -1,19 +1,12 @@
 import { UserInputSchema } from "@/components/UserInput";
-import type { UserRegisterParams } from "@/types";
+import type { UserLoginParams } from "@/types";
 
-export const REG_INPUT_SCHEMA: UserInputSchema<UserRegisterParams> = [
+export const LOGIN_INPUT_SCHEMA: UserInputSchema<UserLoginParams> = [
   {
     title: "email",
     allowNull: false,
     inputBindings: {
       placeholder: "📮 邮箱",
-    },
-  },
-  {
-    title: "nickname",
-    allowNull: false,
-    inputBindings: {
-      placeholder: "🌍 用户名",
     },
   },
   {
