@@ -1,42 +1,34 @@
 import { useState } from "react";
 import { Input, Spacer } from "@geist-ui/core";
 
-import { UserLoginParams, UserRegisterParams } from "@/types";
 import { cloneDeep } from "lodash-es";
 
-interface UserInputProps {
-  showNickname?: boolean;
-  showPassword?: boolean;
-  initData?: UserLoginParams;
-  onChange?: (data: UserRegisterParams) => void;
+export type UserInputSchema<T> = {
+  title: keyof T;
+  inputBindings: Record<string, string | boolean>;
+}[];
+
+interface UserInputProps<T extends Record<string, string>> {
+  initData: T;
+  schema: UserInputSchema<T>;
+  onChange?: (data: T) => void;
 }
 
-function UserInput(props: UserInputProps) {
-  const {
-    showNickname = true,
-    showPassword = true,
-    onChange,
-    initData,
-  } = props;
-  const [formData, setFormData] = useState<UserRegisterParams>({
-    email: "",
-    password: "",
-    nickname: "",
-    ...initData,
-  });
+function UserInput<T extends Record<string, string>>(props: UserInputProps<T>) {
+  const { onChange, initData, schema } = props;
+  const [formData, setFormData] = useState<T>(initData);
 
-  const [inputType, setInputType] = useState<
-    Record<string, "default" | "error">
-  >({
-    email: "default",
-    password: "default",
-    nickname: "default",
-  });
+  const initInputType: Record<string, string> = {};
+  Object.keys(initData).forEach((key) => (initInputType[key] = "default"));
 
-  const handleInput = (field: keyof UserRegisterParams, val: string) => {
+  const [inputType, setInputType] = useState(
+    initInputType as Record<keyof T, "default" | "error">
+  );
+
+  const handleInput = (field: keyof T, val: string) => {
     const oriForm = cloneDeep(formData);
     const oriType = cloneDeep(inputType);
-    oriForm[field] = val;
+    oriForm[field] = val as T[keyof T];
     oriType[field] = "default";
 
     setFormData(oriForm);
@@ -47,35 +39,17 @@ function UserInput(props: UserInputProps) {
 
   return (
     <>
-      <Input
-        placeholder="📮 邮箱"
-        width={"100%"}
-        value={formData.email}
-        onChange={(e) => handleInput("email", e.target.value)}
-      ></Input>
-
-      {showNickname && (
-        <>
-          <Spacer h={0.5}></Spacer>
+      {schema.map((item, index) => (
+        <div key={item.title as string}>
           <Input
-            placeholder="🌍 用户名"
+            {...item.inputBindings}
             width={"100%"}
-            value={formData.nickname}
-            onChange={(e) => handleInput("nickname", e.target.value)}
+            value={formData[item.title]}
+            onChange={(e) => handleInput(item.title, e.target.value)}
           ></Input>
-        </>
-      )}
-      {showPassword && (
-        <>
-          <Spacer h={0.5}></Spacer>
-          <Input.Password
-            placeholder="🔐 钥匙"
-            width={"100%"}
-            value={formData.password}
-            onChange={(e) => handleInput("password", e.target.value)}
-          ></Input.Password>
-        </>
-      )}
+          {index !== schema.length - 1 && <Spacer h={0.5}></Spacer>}
+        </div>
+      ))}
     </>
   );
 }
