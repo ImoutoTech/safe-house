@@ -20,14 +20,6 @@ API.interceptors.response.use(
   (error) => {
     console.log("请求出错: ", error);
 
-    if (
-      error?.config?.url === "/user/refresh" &&
-      error?.response?.status === 401
-    ) {
-      storage.clearSelf();
-      window.location.reload();
-    }
-
     return Promise.reject(error);
   }
 );
@@ -47,6 +39,15 @@ const refreshToken = (failedRequest: any) => {
       failedRequest.response.config.headers["Authorization"] =
         res.data.data.token;
       return Promise.resolve();
+    })
+    .catch((error) => {
+      if (
+        error?.config?.url === `${baseUrl}/user/refresh` &&
+        error?.response?.status === 401
+      ) {
+        storage.clearSelf();
+        window.location.reload();
+      }
     });
 };
 
