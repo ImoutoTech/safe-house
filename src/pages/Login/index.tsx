@@ -8,6 +8,7 @@ import GlobalContext from "@/context";
 import { UserLogin } from "@/api";
 import { useRequest } from "ahooks";
 import { useToasts } from "@geist-ui/core";
+import { Md5 } from "ts-md5";
 
 import styles from "./style.module.scss";
 import { UserLoginParams } from "@/types";
@@ -45,7 +46,12 @@ const Login = () => {
       return;
     }
 
-    run(formData);
+    const postData = {
+      ...formData,
+      password: Md5.hashStr(formData.password),
+    };
+
+    run(postData);
   };
 
   useEffect(() => {

@@ -20,6 +20,10 @@ API.interceptors.response.use(
   (error) => {
     console.log("请求出错: ", error);
 
+    if (error?.response?.status === 500) {
+      return Promise.resolve(error.response);
+    }
+
     return Promise.reject(error);
   }
 );

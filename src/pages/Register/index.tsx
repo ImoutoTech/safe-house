@@ -11,6 +11,7 @@ import { UserRegisterParams } from "@/types";
 import { UserRegister } from "@/api";
 import { useRequest } from "ahooks";
 import { REG_INPUT_SCHEMA } from "./constants";
+import { Md5 } from "ts-md5";
 
 const Register = () => {
   const { setToast } = useToasts();
@@ -44,7 +45,12 @@ const Register = () => {
       return;
     }
 
-    run(formData);
+    const postData = {
+      ...formData,
+      password: Md5.hashStr(formData.password),
+    };
+
+    run(postData);
   };
 
   useEffect(() => {
