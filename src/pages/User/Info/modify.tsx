@@ -1,7 +1,8 @@
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button, Modal, useModal, useToasts } from "@geist-ui/core";
 
-import GlobalContext from "@/context";
+import { useSnapshot } from "valtio";
+import store, { updateGlobalUser } from "@/store";
 
 import { updateUserData } from "@/api";
 import { Edit } from "@geist-ui/icons";
@@ -12,8 +13,8 @@ import storage from "@/utils/storage";
 import { MODIFY_INPUT_SCHEMA } from "./constants";
 
 const Modify = () => {
+  const globalData = useSnapshot(store);
   const { setToast } = useToasts();
-  const { globalData, updateGlobalData } = useContext(GlobalContext);
   const { setVisible, bindings } = useModal(false);
   const [formData, setFormData] = useState<UserModifyParams>({
     email: globalData.userData?.email || "",
@@ -53,12 +54,7 @@ const Modify = () => {
       return;
     }
 
-    const newGlobal = {
-      ...globalData,
-      userData: result.data.data,
-    };
-
-    updateGlobalData(newGlobal);
+    updateGlobalUser(result.data.data);
     setToast({ text: "修改成功", type: "success" });
     setVisible(false);
   }, [result]);

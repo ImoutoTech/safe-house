@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Image,
@@ -11,8 +11,8 @@ import {
 } from "@geist-ui/core";
 import { LogOut } from "@geist-ui/icons";
 import Modify from "./modify";
-
-import GlobalContext from "@/context";
+import { useSnapshot } from "valtio";
+import store, { updateGlobalUser } from "@/store";
 
 import { ENV, Role } from "@/utils/config";
 import styles from "./style.module.scss";
@@ -22,9 +22,9 @@ import storage from "@/utils/storage";
 import { useRequest, useBoolean } from "ahooks";
 
 const Info = () => {
+  const globalStore = useSnapshot(store);
   const navi = useNavigate();
   const dayjs = getDayjs();
-  const { globalData, updateGlobalData } = useContext(GlobalContext);
   const [logoutVisible, { toggle: toggleLogout }] = useBoolean(false);
 
   const {
@@ -47,7 +47,7 @@ const Info = () => {
       return;
     }
 
-    if (!globalData.userData) {
+    if (!globalStore.userData) {
       // 请求数据
       run(storage.get("id"));
     }
@@ -55,17 +55,14 @@ const Info = () => {
 
   useEffect(() => {
     if (userData?.data?.data) {
-      updateGlobalData({
-        ...globalData,
-        userData: userData.data.data,
-      });
+      updateGlobalUser(userData.data.data);
     }
   }, [userData]);
 
   return (
     <div className={styles.info}>
-      {(loading || !globalData.userData) && <Loading />}
-      {!loading && globalData.userData && (
+      {(loading || !globalStore.userData) && <Loading />}
+      {!loading && globalStore.userData && (
         <div className={styles["card-wrapper"]}>
           <div className={styles["info-card"]}>
             <Image
@@ -77,37 +74,37 @@ const Info = () => {
             />
             <div className={styles.meta}>
               <h2>
-                {globalData.userData.nickname}{" "}
-                <span className={styles.id}># {globalData.userData.id}</span>
+                {globalStore.userData.nickname}{" "}
+                <span className={styles.id}># {globalStore.userData.id}</span>
               </h2>
 
               <div className={styles.footer}>
                 <div className={styles.item}>
-                  {globalData.userData.role === Role.ADMIN && (
+                  {globalStore.userData.role === Role.ADMIN && (
                     <Tag type="success" invert>
                       管理员
                     </Tag>
                   )}
-                  {globalData.userData.role === Role.USER && (
+                  {globalStore.userData.role === Role.USER && (
                     <Tag type="lite">用户</Tag>
                   )}
                 </div>
                 <div className={styles.item}>
-                  <span>{globalData.userData.email}</span>
+                  <span>{globalStore.userData.email}</span>
                 </div>
               </div>
             </div>
           </div>
           <div className={styles.addition}>
             <Text span type="secondary">
-              {globalData.userData.nickname} 的ID卡，签发于
+              {globalStore.userData.nickname} 的ID卡，签发于
             </Text>
             <Tooltip
-              text={dayjs(globalData.userData.created_at).format("YYYY-MM-DD")}
+              text={dayjs(globalStore.userData.created_at).format("YYYY-MM-DD")}
               placement="right"
             >
               <Text b type="success" className="tw-ml-1 tw-opacity-50">
-                {dayjs(globalData.userData.created_at).fromNow()}
+                {dayjs(globalStore.userData.created_at).fromNow()}
               </Text>
             </Tooltip>
           </div>

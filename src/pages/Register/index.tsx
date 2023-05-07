@@ -1,10 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Spacer, Button, Grid, useToasts } from "@geist-ui/core";
 import UserInput from "@/components/UserInput";
-import { ENV } from "@/utils/config";
-
-import GlobalContext from "@/context";
 
 import styles from "./style.module.scss";
 import { UserRegisterParams } from "@/types";
@@ -16,7 +13,6 @@ import { Md5 } from "ts-md5";
 const Register = () => {
   const { setToast } = useToasts();
   const navi = useNavigate();
-  const { globalData, updateGlobalData } = useContext(GlobalContext);
   const [formData, setFormData] = useState<UserRegisterParams>({
     email: "",
     password: "",
@@ -52,13 +48,6 @@ const Register = () => {
 
     run(postData);
   };
-
-  useEffect(() => {
-    updateGlobalData({
-      ...globalData,
-      title: `加入 ${ENV.TITLE}`,
-    });
-  }, []);
 
   useEffect(() => {
     if (!result) {

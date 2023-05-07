@@ -1,6 +1,6 @@
 import { UserInfo } from "@/types";
 
-export interface IGlobalData {
+export interface IGlobalStore {
   title: string;
   userData?: UserInfo;
 }
