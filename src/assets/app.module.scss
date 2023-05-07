@@ -1,9 +1,9 @@
 .layout {
   margin: 0 auto;
-  @apply tw-min-h-screen tw-max-w-[60%] tw-w-[960px] tw-flex tw-flex-col;
+  @apply tw-min-h-screen tw-max-w-[60%] tw-w-[960px];
 
   .header {
-    @apply tw-py-10;
+    @apply tw-py-10 tw-w-full;
     h2 {
       @apply tw-text-center tw-font-bold tw-text-5xl;
 
@@ -14,6 +14,7 @@
   }
 
   .footer {
+    @apply tw-w-full tw-absolute tw-bottom-0 tw-left-0;
     p {
       @apply tw-text-center tw-font-normal tw-text-sm tw-opacity-60;
     }

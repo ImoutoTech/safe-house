@@ -6,6 +6,7 @@ import Register from "@/pages/Register";
 import User from "@/pages/User";
 import Info from "@/pages/User/Info";
 import SubApp from "@/pages/User/SubApp";
+import Index from "@/pages/Index";
 
 /**
  * 路由
@@ -15,6 +16,10 @@ const routes: RouteObject[] = [
     path: "/",
     element: <App />,
     children: [
+      {
+        index: true,
+        element: <Index />,
+      },
       {
         path: "/login",
         element: <Login />,
