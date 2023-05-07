@@ -1,14 +1,22 @@
+// 基础 & 类型
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import type { UserRegisterParams } from "@/types";
+
+// 组件
 import { Spacer, Button, Grid, useToasts } from "@geist-ui/core";
 import UserInput from "@/components/UserInput";
 
-import styles from "./style.module.scss";
-import { UserRegisterParams } from "@/types";
+// 接口 & 状态
 import { UserRegister } from "@/api";
+
+// 工具函数 & 常量
 import { useRequest } from "ahooks";
 import { REG_INPUT_SCHEMA } from "./constants";
 import { Md5 } from "ts-md5";
+
+// 样式
+import styles from "./style.module.scss";
 
 const Register = () => {
   const { setToast } = useToasts();

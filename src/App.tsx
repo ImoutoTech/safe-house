@@ -1,10 +1,17 @@
+// 基础 & 类型
 import { useEffect } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 
-import { hasLocalData } from "./utils";
+// 组件
 
-import styles from "./assets/app.module.scss";
+// 接口 & 状态
+
+// 工具函数 & 常量
+import { hasLocalData } from "./utils";
 import { ENV } from "./utils/config";
+
+// 样式
+import styles from "./assets/app.module.scss";
 
 function App() {
   const navi = useNavigate();

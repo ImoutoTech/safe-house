@@ -1,6 +1,15 @@
+// 基础 & 类型
 import { useState } from "react";
-import { Tabs } from "@geist-ui/core";
 import { Outlet, useNavigate } from "react-router-dom";
+
+// 组件
+import { Tabs } from "@geist-ui/core";
+
+// 接口 & 状态
+
+// 工具函数 & 常量
+
+// 样式
 
 const User = () => {
   const navi = useNavigate();

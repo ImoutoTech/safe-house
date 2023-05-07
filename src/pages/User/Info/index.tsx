@@ -1,5 +1,8 @@
+// 基础 & 类型
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+// 组件
 import {
   Image,
   Tag,
@@ -11,15 +14,20 @@ import {
 } from "@geist-ui/core";
 import { LogOut } from "@geist-ui/icons";
 import Modify from "./modify";
-import { useSnapshot } from "valtio";
-import store, { updateGlobalUser } from "@/store";
 
-import { ENV, Role } from "@/utils/config";
-import styles from "./style.module.scss";
-import { hasLocalData, getDayjs } from "@/utils";
+// 接口 & 状态
+import store, { updateGlobalUser } from "@/store";
 import { getUserData } from "@/api";
 import storage from "@/utils/storage";
 import { useRequest, useBoolean } from "ahooks";
+
+// 工具函数 & 常量
+import { useSnapshot } from "valtio";
+import { ENV, Role } from "@/utils/config";
+import { hasLocalData, getDayjs } from "@/utils";
+
+// 样式
+import styles from "./style.module.scss";
 
 const Info = () => {
   const globalStore = useSnapshot(store);

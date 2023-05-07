@@ -1,18 +1,25 @@
+// 基础 & 类型
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import type { UserLoginParams } from "@/types";
+
+// 组件
 import { Spacer, Button, Grid } from "@geist-ui/core";
 import UserInput from "@/components/UserInput";
 
+// 接口 & 状态
 import { UserLogin } from "@/api";
+import { updateGlobalUser } from "@/store";
+
+// 工具函数 & 常量
 import { useRequest } from "ahooks";
 import { useToasts } from "@geist-ui/core";
 import { Md5 } from "ts-md5";
-import { updateGlobalUser } from "@/store";
-
-import styles from "./style.module.scss";
-import { UserLoginParams } from "@/types";
-import storage from "@/utils/storage";
 import { LOGIN_INPUT_SCHEMA } from "./constants";
+import storage from "@/utils/storage";
+
+// 样式
+import styles from "./style.module.scss";
 
 const Login = () => {
   const { setToast } = useToasts();

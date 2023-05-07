@@ -1,16 +1,23 @@
+// 基础 & 类型
 import { useState, useEffect } from "react";
+import type { UserModifyParams } from "@/types";
+
+// 组件
 import { Button, Modal, useModal, useToasts } from "@geist-ui/core";
-
-import { useSnapshot } from "valtio";
-import store, { updateGlobalUser } from "@/store";
-
-import { updateUserData } from "@/api";
 import { Edit } from "@geist-ui/icons";
-import { UserModifyParams } from "@/types";
 import UserInput from "@/components/UserInput";
+
+// 接口 & 状态
+import store, { updateGlobalUser } from "@/store";
+import { updateUserData } from "@/api";
+
+// 工具函数 & 常量
+import { useSnapshot } from "valtio";
 import { useRequest } from "ahooks";
 import storage from "@/utils/storage";
 import { MODIFY_INPUT_SCHEMA } from "./constants";
+
+// 样式
 
 const Modify = () => {
   const globalData = useSnapshot(store);
