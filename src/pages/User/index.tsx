@@ -25,7 +25,7 @@ const User = () => {
   };
 
   return (
-    <div>
+    <div className="tw-h-full">
       <Tabs
         value={tabValue}
         onChange={handleTabChange}

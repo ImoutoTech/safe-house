@@ -1,5 +1,5 @@
 .info {
-  @apply tw-min-h-[500px] tw-flex tw-items-center tw-flex-wrap;
+  @apply tw-h-[calc(100%-59px)] tw-flex tw-items-center tw-flex-wrap;
 
   .card-wrapper {
     @apply tw-w-full tw-h-[200px];
