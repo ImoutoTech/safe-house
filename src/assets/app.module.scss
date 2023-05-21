@@ -5,12 +5,16 @@
   .header {
     @apply tw-py-10 tw-w-full;
     h2 {
-      @apply tw-text-center tw-font-bold tw-text-5xl;
+      @apply tw-text-center tw-font-bold tw-text-5xl tw-m-0;
 
       a {
         @apply tw-text-black;
       }
     }
+  }
+
+  .content {
+    height: calc(100vh - 5rem - 96px);
   }
 
   .footer {

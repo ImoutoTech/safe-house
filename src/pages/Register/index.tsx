@@ -82,7 +82,7 @@ const Register = () => {
         <Grid.Container gap={2} justify="space-between">
           <Grid xs>
             <div className={styles.login}>
-              <Link to={"/login"}>返回</Link>
+              <Link to={"/login"}>我有钥匙</Link>
             </div>
           </Grid>
           <Grid xs className={styles.submit}>
