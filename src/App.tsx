@@ -8,7 +8,7 @@ import { Card } from "@geist-ui/core";
 // 接口 & 状态
 
 // 工具函数 & 常量
-import { hasLocalData } from "./utils";
+import { hasLocalData, pathNeedAuth } from "./utils";
 import { ENV } from "./utils/config";
 
 // 样式
@@ -18,14 +18,12 @@ function App() {
   const navi = useNavigate();
   const location = useLocation();
 
+  // 这里只负责页面首次加载的鉴权
   useEffect(() => {
-    console.log("🤔 location 是 ", location);
-    // if (!hasLocalData()) {
-    //   navi("/");
-    // } else {
-    //   navi("/user");
-    // }
-  }, [location]);
+    if (!hasLocalData() && pathNeedAuth(location.pathname)) {
+      navi("/");
+    }
+  }, []);
 
   return (
     <div className={styles.layout}>

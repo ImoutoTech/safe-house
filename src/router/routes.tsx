@@ -1,4 +1,4 @@
-import type { RouteObject } from "react-router-dom";
+import type { RouteItem } from "./types";
 import App from "../App";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -11,13 +11,13 @@ import Index from "@/pages/Index";
 /**
  * 路由
  */
-const routes: RouteObject[] = [
+const routes: RouteItem[] = [
   {
     path: "/",
     element: <App />,
     children: [
       {
-        index: true,
+        path: "/",
         element: <Index />,
       },
       {
@@ -31,9 +31,12 @@ const routes: RouteObject[] = [
       {
         path: "/user",
         element: <User />,
+        meta: {
+          needAuth: true,
+        },
         children: [
           {
-            index: true,
+            path: "/user",
             element: <Info />,
           },
           {
