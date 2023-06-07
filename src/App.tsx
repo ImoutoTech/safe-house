@@ -33,11 +33,7 @@ function App() {
         </h2>
       </div>
       <div className={styles.content}>
-        <Card className="!tw-h-full">
-          <Card.Body className="!tw-h-full">
-            <Outlet />
-          </Card.Body>
-        </Card>
+        <Outlet />
       </div>
       <div className={styles.footer}>
         <p>Made with ❤️ by youranreus</p>
