@@ -19,6 +19,15 @@ export interface UserInfo {
   updated_at: string;
 }
 
+export interface AppInfo {
+  name: string;
+  id: string;
+  callback: string;
+  owner: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface TokenInfo {
   email: string;
   role: string;
@@ -41,6 +50,13 @@ export interface UserLoginParams extends Record<string, string> {
 export interface UserRegisterParams extends UserLoginParams {
   nickname: string;
 }
+
+export interface UserAppRegParams {
+  callback: string;
+  name: string;
+}
+
+export type UserAppUpdateParams = UserAppRegParams;
 
 export interface UserModifyParams {
   email: string;
