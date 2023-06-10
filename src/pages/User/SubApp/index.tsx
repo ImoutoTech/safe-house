@@ -1,30 +1,30 @@
 // 基础 & 类型
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 // 组件
-import { Loading, Table } from "@geist-ui/core";
+import { Loading, Fieldset, Button, Spacer, Text, Dot } from "@geist-ui/core";
 
 // 接口 & 状态
 import { getUserApp } from "@/api/SubApp";
 import { useRequest } from "ahooks";
+import useUserData from "@/hooks/useUserData";
 
 // 工具函数 & 常量
-import { hasLocalData, getDayjs } from "@/utils";
+import { getDayjs } from "@/utils";
 
 // 样式
+import styles from "./style.module.scss";
 
 const SubApp = () => {
-  const navi = useNavigate();
   const dayjs = getDayjs();
+  const { isLoggedIn } = useUserData();
 
   const { data, loading, run } = useRequest(getUserApp, {
     manual: true,
   });
 
   useEffect(() => {
-    if (!hasLocalData()) {
-      navi("login");
+    if (!isLoggedIn) {
       return;
     }
 
@@ -32,17 +32,49 @@ const SubApp = () => {
   }, []);
 
   return (
-    <div>
+    <div className={styles.subapp}>
+      <div className={styles.topbar}>
+        <p>
+          {!loading && data?.data.data
+            ? `共${data.data.data.length}个子应用`
+            : "加载中"}
+        </p>
+        <Button type="success" auto>
+          注册子应用
+        </Button>
+      </div>
+
       {loading && <Loading />}
-      {data?.data.data && (
-        <Table data={data.data.data}>
-          <Table.Column label="名称" prop="name" />
-          <Table.Column label="回调地址" prop="callback" />
-          <Table.Column label="创建时间" prop="updated_at" />
-          <Table.Column label="更新时间" prop="created_at" />
-          <Table.Column label="操作" prop="operation" />
-        </Table>
-      )}
+      {data?.data.data?.map((app) => (
+        <div key={app.id} className="tw-mb-3">
+          <Fieldset>
+            <Fieldset.Title>
+              <Dot type="success" /> {app.name}
+            </Fieldset.Title>
+            <Fieldset.Subtitle>
+              回调地址:{" "}
+              <Text span type="success">
+                {app.callback}
+              </Text>
+            </Fieldset.Subtitle>
+            <Fieldset.Footer>
+              <Text type="secondary">
+                创建于 {dayjs(app.created_at).format("YYYY-MM-DD")} | 最后编辑于{" "}
+                {dayjs(app.created_at).fromNow()}
+              </Text>
+              <div>
+                <Button auto scale={1 / 3} font="12px" type="error" ghost>
+                  删除
+                </Button>
+                <Spacer w={1} inline />
+                <Button auto scale={1 / 3} font="12px">
+                  编辑
+                </Button>
+              </div>
+            </Fieldset.Footer>
+          </Fieldset>
+        </div>
+      ))}
     </div>
   );
 };

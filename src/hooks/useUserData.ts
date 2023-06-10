@@ -3,13 +3,14 @@ import store, { updateGlobalUser } from "@/store";
 import { UserInfo } from "@/types";
 import { hasLocalData } from "@/utils";
 import storage from "@/utils/storage";
-import { useRequest } from "ahooks";
+import { useRequest, useBoolean } from "ahooks";
 import { useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
 
 const useUserData = () => {
   const globalStore = useSnapshot(store);
   const [userData, setUserData] = useState<UserInfo>();
+  const [isLoggedIn] = useBoolean(!!storage.get("id"));
 
   const {
     data: resData,
@@ -55,6 +56,7 @@ const useUserData = () => {
     set,
     userData,
     loading,
+    isLoggedIn,
   };
 };
 
