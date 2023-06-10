@@ -24,7 +24,6 @@ const useUserData = () => {
   };
 
   const set = (data: UserInfo) => {
-    setUserData(data);
     updateGlobalUser(data);
   };
 
@@ -42,9 +41,12 @@ const useUserData = () => {
   }, []);
 
   useEffect(() => {
+    setUserData(globalStore.userData);
+  }, [globalStore.userData]);
+
+  useEffect(() => {
     if (resData?.data?.data) {
       updateGlobalUser(resData.data.data);
-      setUserData(resData.data.data);
     }
   }, [resData]);
 

@@ -28,7 +28,7 @@ import styles from "./style.module.scss";
 const Info = () => {
   const dayjs = getDayjs();
   const [logoutVisible, { toggle: toggleLogout }] = useBoolean(false);
-  const { userData, loading, refresh } = useUserData();
+  const { userData, loading } = useUserData();
 
   const logout = () => {
     storage.clearSelf();
@@ -89,7 +89,7 @@ const Info = () => {
               离开 {ENV.TITLE}
             </Button>
 
-            <Modify onConfirm={refresh} userData={userData}></Modify>
+            <Modify></Modify>
           </div>
 
           <Modal visible={logoutVisible} onClose={toggleLogout}>

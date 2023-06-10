@@ -1,6 +1,6 @@
 // 基础 & 类型
 import { useState, useEffect } from "react";
-import type { UserInfo, UserModifyParams } from "@/types";
+import type { UserModifyParams } from "@/types";
 
 // 组件
 import { Button, Modal, useModal, useToasts } from "@geist-ui/core";
@@ -9,6 +9,7 @@ import UserInput from "@/components/UserInput";
 
 // 接口 & 状态
 import { updateUserData } from "@/api";
+import useUserData from "@/hooks/useUserData";
 
 // 工具函数 & 常量
 import { useRequest } from "ahooks";
@@ -17,20 +18,13 @@ import { MODIFY_INPUT_SCHEMA } from "./constants";
 
 // 样式
 
-export interface ModifyProps {
-  onConfirm: () => void;
-  userData?: UserInfo;
-}
-
-const Modify: React.FC<ModifyProps> = ({
-  onConfirm,
-  userData,
-}: ModifyProps) => {
+const Modify = () => {
   const { setToast } = useToasts();
   const { setVisible, bindings } = useModal(false);
+  const { userData, set } = useUserData();
   const [formData, setFormData] = useState<UserModifyParams>({
-    email: userData?.email || "",
-    nickname: userData?.nickname || "",
+    email: "",
+    nickname: "",
   });
 
   const {
@@ -68,8 +62,17 @@ const Modify: React.FC<ModifyProps> = ({
 
     setToast({ text: "修改成功", type: "success" });
     setVisible(false);
-    onConfirm();
+    set(result.data.data);
   }, [result]);
+
+  useEffect(() => {
+    if (userData) {
+      setFormData({
+        email: userData.email,
+        nickname: userData.nickname,
+      });
+    }
+  }, [userData]);
 
   return (
     <>
