@@ -1,6 +1,6 @@
 // 基础 & 类型
 import { useState, useEffect } from "react";
-import type { UserModifyParams } from "@/types";
+import type { UserInfo, UserModifyParams } from "@/types";
 
 // 组件
 import { Button, Modal, useModal, useToasts } from "@geist-ui/core";
@@ -8,24 +8,29 @@ import { Edit } from "@geist-ui/icons";
 import UserInput from "@/components/UserInput";
 
 // 接口 & 状态
-import store, { updateGlobalUser } from "@/store";
 import { updateUserData } from "@/api";
 
 // 工具函数 & 常量
-import { useSnapshot } from "valtio";
 import { useRequest } from "ahooks";
 import storage from "@/utils/storage";
 import { MODIFY_INPUT_SCHEMA } from "./constants";
 
 // 样式
 
-const Modify = () => {
-  const globalData = useSnapshot(store);
+export interface ModifyProps {
+  onConfirm: () => void;
+  userData?: UserInfo;
+}
+
+const Modify: React.FC<ModifyProps> = ({
+  onConfirm,
+  userData,
+}: ModifyProps) => {
   const { setToast } = useToasts();
   const { setVisible, bindings } = useModal(false);
   const [formData, setFormData] = useState<UserModifyParams>({
-    email: globalData.userData?.email || "",
-    nickname: globalData.userData?.nickname || "",
+    email: userData?.email || "",
+    nickname: userData?.nickname || "",
   });
 
   const {
@@ -41,13 +46,13 @@ const Modify = () => {
   };
 
   const handleSubmit = () => {
-    run(globalData.userData?.id || storage.get("id"), formData);
+    run(userData?.id || storage.get("id"), formData);
   };
 
   const handleCloseDialog = () => {
     setFormData({
-      email: globalData.userData?.email || "",
-      nickname: globalData.userData?.nickname || "",
+      email: userData?.email || "",
+      nickname: userData?.nickname || "",
     });
     setVisible(false);
   };
@@ -61,9 +66,9 @@ const Modify = () => {
       return;
     }
 
-    updateGlobalUser(result.data.data);
     setToast({ text: "修改成功", type: "success" });
     setVisible(false);
+    onConfirm();
   }, [result]);
 
   return (
