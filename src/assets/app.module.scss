@@ -13,12 +13,8 @@
     }
   }
 
-  .content {
-    height: calc(100vh - 5rem - 96px);
-  }
-
   .footer {
-    @apply tw-w-full tw-absolute tw-bottom-0 tw-left-0;
+    @apply tw-w-full;
     p {
       @apply tw-text-center tw-font-normal tw-text-sm tw-opacity-60;
     }

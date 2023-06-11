@@ -33,7 +33,7 @@ const User = () => {
   }, [location]);
 
   return (
-    <div className="tw-h-full">
+    <div className="">
       <Tabs
         value={tabValue}
         onChange={handleTabChange}

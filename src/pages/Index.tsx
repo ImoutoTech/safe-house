@@ -23,7 +23,7 @@ const Index = () => {
   };
 
   return (
-    <div className="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center">
+    <div className="tw-w-full tw-h-[500px] tw-flex tw-items-center tw-justify-center">
       <div>
         <span className="tw-text-3xl tw-italic tw-opacity-60">
           你在森林中看到了一间小木屋
