@@ -7,7 +7,7 @@ import AppItem from "./AppItem";
 
 // 接口 & 状态
 import { getUserApp } from "@/api/SubApp";
-import { useRequest } from "ahooks";
+import { useQuery } from "@tanstack/react-query";
 
 // 工具函数 & 常量
 
@@ -16,16 +16,17 @@ import styles from "./style.module.scss";
 
 const SubApp = () => {
   const navi = useNavigate();
-
-  const { data, loading } = useRequest(getUserApp);
+  const { data, isFetching: loading } = useQuery({
+    queryKey: ["subapp", "list"],
+    queryFn: () => getUserApp().then((res) => res.data),
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <div className={styles.subapp}>
       <div className={styles.topbar}>
         <p>
-          {!loading && data?.data.data
-            ? `共${data.data.data.length}个子应用`
-            : "加载中"}
+          {!loading && data?.data ? `共${data.data.length}个子应用` : "加载中"}
         </p>
         <Button type="success" auto onClick={() => navi("/user/app/new")}>
           注册子应用
@@ -33,11 +34,12 @@ const SubApp = () => {
       </div>
 
       {loading && <Loading />}
-      {data?.data.data?.map((app) => (
-        <div key={app.id} className="tw-mb-3">
-          <AppItem app={app}></AppItem>
-        </div>
-      ))}
+      {!loading &&
+        data?.data?.map((app) => (
+          <div key={app.id} className="tw-mb-3">
+            <AppItem app={app}></AppItem>
+          </div>
+        ))}
     </div>
   );
 };
