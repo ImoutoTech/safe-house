@@ -10,7 +10,7 @@ import { useSnapshot } from "valtio";
 const useUserData = () => {
   const globalStore = useSnapshot(store);
   const [userData, setUserData] = useState<UserInfo>();
-  const [isLoggedIn] = useBoolean(!!storage.get("id"));
+  const [isLoggedIn] = useBoolean(storage.has("id"));
 
   const {
     data: resData,
