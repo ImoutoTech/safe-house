@@ -1,5 +1,6 @@
 // 基础 & 类型
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // 组件
 import { Loading, Fieldset, Button, Spacer, Text, Dot } from "@geist-ui/core";
@@ -16,6 +17,7 @@ import { getDayjs } from "@/utils";
 import styles from "./style.module.scss";
 
 const SubApp = () => {
+  const navi = useNavigate();
   const dayjs = getDayjs();
   const { isLoggedIn } = useUserData();
 
@@ -39,7 +41,7 @@ const SubApp = () => {
             ? `共${data.data.data.length}个子应用`
             : "加载中"}
         </p>
-        <Button type="success" auto>
+        <Button type="success" auto onClick={() => navi("/user/app/new")}>
           注册子应用
         </Button>
       </div>
