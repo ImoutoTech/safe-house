@@ -1,6 +1,6 @@
 // 基础 & 类型
-import { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 
 // 组件
 import { Tabs } from "@geist-ui/core";
@@ -13,6 +13,7 @@ import { Tabs } from "@geist-ui/core";
 
 const User = () => {
   const navi = useNavigate();
+  const location = useLocation();
   const [tabValue, setTabValue] = useState<"/user" | "/user/app">("/user");
 
   const handleTabChange = (val: string) => {
@@ -21,8 +22,15 @@ const User = () => {
     }
 
     navi(val);
-    setTabValue(val);
   };
+
+  useEffect(() => {
+    if (location.pathname.includes("/user/app")) {
+      setTabValue("/user/app");
+    } else {
+      setTabValue("/user");
+    }
+  }, [location]);
 
   return (
     <div className="tw-h-full">
