@@ -1,5 +1,4 @@
 // 基础 & 类型
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 // 组件
@@ -9,7 +8,6 @@ import AppItem from "./AppItem";
 // 接口 & 状态
 import { getUserApp } from "@/api/SubApp";
 import { useRequest } from "ahooks";
-import useUserData from "@/hooks/useUserData";
 
 // 工具函数 & 常量
 
@@ -18,19 +16,8 @@ import styles from "./style.module.scss";
 
 const SubApp = () => {
   const navi = useNavigate();
-  const { isLoggedIn } = useUserData();
 
-  const { data, loading, run } = useRequest(getUserApp, {
-    manual: true,
-  });
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      return;
-    }
-
-    run();
-  }, []);
+  const { data, loading } = useRequest(getUserApp);
 
   return (
     <div className={styles.subapp}>
