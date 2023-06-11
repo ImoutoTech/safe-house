@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 // 组件
-import { Loading, Fieldset, Button, Spacer, Text, Dot } from "@geist-ui/core";
+import { Loading, Button } from "@geist-ui/core";
+import AppItem from "./AppItem";
 
 // 接口 & 状态
 import { getUserApp } from "@/api/SubApp";
@@ -11,14 +12,12 @@ import { useRequest } from "ahooks";
 import useUserData from "@/hooks/useUserData";
 
 // 工具函数 & 常量
-import { getDayjs } from "@/utils";
 
 // 样式
 import styles from "./style.module.scss";
 
 const SubApp = () => {
   const navi = useNavigate();
-  const dayjs = getDayjs();
   const { isLoggedIn } = useUserData();
 
   const { data, loading, run } = useRequest(getUserApp, {
@@ -49,32 +48,7 @@ const SubApp = () => {
       {loading && <Loading />}
       {data?.data.data?.map((app) => (
         <div key={app.id} className="tw-mb-3">
-          <Fieldset>
-            <Fieldset.Title>
-              <Dot type="success" /> {app.name}
-            </Fieldset.Title>
-            <Fieldset.Subtitle>
-              回调地址:{" "}
-              <Text span type="success">
-                {app.callback}
-              </Text>
-            </Fieldset.Subtitle>
-            <Fieldset.Footer>
-              <Text type="secondary">
-                创建于 {dayjs(app.created_at).format("YYYY-MM-DD")} | 最后编辑于{" "}
-                {dayjs(app.created_at).fromNow()}
-              </Text>
-              <div>
-                <Button auto scale={1 / 3} font="12px" type="error" ghost>
-                  删除
-                </Button>
-                <Spacer w={1} inline />
-                <Button auto scale={1 / 3} font="12px">
-                  编辑
-                </Button>
-              </div>
-            </Fieldset.Footer>
-          </Fieldset>
+          <AppItem app={app}></AppItem>
         </div>
       ))}
     </div>
