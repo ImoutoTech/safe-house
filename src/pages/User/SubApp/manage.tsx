@@ -10,6 +10,7 @@ import UserInput from "@/components/UserInput";
 // 接口 & 状态
 import { regUserApp, callbackUserApp, updateUserApp } from "@/api/SubApp";
 import { useRequest } from "ahooks";
+import { useQuery } from "@tanstack/react-query";
 
 // 工具函数 & 常量
 import { SUBAPP_INPUT_SCHEMA } from "./constants";
@@ -48,19 +49,18 @@ const Manage = () => {
     manual: true,
   });
 
-  const {
-    data: originData,
-    run: getOrigin,
-    loading: loadingOrigin,
-  } = useRequest(callbackUserApp, {
-    manual: true,
+  // const {
+  //   data: originData,
+  //   run: getOrigin,
+  //   loading: loadingOrigin,
+  // } = useRequest(callbackUserApp, {
+  //   manual: true,
+  // });
+  const { data: originData, isFetching: loadingOrigin } = useQuery({
+    queryKey: ["subapp", "modify", originAppId],
+    queryFn: () => callbackUserApp(originAppId).then((res) => res.data),
+    refetchOnWindowFocus: false,
   });
-
-  useEffect(() => {
-    if (type === PAGE_TYPE.MOD && !loadingOrigin) {
-      getOrigin(originAppId);
-    }
-  }, []);
 
   const onChangeData = (data: UserAppRegParams) => {
     setFormData(data);
@@ -96,8 +96,8 @@ const Manage = () => {
   useEffect(() => {
     if (originData) {
       setFormData({
-        name: originData.data.data.name,
-        callback: originData.data.data.callback,
+        name: originData.data.name,
+        callback: originData.data.callback,
       });
     }
   }, [originData]);
