@@ -16,7 +16,11 @@ import styles from "./style.module.scss";
 
 const SubApp = () => {
   const navi = useNavigate();
-  const { data, isFetching: loading } = useQuery({
+  const {
+    data,
+    isFetching: loading,
+    refetch,
+  } = useQuery({
     queryKey: ["subapp", "list"],
     queryFn: () => getUserApp().then((res) => res.data),
     refetchOnWindowFocus: false,
@@ -37,7 +41,7 @@ const SubApp = () => {
       {!loading &&
         data?.data?.map((app) => (
           <div key={app.id} className="tw-mb-3">
-            <AppItem app={app}></AppItem>
+            <AppItem app={app} onDel={refetch}></AppItem>
           </div>
         ))}
     </div>
