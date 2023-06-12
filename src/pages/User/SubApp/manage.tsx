@@ -1,6 +1,7 @@
 // 基础 & 类型
 import { useState, useEffect } from "react";
-import type { UserAppRegParams } from "@/types";
+import type { AppInfo, UserAppRegParams, Restful } from "@/types";
+import type { AxiosResponse } from "axios";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 
 // 组件
@@ -9,8 +10,7 @@ import UserInput from "@/components/UserInput";
 
 // 接口 & 状态
 import { regUserApp, callbackUserApp, updateUserApp } from "@/api/SubApp";
-import { useRequest } from "ahooks";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 // 工具函数 & 常量
 import { SUBAPP_INPUT_SCHEMA } from "./constants";
@@ -33,20 +33,29 @@ const Manage = () => {
     callback: "",
   });
 
-  const {
-    data: regResult,
-    run: submitReg,
-    loading: regLoading,
-  } = useRequest(regUserApp, {
-    manual: true,
+  const handleSubmitResult = (res: AxiosResponse<Restful<AppInfo>>) => {
+    if (!res) return;
+
+    if (res?.data.code !== 0) {
+      setToast({ text: res?.data.msg, type: "error" });
+      return;
+    }
+
+    setToast({ text: "操作成功", type: "success" });
+    navi("/user/app");
+  };
+
+  const modMutate = useMutation({
+    mutationKey: ["user", "subapp", "modify"],
+    mutationFn: ({ id, data }: { id: string; data: UserAppRegParams }) =>
+      updateUserApp(id, data),
+    onSuccess: handleSubmitResult,
   });
 
-  const {
-    data: modResult,
-    run: submitMod,
-    loading: modLoading,
-  } = useRequest(updateUserApp, {
-    manual: true,
+  const regMutate = useMutation({
+    mutationKey: ["user", "subapp", "reg"],
+    mutationFn: regUserApp,
+    onSuccess: handleSubmitResult,
   });
 
   const { data: originData, isFetching: loadingOrigin } = useQuery({
@@ -70,22 +79,10 @@ const Manage = () => {
       return;
     }
 
-    type === PAGE_TYPE.MOD && submitMod(originAppId, formData);
-    type === PAGE_TYPE.NEW && submitReg(formData);
+    type === PAGE_TYPE.MOD &&
+      modMutate.mutate({ id: originAppId, data: formData });
+    type === PAGE_TYPE.NEW && regMutate.mutate(formData);
   };
-
-  useEffect(() => {
-    if (!regResult && !modResult) return;
-    const res = !regResult ? modResult : regResult;
-
-    if (res?.data.code !== 0) {
-      setToast({ text: res?.data.msg, type: "error" });
-      return;
-    }
-
-    setToast({ text: "操作成功", type: "success" });
-    navi("/user/app");
-  }, [regResult, modResult]);
 
   useEffect(() => {
     if (originData) {
@@ -112,7 +109,7 @@ const Manage = () => {
               <Button
                 auto
                 type="success-light"
-                loading={regLoading || modLoading}
+                loading={regMutate.isLoading || modMutate.isLoading}
                 onClick={onSubmit}
               >
                 提交
