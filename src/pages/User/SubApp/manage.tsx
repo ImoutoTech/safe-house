@@ -49,17 +49,11 @@ const Manage = () => {
     manual: true,
   });
 
-  // const {
-  //   data: originData,
-  //   run: getOrigin,
-  //   loading: loadingOrigin,
-  // } = useRequest(callbackUserApp, {
-  //   manual: true,
-  // });
   const { data: originData, isFetching: loadingOrigin } = useQuery({
     queryKey: ["subapp", "modify", originAppId],
     queryFn: () => callbackUserApp(originAppId).then((res) => res.data),
     refetchOnWindowFocus: false,
+    enabled: !!originAppId,
   });
 
   const onChangeData = (data: UserAppRegParams) => {
