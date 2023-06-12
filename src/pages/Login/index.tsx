@@ -1,5 +1,5 @@
 // 基础 & 类型
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { UserLoginParams } from "@/types";
 
@@ -12,7 +12,7 @@ import { UserLogin } from "@/api";
 import { updateGlobalUser } from "@/store";
 
 // 工具函数 & 常量
-import { useRequest } from "ahooks";
+import { useMutation } from "@tanstack/react-query";
 import { useToasts } from "@geist-ui/core";
 import { Md5 } from "ts-md5";
 import { LOGIN_INPUT_SCHEMA } from "./constants";
@@ -29,12 +29,27 @@ const Login = () => {
     password: "",
   });
 
-  const {
-    data: result,
-    loading,
-    run,
-  } = useRequest(UserLogin, {
-    manual: true,
+  const mutate = useMutation({
+    mutationKey: ["user", "action", "login"],
+    mutationFn: ({ data }: { data: UserLoginParams }) => UserLogin(data),
+    onSuccess: (result) => {
+      if (!result) {
+        return;
+      }
+
+      if (result?.data.code === 0) {
+        storage.set("access_token", result.data.data.token);
+        storage.set("refresh_token", result.data.data.refresh);
+        storage.set("id", result.data.data.user.id);
+
+        updateGlobalUser(result.data.data.user);
+
+        setToast({ text: "登录成功", type: "success" });
+        navi("/user");
+      } else {
+        setToast({ text: result?.data.msg, type: "error" });
+      }
+    },
   });
 
   const handleChange = (data: UserLoginParams) => {
@@ -56,27 +71,8 @@ const Login = () => {
       password: Md5.hashStr(formData.password),
     };
 
-    run(postData);
+    mutate.mutate({ data: postData });
   };
-
-  useEffect(() => {
-    if (!result) {
-      return;
-    }
-
-    if (result?.data.code === 0) {
-      storage.set("access_token", result.data.data.token);
-      storage.set("refresh_token", result.data.data.refresh);
-      storage.set("id", result.data.data.user.id);
-
-      updateGlobalUser(result.data.data.user);
-
-      setToast({ text: "登录成功", type: "success" });
-      navi("/user");
-    } else {
-      setToast({ text: result?.data.msg, type: "error" });
-    }
-  }, [result]);
 
   return (
     <div className={styles.login}>
@@ -99,7 +95,7 @@ const Login = () => {
               auto
               type="secondary"
               onClick={submit}
-              loading={loading}
+              loading={mutate.isLoading}
             >
               开门
             </Button>

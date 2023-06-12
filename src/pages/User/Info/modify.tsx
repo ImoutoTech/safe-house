@@ -12,7 +12,7 @@ import { updateUserData } from "@/api";
 import useUserData from "@/hooks/useUserData";
 
 // 工具函数 & 常量
-import { useRequest } from "ahooks";
+import { useMutation } from "@tanstack/react-query";
 import storage from "@/utils/storage";
 import { MODIFY_INPUT_SCHEMA } from "./constants";
 
@@ -27,12 +27,23 @@ const Modify = () => {
     nickname: "",
   });
 
-  const {
-    data: result,
-    run,
-    loading,
-  } = useRequest(updateUserData, {
-    manual: true,
+  const mutate = useMutation({
+    mutationKey: ["userdata", "action", "modify", userData?.id],
+    mutationFn: ({ id, data }: { id: number; data: UserModifyParams }) =>
+      updateUserData(id, data),
+    onSuccess: (result) => {
+      if (!result) return;
+
+      if (result.data.code !== 0) {
+        setToast({ text: result.data.msg, type: "error" });
+        setVisible(false);
+        return;
+      }
+
+      setToast({ text: "修改成功", type: "success" });
+      setVisible(false);
+      set(result.data.data);
+    },
   });
 
   const onChangeData = (data: UserModifyParams) => {
@@ -40,7 +51,7 @@ const Modify = () => {
   };
 
   const handleSubmit = () => {
-    run(userData?.id || storage.get("id"), formData);
+    mutate.mutate({ id: userData?.id || storage.get("id"), data: formData });
   };
 
   const handleCloseDialog = () => {
@@ -50,20 +61,6 @@ const Modify = () => {
     });
     setVisible(false);
   };
-
-  useEffect(() => {
-    if (!result) return;
-
-    if (result.data.code !== 0) {
-      setToast({ text: result.data.msg, type: "error" });
-      setVisible(false);
-      return;
-    }
-
-    setToast({ text: "修改成功", type: "success" });
-    setVisible(false);
-    set(result.data.data);
-  }, [result]);
 
   useEffect(() => {
     if (userData) {
@@ -97,7 +94,7 @@ const Modify = () => {
         <Modal.Action passive onClick={handleCloseDialog}>
           取消
         </Modal.Action>
-        <Modal.Action onClick={handleSubmit} loading={loading}>
+        <Modal.Action onClick={handleSubmit} loading={mutate.isLoading}>
           提交
         </Modal.Action>
       </Modal>

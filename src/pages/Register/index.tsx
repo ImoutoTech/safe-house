@@ -1,5 +1,5 @@
 // 基础 & 类型
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { UserRegisterParams } from "@/types";
 
@@ -11,7 +11,7 @@ import UserInput from "@/components/UserInput";
 import { UserRegister } from "@/api";
 
 // 工具函数 & 常量
-import { useRequest } from "ahooks";
+import { useMutation } from "@tanstack/react-query";
 import { REG_INPUT_SCHEMA } from "./constants";
 import { Md5 } from "ts-md5";
 
@@ -27,12 +27,21 @@ const Register = () => {
     nickname: "",
   });
 
-  const {
-    data: result,
-    loading,
-    run,
-  } = useRequest(UserRegister, {
-    manual: true,
+  const mutate = useMutation({
+    mutationKey: ["user", "action", "register"],
+    mutationFn: ({ data }: { data: UserRegisterParams }) => UserRegister(data),
+    onSuccess: (result) => {
+      if (!result) {
+        return;
+      }
+
+      if (result?.data.code === 0) {
+        setToast({ text: "注册成功", type: "success" });
+        navi("/login");
+      } else {
+        setToast({ text: result?.data.msg, type: "error" });
+      }
+    },
   });
 
   const handleChange = (data: UserRegisterParams) => {
@@ -54,21 +63,8 @@ const Register = () => {
       password: Md5.hashStr(formData.password),
     };
 
-    run(postData);
+    mutate.mutate({ data: postData });
   };
-
-  useEffect(() => {
-    if (!result) {
-      return;
-    }
-
-    if (result?.data.code === 0) {
-      setToast({ text: "注册成功", type: "success" });
-      navi("/login");
-    } else {
-      setToast({ text: result?.data.msg, type: "error" });
-    }
-  }, [result]);
 
   return (
     <div className={styles.register}>
@@ -91,7 +87,7 @@ const Register = () => {
               auto
               type="secondary"
               onClick={submit}
-              loading={loading}
+              loading={mutate.isLoading}
             >
               加入
             </Button>
