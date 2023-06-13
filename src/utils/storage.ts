@@ -36,7 +36,7 @@ interface StorageInterface {
 
 const storage: StorageInterface = {
   set: () => {},
-  get: () => "",
+  get: (() => "") as StorageInterface["get"],
   has: () => false,
   remove: () => {},
   clear: () => {},
