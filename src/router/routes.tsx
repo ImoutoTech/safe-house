@@ -10,6 +10,7 @@ import SubApp from "@/pages/User/SubApp";
 import Index from "@/pages/Index";
 
 import Manage from "@/pages/User/SubApp/manage";
+import Callback from "@/pages/Callback";
 
 /**
  * 路由
@@ -30,6 +31,10 @@ const routes: RouteItem[] = [
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/callback/:appId",
+        element: <Callback />,
       },
       {
         path: "/user",
