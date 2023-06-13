@@ -25,6 +25,7 @@ const Login = () => {
   const { setToast } = useToasts();
   const navi = useNavigate();
   const [searchParams] = useSearchParams();
+  const redirectApp = searchParams.get("app");
   const [formData, setFormData] = useState<UserLoginParams>({
     email: "",
     password: "",
@@ -46,8 +47,8 @@ const Login = () => {
         updateGlobalUser(result.data.data.user);
 
         setToast({ text: "登录成功", type: "success" });
-        if (searchParams.get("app")) {
-          navi(`/callback/${searchParams.get("app")}`);
+        if (redirectApp) {
+          navi(`/callback/${redirectApp}`);
         } else {
           navi("/user");
         }
@@ -91,7 +92,11 @@ const Login = () => {
         <Grid.Container gap={2} justify="space-between">
           <Grid xs>
             <div className={styles.register}>
-              <Link to={"/register"}>加入</Link>
+              <Link
+                to={redirectApp ? `/register?app=${redirectApp}` : "/register"}
+              >
+                加入
+              </Link>
             </div>
           </Grid>
           <Grid xs className={styles.submit}>

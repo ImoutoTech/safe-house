@@ -22,6 +22,7 @@ const Register = () => {
   const { setToast } = useToasts();
   const navi = useNavigate();
   const [searchParams] = useSearchParams();
+  const redirectApp = searchParams.get("app");
   const [formData, setFormData] = useState<UserRegisterParams>({
     email: "",
     password: "",
@@ -39,8 +40,8 @@ const Register = () => {
       if (result?.data.code === 0) {
         setToast({ text: "注册成功", type: "success" });
 
-        if (searchParams.get("app")) {
-          navi(`/login?app=${searchParams.get("app")}`);
+        if (redirectApp) {
+          navi(`/login?app=${redirectApp}`);
         } else {
           navi("/login");
         }
@@ -84,7 +85,9 @@ const Register = () => {
         <Grid.Container gap={2} justify="space-between">
           <Grid xs>
             <div className={styles.login}>
-              <Link to={"/login"}>我有钥匙</Link>
+              <Link to={redirectApp ? `/login?app=${redirectApp}` : "/login"}>
+                我有钥匙
+              </Link>
             </div>
           </Grid>
           <Grid xs className={styles.submit}>
