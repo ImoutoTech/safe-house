@@ -33,6 +33,8 @@ const Callback = () => {
     } else {
       if (isLoggedIn) {
         storage.clearSelf();
+        window.location.replace(`${window.location.origin}/login?app=${appId}`);
+        return;
       }
 
       navi(`/login?app=${appId}`);
