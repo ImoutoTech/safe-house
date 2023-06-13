@@ -1,6 +1,6 @@
 // 基础 & 类型
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import type { UserRegisterParams } from "@/types";
 
 // 组件
@@ -21,6 +21,7 @@ import styles from "./style.module.scss";
 const Register = () => {
   const { setToast } = useToasts();
   const navi = useNavigate();
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState<UserRegisterParams>({
     email: "",
     password: "",
@@ -37,7 +38,12 @@ const Register = () => {
 
       if (result?.data.code === 0) {
         setToast({ text: "注册成功", type: "success" });
-        navi("/login");
+
+        if (searchParams.get("app")) {
+          navi(`/login?app=${searchParams.get("app")}`);
+        } else {
+          navi("/login");
+        }
       } else {
         setToast({ text: result?.data.msg, type: "error" });
       }

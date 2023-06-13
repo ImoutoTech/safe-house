@@ -1,6 +1,6 @@
 // 基础 & 类型
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import type { UserLoginParams } from "@/types";
 
 // 组件
@@ -24,6 +24,7 @@ import styles from "./style.module.scss";
 const Login = () => {
   const { setToast } = useToasts();
   const navi = useNavigate();
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState<UserLoginParams>({
     email: "",
     password: "",
@@ -45,7 +46,11 @@ const Login = () => {
         updateGlobalUser(result.data.data.user);
 
         setToast({ text: "登录成功", type: "success" });
-        navi("/user");
+        if (searchParams.get("app")) {
+          navi(`/callback/${searchParams.get("app")}`);
+        } else {
+          navi("/user");
+        }
       } else {
         setToast({ text: result?.data.msg, type: "error" });
       }
