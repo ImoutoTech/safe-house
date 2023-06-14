@@ -55,7 +55,7 @@ const AppItem: React.FC<AppItemProps> = ({ app, onDel }: AppItemProps) => {
       <Fieldset.Footer>
         <Text type="secondary">
           创建于 {dayjs(app.created_at).format("YYYY-MM-DD")} | 最后编辑于{" "}
-          {dayjs(app.created_at).fromNow()}
+          {dayjs(app.updated_at).fromNow()}
         </Text>
         <div>
           <Button
