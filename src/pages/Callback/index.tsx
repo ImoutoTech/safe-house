@@ -6,11 +6,11 @@ import { Button, Text, Card, Note } from "@geist-ui/core";
 import UserAvatar from "@/components/UserAvatar";
 
 // 接口 & 状态
-import { getUserAppData } from "@/api/SubApp";
+import { getUserAppData, callbackUserApp } from "@/api/SubApp";
 import useUserData from "@/hooks/useUserData";
 
 // 工具函数 & 常量
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import storage from "@/utils/storage";
 
 // 样式
@@ -21,10 +21,21 @@ const Callback = () => {
   const { isLoggedIn, loading: userDataLoading, userData } = useUserData();
 
   const appQuery = useQuery({
-    queryKey: ["app", "callback", appId],
+    queryKey: ["app", "query", appId],
     queryFn: ({ queryKey }) =>
       getUserAppData(queryKey[2] || "").then((res) => res.data.data),
     refetchOnWindowFocus: false,
+  });
+
+  const cbMutate = useMutation({
+    mutationKey: ["app", "callback", appId],
+    mutationFn: callbackUserApp,
+    onSuccess: (res) => {
+      const { data } = appQuery;
+      window.location.replace(
+        `${data?.callback}?ticket=${res.data.data.ticket}`
+      );
+    },
   });
 
   const redirect = (type: "login" | "register") => {
@@ -73,7 +84,13 @@ const Callback = () => {
               </Button>
             )}
             {userData && (
-              <Button auto type="success" scale={0.75}>
+              <Button
+                auto
+                type="success"
+                scale={0.75}
+                loading={cbMutate.isLoading}
+                onClick={() => cbMutate.mutate(appId as string)}
+              >
                 使用该账号登录
               </Button>
             )}
