@@ -31,6 +31,7 @@ const Manage = () => {
   const [formData, setFormData] = useState<UserAppRegParams>({
     name: "",
     callback: "",
+    description: "",
   });
 
   const handleSubmitResult = (res: AxiosResponse<Restful<AppInfo>>) => {
@@ -89,6 +90,7 @@ const Manage = () => {
       setFormData({
         name: originData.data.name,
         callback: originData.data.callback,
+        description: originData.data.description,
       });
     }
   }, [originData]);

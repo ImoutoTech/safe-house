@@ -26,6 +26,7 @@ export interface UserRegisterParams extends UserLoginParams {
 export interface UserAppRegParams {
   callback: string;
   name: string;
+  description: string;
   [key: string]: string;
 }
 

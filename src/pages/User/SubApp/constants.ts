@@ -16,4 +16,11 @@ export const SUBAPP_INPUT_SCHEMA: UserInputSchema<UserAppRegParams> = [
       placeholder: "回调地址",
     },
   },
+  {
+    title: "description",
+    allowNull: false,
+    inputBindings: {
+      placeholder: "描述",
+    },
+  },
 ];
