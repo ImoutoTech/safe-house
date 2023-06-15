@@ -55,6 +55,9 @@ const AppItem: React.FC<AppItemProps> = ({ app, onDel }: AppItemProps) => {
         <Dot type="success" /> {app.name}
       </Fieldset.Title>
       <Fieldset.Subtitle>
+        <Text p type="secondary">
+          {app.description || "暂无描述"}
+        </Text>
         <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
           <Text span>
             回调地址:{" "}
