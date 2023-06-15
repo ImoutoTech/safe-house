@@ -6,7 +6,7 @@ import { Button, Text, Card, Note } from "@geist-ui/core";
 import UserAvatar from "@/components/UserAvatar";
 
 // 接口 & 状态
-import { callbackUserApp } from "@/api/SubApp";
+import { getUserAppData } from "@/api/SubApp";
 import useUserData from "@/hooks/useUserData";
 
 // 工具函数 & 常量
@@ -23,7 +23,7 @@ const Callback = () => {
   const appQuery = useQuery({
     queryKey: ["app", "callback", appId],
     queryFn: ({ queryKey }) =>
-      callbackUserApp(queryKey[2] || "").then((res) => res.data.data),
+      getUserAppData(queryKey[2] || "").then((res) => res.data.data),
     refetchOnWindowFocus: false,
   });
 

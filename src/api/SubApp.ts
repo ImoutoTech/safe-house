@@ -6,6 +6,7 @@ import type {
   AppInfo,
   UserAppRegParams,
   UserAppUpdateParams,
+  AppCallbackResult,
 } from "@/types";
 
 export const getUserApp = (): AxiosResult<AppInfo[]> =>
@@ -23,5 +24,8 @@ export const updateUserApp = (
 ): AxiosResult<AppInfo> =>
   API.put<Restful<AppInfo>>(`/app/${id}`, qs.stringify(data));
 
-export const callbackUserApp = (id: string): AxiosResult<AppInfo> =>
-  API.post<Restful<AppInfo>>(`/app/${id}`);
+export const getUserAppData = (id: string): AxiosResult<AppInfo> =>
+  API.get<Restful<AppInfo>>(`/app/${id}`);
+
+export const callbackUserApp = (id: string): AxiosResult<AppCallbackResult> =>
+  API.post<Restful<AppCallbackResult>>(`/app/${id}`);

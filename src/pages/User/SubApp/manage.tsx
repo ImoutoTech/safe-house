@@ -9,7 +9,7 @@ import { Button, Text, Card, Spacer, useToasts, Loading } from "@geist-ui/core";
 import UserInput from "@/components/UserInput";
 
 // 接口 & 状态
-import { regUserApp, callbackUserApp, updateUserApp } from "@/api/SubApp";
+import { regUserApp, getUserAppData, updateUserApp } from "@/api/SubApp";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
 // 工具函数 & 常量
@@ -60,7 +60,7 @@ const Manage = () => {
 
   const { data: originData, isFetching: loadingOrigin } = useQuery({
     queryKey: ["subapp", "modify", originAppId],
-    queryFn: () => callbackUserApp(originAppId).then((res) => res.data),
+    queryFn: () => getUserAppData(originAppId).then((res) => res.data),
     refetchOnWindowFocus: false,
     enabled: !!originAppId,
   });
