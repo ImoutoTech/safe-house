@@ -3,25 +3,26 @@ import store, { updateGlobalUser } from "@/store";
 import { UserInfo } from "@/types";
 import { hasLocalData } from "@/utils";
 import storage from "@/utils/storage";
-import { useRequest, useBoolean } from "ahooks";
+import { useBoolean } from "ahooks";
 import { useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
+import { useQuery } from "@tanstack/react-query";
 
 const useUserData = () => {
   const globalStore = useSnapshot(store);
   const [userData, setUserData] = useState<UserInfo>();
   const [isLoggedIn] = useBoolean(storage.has("id"));
 
-  const {
-    data: resData,
-    loading,
-    run,
-  } = useRequest(getUserData, {
-    manual: true,
+  const query = useQuery({
+    queryKey: ["userdata", "query", isLoggedIn ? storage.get("id") : "0"],
+    queryFn: ({ queryKey }) => getUserData(Number(queryKey[2])),
+    refetchOnWindowFocus: false,
+    enabled: isLoggedIn,
+    staleTime: Infinity,
   });
 
   const refresh = () => {
-    run(storage.get("id"));
+    !query.isFetching && query.refetch();
   };
 
   const set = (data: UserInfo) => {
@@ -46,16 +47,16 @@ const useUserData = () => {
   }, [globalStore.userData]);
 
   useEffect(() => {
-    if (resData?.data?.data) {
-      updateGlobalUser(resData.data.data);
+    if (query.data?.data?.data) {
+      updateGlobalUser(query.data.data.data);
     }
-  }, [resData]);
+  }, [query.data]);
 
   return {
     refresh,
     set,
     userData,
-    loading,
+    loading: query.isFetching,
     isLoggedIn,
   };
 };
