@@ -3,6 +3,8 @@ export interface AppInfo {
   id: string;
   callback: string;
   owner: string;
+  description: string;
+  visitNum: number;
   created_at: string;
   updated_at: string;
 }

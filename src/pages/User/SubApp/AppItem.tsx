@@ -3,7 +3,15 @@ import type { AppInfo } from "@/types";
 import { useNavigate } from "react-router-dom";
 
 // 组件
-import { Fieldset, Button, Spacer, Text, Dot, useToasts } from "@geist-ui/core";
+import {
+  Fieldset,
+  Button,
+  Spacer,
+  Text,
+  Dot,
+  useToasts,
+  Badge,
+} from "@geist-ui/core";
 
 // 接口 & 状态
 import { delUserApp } from "@/api/SubApp";
@@ -42,15 +50,20 @@ const AppItem: React.FC<AppItemProps> = ({ app, onDel }: AppItemProps) => {
   });
 
   return (
-    <Fieldset>
+    <Fieldset className="tw-box-border">
       <Fieldset.Title>
         <Dot type="success" /> {app.name}
       </Fieldset.Title>
       <Fieldset.Subtitle>
-        回调地址:{" "}
-        <Text span type="success">
-          {app.callback}
-        </Text>
+        <div className="tw-flex tw-justify-between tw-items-center tw-w-full">
+          <Text span>
+            回调地址:{" "}
+            <Text span type="success">
+              {app.callback}
+            </Text>
+          </Text>
+          <Badge type="secondary">已访问 {app.visitNum} 次</Badge>
+        </div>
       </Fieldset.Subtitle>
       <Fieldset.Footer>
         <Text type="secondary">
