@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 
 // 组件
+import { ErrorBoundary } from "react-error-boundary";
+import { Note } from "@geist-ui/core";
 
 // 接口 & 状态
 
@@ -24,6 +26,10 @@ function App() {
     }
   }, []);
 
+  const handleError = ({ error }: { error: Error }) => {
+    return <Note type="error">{error.message}</Note>;
+  };
+
   return (
     <div className={styles.layout}>
       <div className={styles.header}>
@@ -32,7 +38,9 @@ function App() {
         </h2>
       </div>
       <div className={styles.content}>
-        <Outlet />
+        <ErrorBoundary FallbackComponent={handleError}>
+          <Outlet />
+        </ErrorBoundary>
       </div>
       <div className={styles.footer}>
         <p>Made with ❤️ by youranreus</p>
