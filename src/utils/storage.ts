@@ -109,6 +109,8 @@ const extend = (s: Storage) => {
         (str) => str?.startsWith(keyPrefix)
       );
       arr.forEach((str) => s.removeItem(str as string));
+      const clearEvent = new Event("clearStorage");
+      window.dispatchEvent(clearEvent);
     },
   };
 };

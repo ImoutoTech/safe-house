@@ -1,7 +1,6 @@
 import { getUserData } from "@/api";
 import store, { updateGlobalUser } from "@/store";
 import { UserInfo } from "@/types";
-import { hasLocalData } from "@/utils";
 import storage from "@/utils/storage";
 import { useBoolean } from "ahooks";
 import { useEffect, useState } from "react";
@@ -11,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 const useUserData = () => {
   const globalStore = useSnapshot(store);
   const [userData, setUserData] = useState<UserInfo>();
-  const [isLoggedIn] = useBoolean(storage.has("id"));
+  const [isLoggedIn, { setFalse: logout }] = useBoolean(storage.has("id"));
 
   const query = useQuery({
     queryKey: ["userdata", "query", isLoggedIn ? storage.get("id") : "0"],
@@ -29,19 +28,6 @@ const useUserData = () => {
   };
 
   useEffect(() => {
-    if (!hasLocalData()) {
-      return;
-    }
-
-    if (!globalStore.userData) {
-      // 请求数据
-      refresh();
-    } else {
-      setUserData(globalStore.userData);
-    }
-  }, []);
-
-  useEffect(() => {
     setUserData(globalStore.userData);
   }, [globalStore.userData]);
 
@@ -50,6 +36,21 @@ const useUserData = () => {
       updateGlobalUser(query.data.data.data);
     }
   }, [query.data]);
+
+  const onStorageClear = () => {
+    logout();
+  };
+
+  useEffect(() => {
+    window.addEventListener("clearStorage", onStorageClear, {
+      capture: true,
+      once: true,
+    });
+
+    return () => {
+      window.removeEventListener("clearStorage", onStorageClear);
+    };
+  }, []);
 
   return {
     refresh,
