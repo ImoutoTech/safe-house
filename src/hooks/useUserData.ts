@@ -16,7 +16,6 @@ const useUserData = () => {
   const query = useQuery({
     queryKey: ["userdata", "query", isLoggedIn ? storage.get("id") : "0"],
     queryFn: ({ queryKey }) => getUserData(Number(queryKey[2])),
-    refetchOnWindowFocus: false,
     enabled: isLoggedIn,
     staleTime: Infinity,
   });

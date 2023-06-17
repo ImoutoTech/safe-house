@@ -23,7 +23,6 @@ const SubApp = () => {
   } = useQuery({
     queryKey: ["subapp", "list"],
     queryFn: () => getUserApp().then((res) => res.data),
-    refetchOnWindowFocus: false,
   });
 
   return (

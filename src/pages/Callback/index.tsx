@@ -24,7 +24,6 @@ const Callback = () => {
     queryKey: ["app", "query", appId],
     queryFn: ({ queryKey }) =>
       getUserAppData(queryKey[2] || "").then((res) => res.data.data),
-    refetchOnWindowFocus: false,
   });
 
   const cbMutate = useMutation({

@@ -62,7 +62,6 @@ const Manage = () => {
   const { data: originData, isFetching: loadingOrigin } = useQuery({
     queryKey: ["subapp", "modify", originAppId],
     queryFn: () => getUserAppData(originAppId).then((res) => res.data),
-    refetchOnWindowFocus: false,
     enabled: !!originAppId,
   });
 
