@@ -2,7 +2,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 
 // 组件
-import { Button, Text, Card, Note, useToasts } from "@geist-ui/core";
+import { Button, Text, Card, Note } from "@geist-ui/core";
 import UserAvatar from "@/components/UserAvatar";
 
 // 接口 & 状态
