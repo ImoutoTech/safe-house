@@ -6,5 +6,6 @@ export interface RouteItem {
   meta?: {
     needAuth?: boolean;
     title?: string;
+    needAdmin?: boolean;
   };
 }

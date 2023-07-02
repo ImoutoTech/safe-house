@@ -19,12 +19,11 @@ function App() {
   const navi = useNavigate();
   const location = useLocation();
 
-  // 这里只负责页面首次加载的鉴权
   useEffect(() => {
     if (!hasLocalData() && pathNeedAuth(location.pathname)) {
-      navi("/");
+      navi("/login");
     }
-  }, []);
+  }, [location]);
 
   const handleError = ({ error }: { error: Error }) => {
     return <Note type="error">{error.message}</Note>;
