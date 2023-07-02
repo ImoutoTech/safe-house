@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 const useUserData = () => {
   const globalStore = useSnapshot(store);
   const [userData, setUserData] = useState<UserInfo>();
-  const [isLoggedIn, { setFalse: logout }] = useBoolean(storage.has("id"));
+  const [isLoggedIn, { set: setLogged }] = useBoolean(storage.has("id"));
 
   const query = useQuery({
     queryKey: ["userdata", "query", isLoggedIn ? storage.get("id") : "0"],
@@ -38,7 +38,11 @@ const useUserData = () => {
   }, [query.data]);
 
   const onStorageClear = () => {
-    logout();
+    setLogged(false);
+  };
+
+  const onStorageSet = () => {
+    setLogged(true);
   };
 
   useEffect(() => {
@@ -49,6 +53,17 @@ const useUserData = () => {
 
     return () => {
       window.removeEventListener("clearStorage", onStorageClear);
+    };
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("setLocalData", onStorageSet, {
+      capture: true,
+      once: true,
+    });
+
+    return () => {
+      window.removeEventListener("setLocalData", onStorageSet);
     };
   }, []);
 

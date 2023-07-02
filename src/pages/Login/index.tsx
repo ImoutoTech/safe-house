@@ -9,7 +9,7 @@ import UserInput from "@/components/UserInput";
 
 // 接口 & 状态
 import { UserLogin } from "@/api";
-import { updateGlobalUser } from "@/store";
+import useUserData from "@/hooks/useUserData";
 
 // 工具函数 & 常量
 import { useMutation } from "@tanstack/react-query";
@@ -26,6 +26,7 @@ const Login = () => {
   const navi = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectApp = searchParams.get("app");
+  const { set: updateGlobalUser } = useUserData();
   const [formData, setFormData] = useState<UserLoginParams>({
     email: "",
     password: "",
@@ -45,6 +46,7 @@ const Login = () => {
         storage.set("id", result.data.data.user.id);
 
         updateGlobalUser(result.data.data.user);
+        window.dispatchEvent(new Event("setLocalData"));
 
         setToast({ text: "登录成功", type: "success" });
         if (redirectApp) {
