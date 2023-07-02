@@ -1,5 +1,5 @@
 // 基础 & 类型
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 
 // 组件
@@ -7,10 +7,11 @@ import { ErrorBoundary } from "react-error-boundary";
 import { Note } from "@geist-ui/core";
 
 // 接口 & 状态
+import useUserData from "./hooks/useUserData";
 
 // 工具函数 & 常量
 import { hasLocalData, pathNeedAuth } from "./utils";
-import { ENV } from "./utils/config";
+import { ENV, Role } from "./utils/config";
 
 // 样式
 import styles from "./assets/app.module.scss";
@@ -18,11 +19,24 @@ import styles from "./assets/app.module.scss";
 function App() {
   const navi = useNavigate();
   const location = useLocation();
+  const [lastPath, updateLast] = useState("/");
+  const { userData } = useUserData();
 
   useEffect(() => {
-    if (!hasLocalData() && pathNeedAuth(location.pathname)) {
+    const authLevel = pathNeedAuth(location.pathname);
+    console.log(authLevel, location);
+
+    if (!hasLocalData() && authLevel === "login") {
       navi("/login");
+      return;
     }
+
+    if (userData?.role !== Role.ADMIN && authLevel === "admin") {
+      navi(lastPath);
+      return;
+    }
+
+    updateLast(`${location.pathname}${location.search}`);
   }, [location]);
 
   const handleError = ({ error }: { error: Error }) => {
