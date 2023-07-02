@@ -12,6 +12,8 @@ import Index from "@/pages/Index";
 import Manage from "@/pages/User/SubApp/manage";
 import Callback from "@/pages/Callback";
 
+import Admin from "@/pages/User/Admin/Index";
+
 /**
  * 路由
  */
@@ -60,6 +62,13 @@ const routes: RouteItem[] = [
                 element: <Manage />,
               },
             ],
+          },
+          {
+            path: "/user/admin",
+            element: <Admin />,
+            meta: {
+              needAdmin: true,
+            },
           },
         ],
       },

@@ -12,6 +12,9 @@ const rawRoutes = [
         path: "/register",
       },
       {
+        path: "/callback/:appId",
+      },
+      {
         path: "/user",
         meta: {
           needAuth: true,
@@ -22,6 +25,20 @@ const rawRoutes = [
           },
           {
             path: "/user/app",
+            children: [
+              {
+                path: "/user/app",
+              },
+              {
+                path: "/user/app/:type",
+              },
+            ],
+          },
+          {
+            path: "/user/admin",
+            meta: {
+              needAdmin: true,
+            },
           },
         ],
       },

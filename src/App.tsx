@@ -26,12 +26,12 @@ function App() {
     const authLevel = pathNeedAuth(location.pathname);
     console.log(authLevel, location);
 
-    if (!hasLocalData() && authLevel === "login") {
+    if (!hasLocalData() && (authLevel === "login" || authLevel === "admin")) {
       navi("/login");
       return;
     }
 
-    if (userData?.role !== Role.ADMIN && authLevel === "admin") {
+    if (userData?.role !== Role.ADMIN && userData && authLevel === "admin") {
       navi(lastPath);
       return;
     }

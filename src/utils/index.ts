@@ -25,15 +25,19 @@ export const pathNeedAuth = (pathName: string): authType => {
     const current = queue.shift();
     if (current?.meta?.needAdmin) {
       if (current.path === pathName || startsWith(pathName, current.path)) {
-        needAuth = "login";
-        break;
+        needAuth = "admin";
+        if (!current?.children?.length) {
+          break;
+        }
       }
     }
 
     if (current?.meta?.needAuth) {
       if (current.path === pathName || startsWith(pathName, current.path)) {
         needAuth = "login";
-        break;
+        if (!current?.children?.length) {
+          break;
+        }
       }
     }
 
