@@ -19,12 +19,12 @@ import styles from "./assets/app.module.scss";
 function App() {
   const navi = useNavigate();
   const location = useLocation();
-  const [lastPath, updateLast] = useState("/");
-  const { userData } = useUserData();
+  const [needCheck, setNeedCheck] = useState(false);
+  const { userData, isLoggedIn, loading: userDataLoading } = useUserData();
 
-  useEffect(() => {
+  const checkPathAuth = () => {
     const authLevel = pathNeedAuth(location.pathname);
-    console.log(authLevel, location);
+    console.log(userData);
 
     if (!hasLocalData() && (authLevel === "login" || authLevel === "admin")) {
       navi("/login");
@@ -32,12 +32,25 @@ function App() {
     }
 
     if (userData?.role !== Role.ADMIN && userData && authLevel === "admin") {
-      navi(lastPath);
+      navi("/");
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn && userDataLoading) {
+      setNeedCheck(true);
       return;
     }
 
-    updateLast(`${location.pathname}${location.search}`);
+    checkPathAuth();
   }, [location]);
+
+  useEffect(() => {
+    if (!userDataLoading && needCheck) {
+      checkPathAuth();
+    }
+  }, [userData]);
 
   const handleError = ({ error }: { error: Error }) => {
     return <Note type="error">{error.message}</Note>;
