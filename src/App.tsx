@@ -1,5 +1,5 @@
 // 基础 & 类型
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 
 // 组件
@@ -19,35 +19,32 @@ import styles from "./assets/app.module.scss";
 function App() {
   const navi = useNavigate();
   const location = useLocation();
-  const [needCheck, setNeedCheck] = useState(false);
-  const { userData, isLoggedIn, loading: userDataLoading } = useUserData();
+  const { userData, loading: userDataLoading } = useUserData();
 
   const checkPathAuth = () => {
     const authLevel = pathNeedAuth(location.pathname);
-    console.log(userData);
 
-    if (!hasLocalData() && (authLevel === "login" || authLevel === "admin")) {
+    if ((authLevel === "login" || authLevel === "admin") && !hasLocalData()) {
       navi("/login");
       return;
     }
 
-    if (userData?.role !== Role.ADMIN && userData && authLevel === "admin") {
+    if (!userData) {
+      return;
+    }
+
+    if (authLevel === "admin" && userData?.role !== Role.ADMIN && userData) {
       navi("/");
       return;
     }
   };
 
   useEffect(() => {
-    if (isLoggedIn && userDataLoading) {
-      setNeedCheck(true);
-      return;
-    }
-
     checkPathAuth();
   }, [location]);
 
   useEffect(() => {
-    if (!userDataLoading && needCheck) {
+    if (userData) {
       checkPathAuth();
     }
   }, [userData]);
