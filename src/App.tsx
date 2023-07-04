@@ -4,7 +4,7 @@ import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 
 // 组件
 import { ErrorBoundary } from "react-error-boundary";
-import { Note } from "@geist-ui/core";
+import { Note, useToasts } from "@geist-ui/core";
 
 // 接口 & 状态
 import useUserData from "./hooks/useUserData";
@@ -19,7 +19,8 @@ import styles from "./assets/app.module.scss";
 function App() {
   const navi = useNavigate();
   const location = useLocation();
-  const { userData, loading: userDataLoading } = useUserData();
+  const { userData } = useUserData();
+  const { setToast } = useToasts();
 
   const checkPathAuth = () => {
     const authLevel = pathNeedAuth(location.pathname);
@@ -34,6 +35,7 @@ function App() {
     }
 
     if (authLevel === "admin" && userData?.role !== Role.ADMIN && userData) {
+      setToast({ text: "暂无权限", type: "error" });
       navi("/");
       return;
     }
