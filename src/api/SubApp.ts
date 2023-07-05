@@ -29,3 +29,6 @@ export const getUserAppData = (id: string): AxiosResult<AppInfo> =>
 
 export const callbackUserApp = (id: string): AxiosResult<AppCallbackResult> =>
   API.post<Restful<AppCallbackResult>>(`/app/${id}`);
+
+export const getAllApp = (page = 1, size = 10): AxiosResult<AppInfo[]> =>
+  API.get<Restful<AppInfo[]>>(`/app/all`, { params: { page, size } });

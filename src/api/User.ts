@@ -24,3 +24,6 @@ export const updateUserData = (
   data: UserModifyParams
 ): AxiosResult<UserInfo> =>
   API.put<Restful<UserInfo>>(`/user/${id}`, qs.stringify(data));
+
+export const getAllUser = (page = 1, size = 10): AxiosResult<UserInfo[]> =>
+  API.get<Restful<UserInfo[]>>(`/user/all`, { params: { page, size } });
