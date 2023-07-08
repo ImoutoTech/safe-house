@@ -15,3 +15,5 @@ export enum Role {
   ADMIN = "0",
   USER = "1",
 }
+
+export const DEFAULT_AVATAR = "https://cdn.exia.xyz/img/blog/kal.webp";

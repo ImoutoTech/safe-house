@@ -1,5 +1,5 @@
 // 基础 & 类型
-import { type FC, type PropsWithChildren, type ReactNode } from "react";
+import { type FC, type PropsWithChildren } from "react";
 
 // 组件
 import { Modal } from "@geist-ui/core";

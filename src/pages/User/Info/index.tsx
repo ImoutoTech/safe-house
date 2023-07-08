@@ -10,7 +10,7 @@ import UserLogout from "@/components/UserLogout";
 import useUserData from "@/hooks/useUserData";
 
 // 工具函数 & 常量
-import { ENV, Role } from "@/utils/config";
+import { ENV, Role, DEFAULT_AVATAR } from "@/utils/config";
 import { getDayjs } from "@/utils";
 
 // 样式
@@ -28,7 +28,7 @@ const Info = () => {
           <div className={styles["info-card"]}>
             <Image
               className={styles.avatar}
-              src="https://cdn.exia.xyz/img/blog/kal.webp"
+              src={userData.avatar || DEFAULT_AVATAR}
               alt="user"
               width="150px"
               height="150px"

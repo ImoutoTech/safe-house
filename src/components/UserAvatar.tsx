@@ -3,12 +3,12 @@ import type { UserInfo } from "@/types";
 
 import { Image, Text } from "@geist-ui/core";
 
+import { DEFAULT_AVATAR } from "@/utils/config";
+
 export interface UserAvatarProps {
   user: UserInfo;
   showName?: boolean;
 }
-
-const defaultAvatar = "https://cdn.exia.xyz/img/blog/kal.webp";
 
 const UserAvatar: FC<UserAvatarProps> = ({
   user,
@@ -17,7 +17,7 @@ const UserAvatar: FC<UserAvatarProps> = ({
   return (
     <div className="tw-w-32 tw-text-center">
       <Image
-        src={user.avatar || defaultAvatar}
+        src={user.avatar || DEFAULT_AVATAR}
         className="!tw-rounded-full"
         width={"128px"}
         height={"128px"}
