@@ -5,6 +5,7 @@ import { Image, Tag, Text, Tooltip, Button, Loading } from "@geist-ui/core";
 import { LogOut } from "@geist-ui/icons";
 import Modify from "./modify";
 import UserLogout from "@/components/UserLogout";
+import UserAvatarModify from "@/components/UserAvatarModify";
 
 // 接口 & 状态
 import useUserData from "@/hooks/useUserData";
@@ -26,13 +27,15 @@ const Info = () => {
       {!loading && userData && (
         <div className={styles["card-wrapper"]}>
           <div className={styles["info-card"]}>
-            <Image
-              className={styles.avatar}
-              src={userData.avatar || DEFAULT_AVATAR}
-              alt="user"
-              width="150px"
-              height="150px"
-            />
+            <UserAvatarModify>
+              <Image
+                className={styles.avatar}
+                src={userData.avatar || DEFAULT_AVATAR}
+                alt="user"
+                width="150px"
+                height="150px"
+              />
+            </UserAvatarModify>
             <div className={styles.meta}>
               <h2>
                 {userData.nickname}{" "}

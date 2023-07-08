@@ -37,3 +37,7 @@ export interface UserModifyParams {
   nickname: string;
   [key: string]: string;
 }
+
+export interface UserAvatarModifyParams {
+  avatar: string;
+}

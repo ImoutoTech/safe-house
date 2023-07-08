@@ -8,6 +8,7 @@ import type {
   UserLoginParams,
   UserModifyParams,
   UserRegisterParams,
+  UserAvatarModifyParams,
 } from "@/types";
 
 export const UserLogin = (data: UserLoginParams): AxiosResult<LoginResult> =>
@@ -21,7 +22,7 @@ export const getUserData = (id: number): AxiosResult<UserInfo> =>
 
 export const updateUserData = (
   id: number,
-  data: UserModifyParams
+  data: UserModifyParams | UserAvatarModifyParams
 ): AxiosResult<UserInfo> =>
   API.put<Restful<UserInfo>>(`/user/${id}`, qs.stringify(data));
 
