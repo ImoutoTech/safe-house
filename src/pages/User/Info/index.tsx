@@ -1,21 +1,12 @@
 // 基础 & 类型
 
 // 组件
-import {
-  Image,
-  Tag,
-  Text,
-  Tooltip,
-  Button,
-  Loading,
-  Modal,
-} from "@geist-ui/core";
+import { Image, Tag, Text, Tooltip, Button, Loading } from "@geist-ui/core";
 import { LogOut } from "@geist-ui/icons";
 import Modify from "./modify";
+import UserLogout from "@/components/UserLogout";
 
 // 接口 & 状态
-import storage from "@/utils/storage";
-import { useBoolean } from "ahooks";
 import useUserData from "@/hooks/useUserData";
 
 // 工具函数 & 常量
@@ -27,14 +18,7 @@ import styles from "./style.module.scss";
 
 const Info = () => {
   const dayjs = getDayjs();
-  const [logoutVisible, { toggle: toggleLogout }] = useBoolean(false);
   const { userData, loading } = useUserData();
-
-  const logout = () => {
-    storage.clearSelf();
-    toggleLogout();
-    window.location.reload();
-  };
 
   return (
     <div className={styles.info}>
@@ -85,22 +69,14 @@ const Info = () => {
           </div>
 
           <div className={[styles.addition, "tw-my-12"].join(" ")}>
-            <Button icon={<LogOut />} type="abort" auto onClick={toggleLogout}>
-              离开 {ENV.TITLE}
-            </Button>
+            <UserLogout className="tw-inline-block">
+              <Button icon={<LogOut />} type="abort" auto>
+                离开 {ENV.TITLE}
+              </Button>
+            </UserLogout>
 
             <Modify></Modify>
           </div>
-
-          <Modal visible={logoutVisible} onClose={toggleLogout}>
-            <Modal.Title>看向门</Modal.Title>
-            <Modal.Subtitle>门缝中透出一丝光</Modal.Subtitle>
-            <Modal.Content>确认要离开 {ENV.TITLE} 吗</Modal.Content>
-            <Modal.Action passive onClick={({ close }) => close()}>
-              关上门
-            </Modal.Action>
-            <Modal.Action onClick={logout}>打开门</Modal.Action>
-          </Modal>
         </div>
       )}
     </div>
