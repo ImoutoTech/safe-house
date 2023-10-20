@@ -11,6 +11,7 @@ import {
   Dot,
   useToasts,
   Badge,
+  Tooltip,
 } from "@geist-ui/core";
 
 // 接口 & 状态
@@ -52,7 +53,9 @@ const AppItem: React.FC<AppItemProps> = ({ app, onDel }: AppItemProps) => {
   return (
     <Fieldset className="tw-box-border">
       <Fieldset.Title>
-        <Dot type="success" /> {app.name}
+        <Tooltip text={`ID: ${app.id}`} placement="right">
+          <Dot type="success" /> {app.name}
+        </Tooltip>
       </Fieldset.Title>
       <Fieldset.Subtitle>
         <Text p type="secondary">
