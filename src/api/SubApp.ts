@@ -7,10 +7,18 @@ import type {
   UserAppRegParams,
   UserAppUpdateParams,
   AppCallbackResult,
+  Pagination,
+  RestfulPagination,
 } from "@/types";
 
-export const getUserApp = (): AxiosResult<AppInfo[]> =>
-  API.get<Restful<AppInfo[]>>(`/app/my`);
+export const getUserApp = (
+  page = 1,
+  size = 500,
+  search = ""
+): AxiosResult<Pagination<AppInfo>> =>
+  API.get<RestfulPagination<AppInfo>>(`/app/my`, {
+    params: { page, size, search },
+  });
 
 export const delUserApp = (id: string): AxiosResult<Record<string, never>> =>
   API.delete<Restful<Record<string, never>>>(`/app/${id}`);
@@ -30,5 +38,11 @@ export const getUserAppData = (id: string): AxiosResult<AppInfo> =>
 export const callbackUserApp = (id: string): AxiosResult<AppCallbackResult> =>
   API.post<Restful<AppCallbackResult>>(`/app/${id}`);
 
-export const getAllApp = (page = 1, size = 10): AxiosResult<AppInfo[]> =>
-  API.get<Restful<AppInfo[]>>(`/app/all`, { params: { page, size } });
+export const getAllApp = (
+  page = 1,
+  size = 10,
+  search = ""
+): AxiosResult<Pagination<AppInfo>> =>
+  API.get<RestfulPagination<AppInfo>>(`/app/all`, {
+    params: { page, size, search },
+  });

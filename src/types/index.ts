@@ -20,5 +20,17 @@ export interface Restful<T> {
   data: T;
 }
 
+export interface Pagination<T> {
+  items: T[];
+  count: number;
+}
+
+export type RestfulPagination<T> = Restful<Pagination<T>>;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AxiosResult<T> = Promise<AxiosResponse<Restful<T>, any>>;
+
+export type AxiosPagination<T> = Promise<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  AxiosResponse<RestfulPagination<T>, any>
+>;

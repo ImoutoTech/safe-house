@@ -2,6 +2,7 @@ import API from "./base";
 import qs from "qs";
 import type {
   AxiosResult,
+  Pagination,
   LoginResult,
   Restful,
   UserInfo,
@@ -9,6 +10,7 @@ import type {
   UserModifyParams,
   UserRegisterParams,
   UserAvatarModifyParams,
+  RestfulPagination,
 } from "@/types";
 
 export const UserLogin = (data: UserLoginParams): AxiosResult<LoginResult> =>
@@ -26,5 +28,11 @@ export const updateUserData = (
 ): AxiosResult<UserInfo> =>
   API.put<Restful<UserInfo>>(`/user/${id}`, qs.stringify(data));
 
-export const getAllUser = (page = 1, size = 10): AxiosResult<UserInfo[]> =>
-  API.get<Restful<UserInfo[]>>(`/user/all`, { params: { page, size } });
+export const getAllUser = (
+  page = 1,
+  size = 10,
+  search = ""
+): AxiosResult<Pagination<UserInfo>> =>
+  API.get<RestfulPagination<UserInfo>>(`/user/all`, {
+    params: { page, size, search },
+  });

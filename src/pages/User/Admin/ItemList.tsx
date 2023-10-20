@@ -2,7 +2,7 @@
 import { type FC, useMemo, useState } from "react";
 
 // 组件
-import { Text, Table, ButtonGroup, Button } from "@geist-ui/core";
+import { Text, Table, Pagination } from "@geist-ui/core";
 
 // 接口 & 状态
 import { getAllUser, getAllApp } from "@/api";
@@ -28,7 +28,7 @@ const ItemList: FC<AdminItemListProps> = ({ type }: AdminItemListProps) => {
 
   const api = type === "user" ? getAllUser : getAllApp;
   const [page, setPage] = useState(1);
-  const [isEnd, setIsEnd] = useState(false);
+  const [total, setTotal] = useState(0);
 
   const isUser = (item: AppInfo | UserInfo): item is UserInfo =>
     !!(item as UserInfo).role;
@@ -41,15 +41,13 @@ const ItemList: FC<AdminItemListProps> = ({ type }: AdminItemListProps) => {
     return item;
   };
 
-  const { data, isFetching: loading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["user", "admin", type, "list", page],
     queryFn: ({ queryKey }) =>
       api(Number(queryKey[4])).then((res) => {
         const resData = res.data.data;
-        if (resData.length < 10) {
-          setIsEnd(true);
-        }
-        return resData.map((item) => dataFormatter(item));
+        setTotal(resData.count);
+        return resData.items.map((item) => dataFormatter(item));
       }),
     keepPreviousData: true,
     initialData: [],
@@ -76,22 +74,11 @@ const ItemList: FC<AdminItemListProps> = ({ type }: AdminItemListProps) => {
         </Table>
       )}
       <div className="tw-flex tw-justify-center tw-my-4">
-        <ButtonGroup scale={0.5}>
-          <Button
-            scale={0.5}
-            disabled={page === 1 || loading}
-            onClick={() => setPage(page - 1)}
-          >
-            上一页
-          </Button>
-          <Button
-            scale={0.5}
-            disabled={isEnd || loading}
-            onClick={() => setPage(page + 1)}
-          >
-            下一页
-          </Button>
-        </ButtonGroup>
+        <Pagination
+          count={Math.ceil(total / 10)}
+          page={page}
+          onChange={setPage}
+        />
       </div>
     </>
   );

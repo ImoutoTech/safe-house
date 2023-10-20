@@ -29,7 +29,7 @@ const SubApp = () => {
     <div className={styles.subapp}>
       <div className={styles.topbar}>
         <p>
-          {!loading && data?.data ? `共${data.data.length}个子应用` : "加载中"}
+          {!loading && data?.data ? `共${data.data.count}个子应用` : "加载中"}
         </p>
         <Button type="success" auto onClick={() => navi("/user/app/new")}>
           注册子应用
@@ -38,7 +38,7 @@ const SubApp = () => {
 
       {loading && <Loading />}
       {!loading &&
-        data?.data?.map((app) => (
+        data?.data?.items.map((app) => (
           <div key={app.id} className="tw-mb-3">
             <AppItem app={app} onDel={refetch}></AppItem>
           </div>
