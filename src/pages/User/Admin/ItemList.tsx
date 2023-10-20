@@ -2,7 +2,15 @@
 import { type FC, useMemo, useState } from "react";
 
 // 组件
-import { Text, Table, Pagination } from "@geist-ui/core";
+import {
+  Text,
+  Table,
+  Pagination,
+  Input,
+  useInput,
+  useKeyboard,
+  KeyCode,
+} from "@geist-ui/core";
 
 // 接口 & 状态
 import { getAllUser, getAllApp } from "@/api";
@@ -29,6 +37,17 @@ const ItemList: FC<AdminItemListProps> = ({ type }: AdminItemListProps) => {
   const api = type === "user" ? getAllUser : getAllApp;
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const { state: inputText, bindings: inputBind } = useInput("");
+  const [searchValue, setSearchValue] = useState("");
+
+  const { bindings: enterBind } = useKeyboard(
+    () => {
+      setSearchValue(inputText);
+      setPage(1);
+    },
+    [KeyCode.Enter],
+    { disableGlobalEvent: true }
+  );
 
   const isUser = (item: AppInfo | UserInfo): item is UserInfo =>
     !!(item as UserInfo).role;
@@ -42,9 +61,9 @@ const ItemList: FC<AdminItemListProps> = ({ type }: AdminItemListProps) => {
   };
 
   const { data } = useQuery({
-    queryKey: ["user", "admin", type, "list", page],
+    queryKey: ["user", "admin", type, "list", page, searchValue],
     queryFn: ({ queryKey }) =>
-      api(Number(queryKey[4])).then((res) => {
+      api(Number(queryKey[4]), 10, `${queryKey[5]}`).then((res) => {
         const resData = res.data.data;
         setTotal(resData.count);
         return resData.items.map((item) => dataFormatter(item));
@@ -73,7 +92,13 @@ const ItemList: FC<AdminItemListProps> = ({ type }: AdminItemListProps) => {
           <Table.Column prop="visitNum" label="访问次数" />
         </Table>
       )}
-      <div className="tw-flex tw-justify-center tw-my-4">
+      <div className="tw-flex tw-justify-between tw-my-4">
+        <Input
+          {...enterBind}
+          {...inputBind}
+          scale={3 / 4}
+          placeholder="回车筛选"
+        />
         <Pagination
           count={Math.ceil(total / 10)}
           page={page}
