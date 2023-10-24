@@ -55,7 +55,9 @@ const Callback = () => {
     <div className="tw-w-full tw-h-[600px] tw-flex tw-items-center tw-justify-center">
       <div className="tw-w-[400px]">
         <Text h4 className="tw-text-center">
-          正在登录到「{appQuery.data?.name}」
+          {appQuery.data?.name
+            ? `正在登录到「${appQuery.data?.name}」`
+            : "暂无该应用信息"}
         </Text>
         <Card hoverable>
           {/* 本地存在用户数据 */}
@@ -77,6 +79,7 @@ const Callback = () => {
                 auto
                 className="!tw-mr-2"
                 scale={0.75}
+                disabled={!appQuery.data?.name}
                 onClick={() => redirect("login")}
               >
                 切换账号
@@ -88,6 +91,7 @@ const Callback = () => {
                 type="success"
                 scale={0.75}
                 loading={cbMutate.isLoading}
+                disabled={!appQuery.data?.name}
                 onClick={() => cbMutate.mutate(appId as string)}
               >
                 使用该账号登录
@@ -98,6 +102,7 @@ const Callback = () => {
                 auto
                 className="!tw-mr-2"
                 scale={0.75}
+                disabled={!appQuery.data?.name}
                 onClick={() => redirect("register")}
               >
                 注册
@@ -108,6 +113,7 @@ const Callback = () => {
                 auto
                 type="success"
                 scale={0.75}
+                disabled={!appQuery.data?.name}
                 onClick={() => redirect("login")}
               >
                 登录
