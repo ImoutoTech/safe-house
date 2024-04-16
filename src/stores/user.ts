@@ -19,6 +19,8 @@ const useStore = defineStore(
     const refresh_token = ref('')
     const userData = reactive<UserInfo>({ ...INIT_USER_DATA })
 
+    const hasLogin = computed(() => !!refresh_token.value)
+
     const updateToken = (access = '', refresh = '') => {
       access_token.value = access
       refresh_token.value = refresh
@@ -36,6 +38,7 @@ const useStore = defineStore(
       access_token: readonly(access_token),
       refresh_token: readonly(refresh_token),
       userData: readonly(userData),
+      hasLogin,
       updateToken,
       updateUserData
     }

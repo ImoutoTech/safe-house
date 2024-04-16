@@ -5,10 +5,8 @@
         <span class="layout-header-title">{{ ENV.TITLE }}</span>
       </n-flex>
     </n-layout-header>
-    <n-layout position="absolute" class="layout-content">
-      <n-layout :native-scrollbar="false">
-        <router-view></router-view>
-      </n-layout>
+    <n-layout position="absolute" class="layout-content-wrapper">
+      <router-view></router-view>
     </n-layout>
     <n-layout-footer class="layout-footer" bordered position="absolute">
       <n-flex align="center">
@@ -30,13 +28,18 @@
 import { ENV } from '@/utils/constants'
 import { CodeSlashOutline as Code } from '@vicons/ionicons5'
 import dayjs from 'dayjs'
+
+defineOptions({
+  name: 'BaseLayout'
+})
 </script>
 <style lang="scss" scoped>
 $headerHeight: 64px;
 $footerHeight: 64px;
 
-.layout-content {
+.layout-content-wrapper {
   top: $headerHeight;
+  height: calc(100% - $headerHeight - $footerHeight);
   bottom: $footerHeight;
 }
 

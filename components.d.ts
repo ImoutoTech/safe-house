@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    NButton: typeof import('naive-ui')['NButton']
     NDialogProvider: typeof import('naive-ui')['NDialogProvider']
     NDivider: typeof import('naive-ui')['NDivider']
     NFlex: typeof import('naive-ui')['NFlex']
@@ -22,6 +23,7 @@ declare module 'vue' {
     NSpan: typeof import('naive-ui')['NSpan']
     NTag: typeof import('naive-ui')['NTag']
     NText: typeof import('naive-ui')['NText']
+    NTooltip: typeof import('naive-ui')['NTooltip']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
