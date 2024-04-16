@@ -10,11 +10,26 @@
         <router-view></router-view>
       </n-layout>
     </n-layout>
-    <n-layout-footer class="layout-footer" bordered position="absolute"> 城府路 </n-layout-footer>
+    <n-layout-footer class="layout-footer" bordered position="absolute">
+      <n-flex align="center">
+        <span> Copyright © {{ ENV.COPYRIGHT.YEAR }} - {{ dayjs().format('YYYY') }} </span>
+        <n-text strong>{{ ENV.COPYRIGHT.NAME }}</n-text>
+        <n-tag :bordered="false" type="warning">
+          <template #icon>
+            <n-icon :component="Code" />
+          </template>
+          {{ ENV.BUILD.COMMIT }}@{{ ENV.BUILD.BRANCH }}
+        </n-tag>
+      </n-flex>
+
+      <span>Made with ❤️ by youranreus</span>
+    </n-layout-footer>
   </n-layout>
 </template>
 <script setup lang="ts">
 import { ENV } from '@/utils/constants'
+import { CodeSlashOutline as Code } from '@vicons/ionicons5'
+import dayjs from 'dayjs'
 </script>
 <style lang="scss" scoped>
 $headerHeight: 64px;
@@ -41,5 +56,10 @@ $footerHeight: 64px;
 
 .layout-footer {
   height: $footerHeight;
+  line-height: $footerHeight;
+  padding-inline: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
