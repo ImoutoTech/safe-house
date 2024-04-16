@@ -15,6 +15,7 @@
   "dependencies": {
     "@alova/adapter-axios": "^1.2.3",
     "@alova/scene-vue": "^1.4.7",
+    "@reus-able/const": "^1.0.7",
     "@types/lodash-es": "^4.17.12",
     "alova": "^2.19.1",
     "axios": "^1.6.8",
