@@ -7,6 +7,13 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    NFlex: typeof import('naive-ui')['NFlex']
+    NH2: typeof import('naive-ui')['NH2']
+    NH3: typeof import('naive-ui')['NH3']
+    NLayout: typeof import('naive-ui')['NLayout']
+    NLayoutFooter: typeof import('naive-ui')['NLayoutFooter']
+    NLayoutHeader: typeof import('naive-ui')['NLayoutHeader']
+    NLayoutSider: typeof import('naive-ui')['NLayoutSider']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
