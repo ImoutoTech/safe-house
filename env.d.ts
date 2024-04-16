@@ -7,6 +7,7 @@ interface ImportMetaEnv {
   readonly VITE_COPYRIGHT_YEAR: string
   readonly VITE_BUILD_COMMIT: string
   readonly VITE_BUILD_BRANCH: string
+  readonly VITE_CONFIG_URL: string
 }
 
 interface ImportMeta {
