@@ -3,6 +3,7 @@ import HomeView from '../views/home-view.vue'
 import BaseLayout from '@/layout/BaseLayout.vue'
 import { UserRole } from '@reus-able/types'
 import { useUserStore } from '@/stores/user'
+import { userRoutes } from './user-routes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,7 +34,9 @@ const router = createRouter({
           component: () => import('../views/user/view-index.vue'),
           meta: {
             role: UserRole.USER
-          }
+          },
+          redirect: { name: 'user-info' },
+          children: userRoutes
         }
       ]
     }
