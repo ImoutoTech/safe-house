@@ -42,7 +42,6 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const { hasLogin, userData } = useUserStore()
-  console.log(to.matched)
 
   for (const route of [...to.matched].reverse()) {
     if (route.meta.role) {
