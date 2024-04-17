@@ -1,19 +1,27 @@
 <template>
   <flex-center-layout>
-    <main class="login-container" @keypress.enter="handleConfirm">
+    <main class="reg-container" @keypress.enter="handleConfirm">
       <n-flex vertical>
-        <n-form ref="formRef" :model="loginParam" :rules="formRules">
+        <n-form ref="formRef" :model="regParam" :rules="formRules">
           <n-form-item path="email" label="📮 邮箱">
             <n-input
-              :value="loginParam.email"
+              :value="regParam.email"
               :disabled="loading"
               placeholder="i@example.com"
               @input="handleUpdateVal('email', $event)"
             />
           </n-form-item>
+          <n-form-item path="nickname" label="🌏 用户名">
+            <n-input
+              :value="regParam.nickname"
+              :disabled="loading"
+              placeholder="username"
+              @input="handleUpdateVal('nickname', $event)"
+            />
+          </n-form-item>
           <n-form-item path="password" label="🔐 钥匙">
             <n-input
-              :value="loginParam.password"
+              :value="regParam.password"
               :disabled="loading"
               type="password"
               placeholder="***"
@@ -23,11 +31,11 @@
         </n-form>
 
         <n-flex justify="space-between">
-          <n-button text type="info" :disabled="loading" @click="router.push({ name: 'register' })">
-            加入
+          <n-button text type="info" :disabled="loading" @click="router.push({ name: 'login' })">
+            我有钥匙
           </n-button>
           <n-button secondary type="primary" :loading="loading" @click="handleConfirm">
-            开门
+            加入
           </n-button>
         </n-flex>
       </n-flex>
@@ -36,14 +44,14 @@
 </template>
 <script setup lang="ts">
 import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
-import { useUserLogin } from '@/composables/useUserLogin'
 import type { FormInst } from 'naive-ui'
+import { useUserRegister } from '@/composables/useUserRegister'
 
 defineOptions({
-  name: 'LoginIndex'
+  name: 'RegisterIndex'
 })
 
-const { loginParam, formRules, loading, handleUpdateVal, submit } = useUserLogin()
+const { regParam, formRules, loading, handleUpdateVal, submit } = useUserRegister()
 const formRef = ref<FormInst>()
 const router = useRouter()
 
@@ -56,7 +64,7 @@ const handleConfirm = () => {
 }
 </script>
 <style lang="scss" scoped>
-.login-container {
+.reg-container {
   width: 300px;
 }
 </style>

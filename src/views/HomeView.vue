@@ -31,7 +31,7 @@ const handleDirect = (name: 'login' | 'register') => {
         <n-flex v-if="!isNil(data)" justify="center" :size="24">
           <n-tooltip trigger="hover">
             <template #trigger>
-              <n-button strong secondary type="primary" @click="handleDirect('login')">
+              <n-button strong secondary type="primary" @click="handleDirect('register')">
                 {{ data.register.btn }}
               </n-button>
             </template>
