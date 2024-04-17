@@ -2,7 +2,7 @@
   <n-layout position="absolute">
     <n-layout-header class="layout-header" bordered>
       <n-flex justify="center" align="center">
-        <span class="layout-header-title">{{ ENV.TITLE }}</span>
+        <span class="layout-header-title" @click="router.push('/')">{{ ENV.TITLE }}</span>
       </n-flex>
     </n-layout-header>
     <n-layout position="absolute" class="layout-content-wrapper">
@@ -32,6 +32,8 @@ import dayjs from 'dayjs'
 defineOptions({
   name: 'BaseLayout'
 })
+
+const router = useRouter()
 </script>
 <style lang="scss" scoped>
 $headerHeight: 64px;
@@ -54,6 +56,7 @@ $footerHeight: 64px;
     font-size: 28px;
     font-weight: 600;
     user-select: none;
+    cursor: pointer;
   }
 }
 
