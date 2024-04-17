@@ -1,0 +1,6 @@
+.welcome-title {
+  font-style: italic;
+  font-size: 1.875rem;
+  opacity: 0.6;
+  user-select: none;
+}

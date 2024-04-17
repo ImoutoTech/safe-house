@@ -10,9 +10,15 @@ interface Config {
   register: Record<'btn' | 'description', string>
 }
 
+const router = useRouter()
+
 const { data } = useRequest(getDynamicConfig<Config>('safe-house-index'))
 
 const displayTitle = computed(() => (data.value?.title?.length ? data.value.title : ['少女祈祷中']))
+
+const handleDirect = (name: 'login' | 'register') => {
+  router.push({ name })
+}
 </script>
 
 <template>
@@ -25,13 +31,17 @@ const displayTitle = computed(() => (data.value?.title?.length ? data.value.titl
         <n-flex v-if="!isNil(data)" justify="center" :size="24">
           <n-tooltip trigger="hover">
             <template #trigger>
-              <n-button strong secondary type="primary">{{ data.register.btn }}</n-button>
+              <n-button strong secondary type="primary" @click="handleDirect('login')">
+                {{ data.register.btn }}
+              </n-button>
             </template>
             {{ data.register.description }}
           </n-tooltip>
           <n-tooltip trigger="hover">
             <template #trigger>
-              <n-button strong tertiary>{{ data.login.btn }}</n-button>
+              <n-button strong tertiary @click="handleDirect('login')">
+                {{ data.login.btn }}
+              </n-button>
             </template>
             {{ data.login.description }}
           </n-tooltip>
@@ -40,12 +50,3 @@ const displayTitle = computed(() => (data.value?.title?.length ? data.value.titl
     </main>
   </flex-center-layout>
 </template>
-
-<style lang="scss" scoped>
-.welcome-title {
-  font-style: italic;
-  font-size: 1.875rem;
-  opacity: 0.6;
-  user-select: none;
-}
-</style>
