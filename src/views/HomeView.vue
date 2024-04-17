@@ -1,20 +1,15 @@
 <script setup lang="ts">
 import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
-import { useRequest } from 'alova'
-import { getDynamicConfig } from '@/api/config'
 import { isNil } from 'lodash-es'
-
-interface Config {
-  title: string[]
-  login: Record<'btn' | 'description', string>
-  register: Record<'btn' | 'description', string>
-}
+import { useConfig } from '@/composables/useConfig'
 
 const router = useRouter()
 
-const { data } = useRequest(getDynamicConfig<Config>('safe-house-index'))
+const { config } = useConfig(true)
 
-const displayTitle = computed(() => (data.value?.title?.length ? data.value.title : ['少女祈祷中']))
+const displayTitle = computed(() =>
+  config.value?.title?.length ? config.value.title : ['少女祈祷中']
+)
 
 const handleDirect = (name: 'login' | 'register') => {
   router.push({ name })
@@ -28,22 +23,22 @@ const handleDirect = (name: 'login' | 'register') => {
         <span v-for="line in displayTitle" :key="line" class="welcome-title">
           {{ line }}
         </span>
-        <n-flex v-if="!isNil(data)" justify="center" :size="24">
+        <n-flex v-if="!isNil(config)" justify="center" :size="24">
           <n-tooltip trigger="hover">
             <template #trigger>
               <n-button strong secondary type="primary" @click="handleDirect('register')">
-                {{ data.register.btn }}
+                {{ config.register.btn }}
               </n-button>
             </template>
-            {{ data.register.description }}
+            {{ config.register.description }}
           </n-tooltip>
           <n-tooltip trigger="hover">
             <template #trigger>
               <n-button strong tertiary @click="handleDirect('login')">
-                {{ data.login.btn }}
+                {{ config.login.btn }}
               </n-button>
             </template>
-            {{ data.login.description }}
+            {{ config.login.description }}
           </n-tooltip>
         </n-flex>
       </n-flex>

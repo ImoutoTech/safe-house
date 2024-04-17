@@ -35,9 +35,9 @@ const useStore = defineStore(
     }
 
     return {
-      access_token: readonly(access_token),
-      refresh_token: readonly(refresh_token),
-      userData: readonly(userData),
+      access_token,
+      refresh_token,
+      userData,
       hasLogin,
       updateToken,
       updateUserData
