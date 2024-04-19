@@ -6,6 +6,7 @@
           <n-thing>
             <template #avatar>
               <n-avatar v-if="userData.avatar" :size="64" :src="userData.avatar"></n-avatar>
+              <n-avatar v-else :size="64">{{ userData.nickname.slice(0, 1) }}</n-avatar>
             </template>
             <template #header>{{ userData.nickname }}</template>
             <template #header-extra>
@@ -14,9 +15,6 @@
             <template #description>
               <n-flex>
                 <user-role-tag :role="userData.role"></user-role-tag>
-                <n-tag :bordered="false" size="small">
-                  {{ dayjs(userData.created_at).format('YYYY-MM-DD') }}
-                </n-tag>
               </n-flex>
             </template>
           </n-thing>
@@ -36,7 +34,6 @@ import UserRoleTag from '@/components/user-role-tag.vue'
 import { useUserData } from '@/composables/useUserData'
 import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
 import { userRoutes } from '@/router/user-routes'
-import dayjs from 'dayjs'
 
 defineOptions({
   name: 'UserIndex'
@@ -44,7 +41,7 @@ defineOptions({
 const route = useRoute()
 const router = useRouter()
 const tabValue = ref('')
-const { userData } = useUserData()
+const { userData } = useUserData(true)
 
 const tabList = computed(() =>
   userRoutes.map((r) => ({

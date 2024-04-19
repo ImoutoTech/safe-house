@@ -18,6 +18,7 @@ export const useUserLogin = () => {
 
   const { updateToken } = useUserStore()
   const msg = useMessage()
+  const router = useRouter()
 
   const handleUpdateVal = (key: keyof UserLoginParams, val: string) => (loginParam[key] = val)
 
@@ -40,6 +41,7 @@ export const useUserLogin = () => {
   onSuccess(() => {
     updateToken(data.value.data.token, data.value.data.refresh)
     msg.success('登录成功')
+    router.push({ name: 'user-info' })
   })
 
   onError((e) => {
