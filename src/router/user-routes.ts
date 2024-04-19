@@ -6,7 +6,7 @@ export const userRoutes: RouteRecordRaw[] = [
     path: '',
     component: () => import('@/views/user/user-info.vue'),
     meta: {
-      title: '🏷 身份证件'
+      title: '🧐 基本信息'
     }
   },
   {
