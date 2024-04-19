@@ -1,3 +1,5 @@
+import { UserRole } from '@reus-able/types'
+
 export const ENV = {
   API_URL: import.meta.env.VITE_API_URL,
   MODE: import.meta.env.MODE,
@@ -11,4 +13,9 @@ export const ENV = {
     COMMIT: import.meta.env.VITE_BUILD_COMMIT,
     BRANCH: import.meta.env.VITE_BUILD_BRANCH
   }
+}
+
+export const ROLE_NAME_MAP: Record<UserRole, string> = {
+  [UserRole.USER]: '用户',
+  [UserRole.ADMIN]: '管理员'
 }

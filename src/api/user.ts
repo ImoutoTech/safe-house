@@ -9,6 +9,7 @@ import type {
   UserRegisterParams
 } from '@/types'
 import api from './api'
+import type { UserJwtPayload } from '@reus-able/types'
 
 export const refreshToken = () => {
   const method = api.Get<Restful<{ token: string }>>('/user/refresh')
@@ -20,6 +21,8 @@ export const refreshToken = () => {
 }
 
 export const getUserData = (id: number) => api.Get<Restful<UserInfo>>(`/user/${id}`)
+
+export const validateToken = () => api.Get<Restful<UserJwtPayload>>(`/user/validate`)
 
 export const userLogin = (data: UserLoginParams, md5 = true) =>
   api.Post<Restful<LoginResult>>(`/user/login?md5=${md5}`, data)

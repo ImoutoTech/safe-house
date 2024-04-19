@@ -1,37 +1,50 @@
 <template>
   <flex-center-layout>
     <div class="user-container">
-      <n-flex vertical>
-        <n-flex justify="center">
-          <n-tabs
-            :value="tabValue"
-            class="user-tab"
-            type="segment"
-            @update:value="router.push({ name: $event })"
-          >
-            <n-tab v-for="item in tabList" :key="item.value" :name="item.value">{{
-              item.name
-            }}</n-tab>
+      <n-card>
+        <n-flex vertical>
+          <n-thing>
+            <template #avatar>
+              <n-avatar v-if="userData.avatar" :size="64" :src="userData.avatar"></n-avatar>
+            </template>
+            <template #header>{{ userData.nickname }}</template>
+            <template #header-extra>
+              <n-tag circle size="small" :bordered="false" type="info"> #{{ userData.id }} </n-tag>
+            </template>
+            <template #description>
+              <n-flex>
+                <user-role-tag :role="userData.role"></user-role-tag>
+                <n-tag :bordered="false" size="small">
+                  {{ dayjs(userData.created_at).format('YYYY-MM-DD') }}
+                </n-tag>
+              </n-flex>
+            </template>
+          </n-thing>
+          <n-tabs type="line" :value="tabValue" @update:value="router.push({ name: $event })">
+            <n-tab v-for="item in tabList" :key="item.value" :name="item.value">
+              {{ item.name }}
+            </n-tab>
           </n-tabs>
+          <router-view></router-view>
         </n-flex>
-        <router-view></router-view>
-      </n-flex>
+      </n-card>
     </div>
   </flex-center-layout>
 </template>
 <script setup lang="ts">
+import UserRoleTag from '@/components/user-role-tag.vue'
+import { useUserData } from '@/composables/useUserData'
 import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
 import { userRoutes } from '@/router/user-routes'
-import { useThemeVars } from 'naive-ui'
+import dayjs from 'dayjs'
 
 defineOptions({
   name: 'UserIndex'
 })
-
-const theme = useThemeVars()
 const route = useRoute()
 const router = useRouter()
 const tabValue = ref('')
+const { userData } = useUserData()
 
 const tabList = computed(() =>
   userRoutes.map((r) => ({
@@ -53,17 +66,5 @@ watch(
 <style lang="scss" scoped>
 .user-container {
   width: 768px;
-
-  .user-tab {
-    width: v-bind('`${tabList.length * 120}px`');
-
-    :deep(.n-tabs-rail) {
-      background-color: v-bind('theme.bodyColor');
-    }
-    :deep(.n-tabs-capsule) {
-      background-color: v-bind('theme.tabColor');
-      box-shadow: none;
-    }
-  }
 }
 </style>
