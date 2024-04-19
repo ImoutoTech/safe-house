@@ -63,5 +63,7 @@ watch(
 <style lang="scss" scoped>
 .user-container {
   width: 768px;
+
+  padding: 60px 0;
 }
 </style>
