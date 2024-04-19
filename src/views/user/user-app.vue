@@ -19,12 +19,17 @@
         </n-flex>
       </template>
       <template #header>
-        <n-input v-bind="searchBindings" placeholder="按名称搜索" />
+        <n-flex justify="space-between">
+          <n-input v-bind="searchBindings" class="search-input" placeholder="按名称搜索" />
+          <n-button tertiary type="info" @click="createVisible = true">创建子应用</n-button>
+        </n-flex>
       </template>
     </n-list>
   </div>
+  <create-user-app v-model:visible="createVisible" @create="refresh"></create-user-app>
 </template>
 <script lang="ts" setup>
+import CreateUserApp from './components/create-user-app.vue'
 import UserAppItem from './components/user-app-item.vue'
 import { useAppList } from '@/composables/useAppList'
 
@@ -32,7 +37,8 @@ defineOptions({
   name: 'UserApp'
 })
 
-const { pageBindings, searchBindings, loading, data } = useAppList()
+const { refresh, pageBindings, searchBindings, loading, data } = useAppList()
+const createVisible = ref(false)
 </script>
 <style lang="scss" scoped>
 .user-app {
@@ -48,6 +54,10 @@ const { pageBindings, searchBindings, loading, data } = useAppList()
 
   :deep(.n-list__footer) {
     padding: 12px 0;
+  }
+
+  .search-input {
+    width: 300px;
   }
 }
 </style>
