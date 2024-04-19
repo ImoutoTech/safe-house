@@ -36,8 +36,5 @@ export type UserAppUpdateParams = UserAppRegParams
 export interface UserModifyParams {
   email: string
   nickname: string
-}
-
-export interface UserAvatarModifyParams {
   avatar: string
 }

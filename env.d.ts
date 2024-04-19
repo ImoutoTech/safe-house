@@ -8,6 +8,9 @@ interface ImportMetaEnv {
   readonly VITE_BUILD_COMMIT: string
   readonly VITE_BUILD_BRANCH: string
   readonly VITE_CONFIG_URL: string
+
+  readonly VITE_GRAVATAR_BASE: string
+  readonly VITE_QQ_AVATAR_BASE: string
 }
 
 interface ImportMeta {

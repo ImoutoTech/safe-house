@@ -12,6 +12,10 @@ export const ENV = {
   BUILD: {
     COMMIT: import.meta.env.VITE_BUILD_COMMIT,
     BRANCH: import.meta.env.VITE_BUILD_BRANCH
+  },
+  AVATAR: {
+    GRAVATAR: import.meta.env.VITE_GRAVATAR_BASE,
+    QQ: import.meta.env.VITE_QQ_AVATAR_BASE
   }
 }
 

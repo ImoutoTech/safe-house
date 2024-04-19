@@ -2,7 +2,6 @@ import type {
   LoginResult,
   Pagination,
   Restful,
-  UserAvatarModifyParams,
   UserInfo,
   UserLoginParams,
   UserModifyParams,
@@ -30,7 +29,7 @@ export const userLogin = (data: UserLoginParams, md5 = true) =>
 export const userRegister = (data: UserRegisterParams, md5 = true) =>
   api.Post<Restful<UserInfo>>(`/user/register?md5=${md5}`, data)
 
-export const updateUserData = (id: number, data: UserModifyParams | UserAvatarModifyParams) =>
+export const updateUserData = (id: number, data: Partial<UserModifyParams>) =>
   api.Put<Restful<UserInfo>>(`/user/${id}`, data)
 
 export const getAllUser = (page = 1, size = 10, search = '') =>

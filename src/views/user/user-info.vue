@@ -12,12 +12,14 @@
     </n-descriptions>
     <n-divider></n-divider>
     <n-flex justify="space-between">
-      <n-button type="info" secondary>编辑</n-button>
+      <n-button type="info" secondary @click="modifyVisible = true">编辑</n-button>
       <n-button type="error" secondary @click="logout">退出登录</n-button>
     </n-flex>
   </div>
+  <user-data-modify v-model:visible="modifyVisible"></user-data-modify>
 </template>
 <script lang="ts" setup>
+import UserDataModify from './components/user-data-modify.vue'
 import { useUserData } from '@/composables/useUserData'
 import { useUserStore } from '@/stores/user'
 import dayjs from 'dayjs'
@@ -29,6 +31,8 @@ defineOptions({
 const router = useRouter()
 const { userData } = useUserData()
 const { updateUserData, updateToken } = useUserStore()
+
+const modifyVisible = ref(false)
 
 const logout = () => {
   updateUserData()
