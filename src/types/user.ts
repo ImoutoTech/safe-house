@@ -25,14 +25,6 @@ export interface UserRegisterParams extends UserLoginParams {
   nickname: string
 }
 
-export interface UserAppRegParams {
-  callback: string
-  name: string
-  description: string
-}
-
-export type UserAppUpdateParams = UserAppRegParams
-
 export interface UserModifyParams {
   email: string
   nickname: string
