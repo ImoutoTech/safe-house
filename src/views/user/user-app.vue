@@ -4,7 +4,7 @@
       <n-spin :show="loading">
         <template v-if="data.length">
           <n-list-item v-for="item in data" :key="item.id">
-            <user-app-item :app="item" />
+            <user-app-item :app="item" @delete="refresh" />
           </n-list-item>
         </template>
         <template v-else>
