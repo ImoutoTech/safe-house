@@ -65,5 +65,9 @@ watch(
   width: 768px;
 
   padding: 60px 0;
+
+  @media (max-width: 768px) {
+    width: 95%;
+  }
 }
 </style>

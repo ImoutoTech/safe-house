@@ -68,6 +68,10 @@ const handleEditApp = (app: AppInfo) => {
 
   .search-input {
     width: 300px;
+
+    @media (max-width: 768px) {
+      width: calc(100% - 120px);
+    }
   }
 }
 </style>
