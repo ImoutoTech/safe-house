@@ -1,7 +1,7 @@
 <template>
   <n-modal v-model:show="visible">
     <n-card
-      style="width: 400px"
+      class="common-dialog"
       title="创建子应用"
       :bordered="false"
       role="dialog"

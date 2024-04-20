@@ -4,3 +4,13 @@
   opacity: 0.6;
   user-select: none;
 }
+
+.common-dialog {
+  width: 400px;
+}
+
+@media (max-width: 400px) {
+  .common-dialog {
+    width: 90%;
+  }
+}

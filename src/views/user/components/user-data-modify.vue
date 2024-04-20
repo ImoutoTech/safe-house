@@ -1,6 +1,12 @@
 <template>
   <n-modal v-model:show="visible">
-    <n-card style="width: 400px" title="编辑信息" :bordered="false" role="dialog" aria-modal="true">
+    <n-card
+      class="common-dialog"
+      title="编辑信息"
+      :bordered="false"
+      role="dialog"
+      aria-modal="true"
+    >
       <n-form ref="formRef" :model="value" :rules="formRules">
         <n-form-item label="用户名" path="nickname">
           <n-input v-model:value="value.nickname" :placeholder="userData.nickname"></n-input>
