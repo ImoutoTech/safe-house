@@ -29,4 +29,6 @@ export interface UserAppRegParams {
   description: string
 }
 
-export type UserAppUpdateParams = UserAppRegParams
+export interface UserAppUpdateParams extends UserAppRegParams {
+  status: AppStatus
+}

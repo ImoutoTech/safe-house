@@ -1,20 +1,21 @@
 import { updateUserApp } from '@/api/app'
-import type { AppInfo, UserAppRegParams } from '@/types'
+import { AppStatus, type AppInfo, type UserAppUpdateParams } from '@/types'
 import { useRequest } from 'alova'
 
 export const useEditApp = (callback?: () => void) => {
   const origin = ref<AppInfo>()
 
-  const params = ref<UserAppRegParams>({
+  const params = ref<UserAppUpdateParams>({
     name: '',
     callback: '',
-    description: ''
+    description: '',
+    status: AppStatus.RUNNING
   })
 
   const msg = useMessage()
 
   const { send, loading, onSuccess } = useRequest(
-    (data: UserAppRegParams) => updateUserApp(origin.value?.id || '', data),
+    (data: UserAppUpdateParams) => updateUserApp(origin.value?.id || '', data),
     {
       immediate: false
     }
@@ -24,7 +25,8 @@ export const useEditApp = (callback?: () => void) => {
     params.value = {
       name: app.name,
       callback: app.callback,
-      description: app.description
+      description: app.description,
+      status: app.meta.status
     }
 
     origin.value = { ...app }
