@@ -17,6 +17,7 @@
     "@alova/scene-vue": "^1.4.7",
     "@reus-able/const": "^1.0.7",
     "@types/lodash-es": "^4.17.12",
+    "@vueuse/core": "^10.9.0",
     "alova": "^2.19.1",
     "axios": "^1.6.8",
     "dayjs": "^1.11.10",

@@ -1,5 +1,5 @@
 <template>
-  <n-card :title="app.name" size="small">
+  <n-card class="app-item" :title="app.name" size="small">
     <n-p depth="3">
       {{ app.description || '暂无介绍' }}
     </n-p>
@@ -7,7 +7,7 @@
       <span>
         回调地址 <n-text type="info"> {{ app.callback }} </n-text>
       </span>
-      <n-tag size="small" :bordered="false">已访问 {{ app.visitNum }} 次</n-tag>
+      <n-text depth="3" size="small" :bordered="false">已访问 {{ app.visitNum }} 次</n-text>
     </n-flex>
     <template #action>
       <n-flex justify="space-between" align="center">
@@ -22,10 +22,28 @@
         </n-flex>
       </n-flex>
     </template>
+
+    <template #header-extra>
+      <div class="app-header-btn">
+        <n-tooltip :show-arrow="false">
+          <template #trigger>
+            <n-button size="tiny" text @click="copyId">
+              <template #icon>
+                <n-icon :component="CopyOutline" />
+              </template>
+              复制ID
+            </n-button>
+          </template>
+          {{ app.id }}
+        </n-tooltip>
+      </div>
+    </template>
   </n-card>
 </template>
 <script setup lang="ts">
 import { useDeleteApp } from '@/composables/useDeleteApp'
+import { CopyOutline } from '@vicons/ionicons5'
+import { useClipboard } from '@vueuse/core'
 import type { AppInfo } from '@/types'
 import dayjs from 'dayjs'
 
@@ -43,4 +61,25 @@ const emit = defineEmits<{
 }>()
 
 const { submit } = useDeleteApp(props.app, () => emit('delete'))
+const { copy } = useClipboard()
+const msg = useMessage()
+
+const copyId = async () => {
+  await copy(props.app.id)
+  msg.success('复制成功')
+}
 </script>
+<style lang="scss" scoped>
+.app-item {
+  .app-header-btn {
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out;
+  }
+
+  &:hover {
+    .app-header-btn {
+      opacity: 1;
+    }
+  }
+}
+</style>
