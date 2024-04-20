@@ -1,3 +1,4 @@
+import { AppStatus } from '@/types'
 import { UserRole } from '@reus-able/types'
 
 export const ENV = {
@@ -22,4 +23,10 @@ export const ENV = {
 export const ROLE_NAME_MAP: Record<UserRole, string> = {
   [UserRole.USER]: '用户',
   [UserRole.ADMIN]: '管理员'
+}
+
+export const STATUS_NAME_MAP = {
+  [AppStatus.BANNED]: '禁用',
+  [AppStatus.CLOSED]: '关闭',
+  [AppStatus.RUNNING]: '正常'
 }

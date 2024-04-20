@@ -1,8 +1,11 @@
 <template>
   <n-card class="app-item" :title="app.name" size="small">
-    <n-p depth="3">
-      {{ app.description || '暂无介绍' }}
-    </n-p>
+    <n-flex class="app-des" align="center">
+      <app-status class="app-status" :status="app.meta.status"></app-status>
+      <n-text depth="3">
+        {{ app.description || '暂无介绍' }}
+      </n-text>
+    </n-flex>
     <n-flex justify="space-between" align="center">
       <span>
         回调地址 <n-text type="info"> {{ app.callback }} </n-text>
@@ -17,8 +20,8 @@
         </n-text>
 
         <n-flex>
-          <n-button size="small" secondary @click="emit('update')">编辑</n-button>
-          <n-button size="small" type="error" secondary @click="submit">删除</n-button>
+          <n-button size="small" tertiary @click="emit('update')">编辑</n-button>
+          <n-button size="small" type="error" tertiary @click="submit">删除</n-button>
         </n-flex>
       </n-flex>
     </template>
@@ -80,6 +83,10 @@ const copyId = async () => {
     .app-header-btn {
       opacity: 1;
     }
+  }
+
+  .app-des {
+    margin-bottom: 16px;
   }
 }
 </style>
