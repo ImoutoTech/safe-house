@@ -4,6 +4,7 @@ import type { UserLoginParams } from '@/types'
 import { useRequest } from 'alova'
 import type { FormRules } from 'naive-ui'
 import { Md5 } from 'ts-md5'
+import { useCallbackStore } from '@/stores/callback'
 
 const formRules: FormRules = {
   email: [{ required: true, message: '请输入邮箱' }],
@@ -17,6 +18,7 @@ export const useUserLogin = () => {
   })
 
   const { updateToken } = useUserStore()
+  const { app, isCallback } = useCallbackStore()
   const msg = useMessage()
   const router = useRouter()
 
@@ -41,7 +43,11 @@ export const useUserLogin = () => {
   onSuccess(() => {
     updateToken(data.value.data.token, data.value.data.refresh)
     msg.success('登录成功')
-    router.push({ name: 'user-info' })
+    if (isCallback.value) {
+      router.push({ name: 'callback-index', params: { id: app.value.id } })
+    } else {
+      router.push({ name: 'user-info' })
+    }
   })
 
   onError((e) => {

@@ -1,19 +1,32 @@
 import type { AppInfo } from '@/types'
 import { isNil } from 'lodash-es'
 
+const INIT_DATA = {
+  name: '加载中',
+  id: '',
+  callback: '',
+  owner: '',
+  description: '',
+  visitNum: 0,
+  created_at: '',
+  updated_at: ''
+}
+
 const useStore = defineStore(
   'callback',
   () => {
-    const app = ref<AppInfo>()
+    const app = ref<AppInfo>({ ...INIT_DATA })
 
-    const isCallback = computed(() => !isNil(app.value))
+    const isCallback = computed(() => !!app.value.id)
 
-    const updateConfig = (data?: AppInfo) => (app.value = data)
+    const updateApp = (data?: AppInfo) => {
+      app.value = isNil(data) ? { ...INIT_DATA } : { ...data }
+    }
 
     return {
       app,
       isCallback,
-      updateConfig
+      updateApp
     }
   },
   {

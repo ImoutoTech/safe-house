@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/home-view.vue'
 import BaseLayout from '@/layout/BaseLayout.vue'
+import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
 import { UserRole } from '@reus-able/types'
 import { useUserStore } from '@/stores/user'
 import { userRoutes } from './user-routes'
@@ -37,6 +38,22 @@ const router = createRouter({
           },
           redirect: { name: 'user-info' },
           children: userRoutes
+        },
+        {
+          path: 'callback',
+          name: 'callback-layout',
+          component: FlexCenterLayout,
+          props: {
+            type: 'router'
+          },
+          redirect: { name: 'home' },
+          children: [
+            {
+              path: ':id',
+              name: 'callback-index',
+              component: () => import('../views/callback/view-index.vue')
+            }
+          ]
         }
       ]
     }

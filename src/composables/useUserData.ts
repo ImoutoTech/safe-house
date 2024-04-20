@@ -15,5 +15,5 @@ export const useUserData = (needRefresh = false) => {
     updateUserData(res.data.data)
   })
 
-  return { loading, userData }
+  return { hasLogin, loading, userData }
 }
