@@ -1,4 +1,4 @@
-import type { AppInfo } from '@/types'
+import { AppStatus, type AppInfo } from '@/types'
 import { isNil } from 'lodash-es'
 
 const INIT_DATA = {
@@ -9,7 +9,11 @@ const INIT_DATA = {
   description: '',
   visitNum: 0,
   created_at: '',
-  updated_at: ''
+  updated_at: '',
+  meta: {
+    status: AppStatus.RUNNING,
+    visitNum: 0
+  }
 }
 
 const useStore = defineStore(

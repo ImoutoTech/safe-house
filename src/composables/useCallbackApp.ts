@@ -8,7 +8,8 @@ export const useCallbackApp = (id: string) => {
   const {
     loading: appLoading,
     onSuccess: onLoaded,
-    onError: onLoadError
+    onError: onLoadError,
+    error: appError
   } = useRequest(GetUserAppData(id))
 
   const {
@@ -37,5 +38,5 @@ export const useCallbackApp = (id: string) => {
   onLoadError(handleError)
   onError(handleError)
 
-  return { app, appLoading, cbLoading, send }
+  return { app, appLoading, cbLoading, appError, updateApp, send }
 }

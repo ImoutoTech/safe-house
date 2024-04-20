@@ -1,6 +1,6 @@
 <template>
   <n-spin :show="appLoading || userLoading">
-    <n-card class="callback">
+    <n-card v-if="!appError" class="callback">
       <n-flex vertical :size="32">
         <div class="callback-title">登录到「{{ app.name }}」</div>
         <div v-if="hasLogin" class="callback-avatar">
@@ -13,7 +13,7 @@
             <n-li v-for="item in DATA_ACCESS_LIST" :key="item">{{ item }}</n-li>
           </n-ul>
         </n-card>
-        <n-flex vertical :size="16">
+        <n-flex v-if="isAppRunning" vertical :size="16">
           <template v-if="hasLogin">
             <n-button block type="info" secondary :loading="cbLoading" @click="send">
               使用{{ userData.nickname }}登录
@@ -25,14 +25,24 @@
             <n-button block type="warning" text @click="redirect('register')">注册</n-button>
           </template>
         </n-flex>
+        <n-alert v-else title="当前应用不可用" type="error" :bordered="false">
+          {{ STATUS_DES_MAP[app.meta.status] }}
+        </n-alert>
       </n-flex>
     </n-card>
+    <n-result v-else status="500" title="出了点问题" :description="appError.message">
+      <template #footer>
+        <n-button text type="info" @click="cancel">返回首页</n-button>
+      </template>
+    </n-result>
   </n-spin>
 </template>
 <script setup lang="ts">
 import { useCallbackApp } from '@/composables/useCallbackApp'
 import { useUserData } from '@/composables/useUserData'
 import { useUserStore } from '@/stores/user'
+import { AppStatus } from '@/types'
+import { STATUS_DES_MAP } from '@/utils/constants'
 
 defineOptions({
   name: 'CallbackIndex'
@@ -44,9 +54,11 @@ const appId = String(route.params.id)
 const { loading: userLoading, userData, hasLogin } = useUserData(true)
 const { updateToken, updateUserData } = useUserStore()
 
-const { app, appLoading, cbLoading, send } = useCallbackApp(appId)
+const { app, appLoading, cbLoading, appError, send, updateApp } = useCallbackApp(appId)
 
 const DATA_ACCESS_LIST = ['邮箱', '用户ID', '头像', '用户名', '角色（管理员/用户）']
+
+const isAppRunning = computed(() => app.value.meta.status === AppStatus.RUNNING)
 
 const redirect = (name: string) => {
   router.push({ name })
@@ -56,6 +68,11 @@ const switchAccount = () => {
   updateUserData()
   updateToken()
   redirect('login')
+}
+
+const cancel = () => {
+  updateApp()
+  redirect('home')
 }
 </script>
 <style scoped lang="scss">

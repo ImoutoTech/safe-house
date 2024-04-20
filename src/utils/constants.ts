@@ -30,3 +30,9 @@ export const STATUS_NAME_MAP = {
   [AppStatus.CLOSED]: '关闭',
   [AppStatus.RUNNING]: '正常'
 }
+
+export const STATUS_DES_MAP = {
+  [AppStatus.BANNED]: '当前应用已被禁用',
+  [AppStatus.CLOSED]: '当前应用被创建者关闭',
+  [AppStatus.RUNNING]: '当前应用正在正常运行'
+}
