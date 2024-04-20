@@ -1,3 +1,5 @@
+import { useMediaQuery } from '@vueuse/core'
+
 export interface Config {
   title: string[]
   login: Record<'btn' | 'description', string>
@@ -11,8 +13,11 @@ const useStore = defineStore(
 
     const updateConfig = (data: Config) => (config.value = data)
 
+    const isMobile = useMediaQuery('(max-width: 768px)')
+
     return {
       config,
+      isMobile,
       updateConfig
     }
   },

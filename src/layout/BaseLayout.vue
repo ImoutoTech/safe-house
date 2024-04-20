@@ -9,22 +9,34 @@
       <router-view></router-view>
     </n-layout>
     <n-layout-footer class="layout-footer" bordered position="absolute">
-      <n-flex align="center">
-        <span> Copyright © {{ ENV.COPYRIGHT.YEAR }} - {{ dayjs().format('YYYY') }} </span>
-        <n-text strong>{{ ENV.COPYRIGHT.NAME }}</n-text>
+      <template v-if="!isMobile">
+        <n-flex align="center">
+          <span> Copyright © {{ ENV.COPYRIGHT.YEAR }} - {{ dayjs().format('YYYY') }} </span>
+          <n-text strong>{{ ENV.COPYRIGHT.NAME }}</n-text>
+          <n-tag :bordered="false" type="warning">
+            <template #icon>
+              <n-icon :component="Code" />
+            </template>
+            {{ ENV.BUILD.COMMIT }}@{{ ENV.BUILD.BRANCH }}
+          </n-tag>
+        </n-flex>
+
+        <span>Made with ❤️ by youranreus</span>
+      </template>
+      <template v-else>
         <n-tag :bordered="false" type="warning">
           <template #icon>
             <n-icon :component="Code" />
           </template>
           {{ ENV.BUILD.COMMIT }}@{{ ENV.BUILD.BRANCH }}
         </n-tag>
-      </n-flex>
-
-      <span>Made with ❤️ by youranreus</span>
+        <span>Made with ❤️ by youranreus</span>
+      </template>
     </n-layout-footer>
   </n-layout>
 </template>
 <script setup lang="ts">
+import { useConfigStore } from '@/stores/config'
 import { ENV } from '@/utils/constants'
 import { CodeSlashOutline as Code } from '@vicons/ionicons5'
 import dayjs from 'dayjs'
@@ -34,6 +46,7 @@ defineOptions({
 })
 
 const router = useRouter()
+const { isMobile } = useConfigStore()
 </script>
 <style lang="scss" scoped>
 $headerHeight: 64px;
