@@ -17,6 +17,7 @@
         </n-text>
 
         <n-flex>
+          <n-button size="small" secondary @click="emit('update')">编辑</n-button>
           <n-button size="small" type="error" secondary @click="submit">删除</n-button>
         </n-flex>
       </n-flex>
@@ -38,6 +39,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'delete'): void
+  (e: 'update'): void
 }>()
 
 const { submit } = useDeleteApp(props.app, () => emit('delete'))
