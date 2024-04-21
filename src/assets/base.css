@@ -14,3 +14,9 @@
     width: 90%;
   }
 }
+
+@media (max-width: 768px) {
+  .welcome-title {
+    font-size: 1.6rem;
+  }
+}
