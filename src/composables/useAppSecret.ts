@@ -25,10 +25,17 @@ export const useAppSecret = () => {
     () => toggleLoading.value || createLoading.value || deleteLoading.value || listLoading.value
   )
 
+  const refresh = () => {
+    if (app.value) {
+      send()
+    }
+  }
+
   const toggle = async (id: number) => {
     toggleLoading.value = true
     return switchUserAppSecret(app.value, id)
       .then((res) => {
+        refresh()
         return res
       })
       .finally(() => {
@@ -41,6 +48,7 @@ export const useAppSecret = () => {
     return createUserAppSecret(app.value)
       .then((res) => {
         msg.success('创建成功')
+        refresh()
         return res
       })
       .finally(() => {
@@ -53,17 +61,12 @@ export const useAppSecret = () => {
     return delUserAppSecret(app.value, id)
       .then((res) => {
         msg.success('删除成功')
+        refresh()
         return res
       })
       .finally(() => {
         deleteLoading.value = false
       })
-  }
-
-  const refresh = () => {
-    if (app.value) {
-      send()
-    }
   }
 
   const updateApp = (id: string) => {
