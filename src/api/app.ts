@@ -4,6 +4,8 @@ import type {
   Pagination,
   Restful,
   UserAppRegParams,
+  UserAppSecret,
+  UserAppSecretCreateRes,
   UserAppUpdateParams
 } from '@/types'
 import API from './api'
@@ -23,3 +25,15 @@ export const updateUserApp = (id: string, data: UserAppUpdateParams) =>
 export const GetUserAppData = (id: string) => API.Get<Restful<AppInfo>>(`/app/${id}`)
 
 export const callbackUserApp = (id: string) => API.Post<Restful<AppCallbackResult>>(`/app/${id}`)
+
+export const createUserAppSecret = (id: string) =>
+  API.Post<Restful<UserAppSecretCreateRes>>(`/app/${id}/secret`)
+
+export const switchUserAppSecret = (id: string, scId: number) =>
+  API.Put<Restful<null>>(`/app/${id}/secret/${scId}`)
+
+export const delUserAppSecret = (id: string, scId: number) =>
+  API.Delete<Restful<null>>(`/app/${id}/secret/${scId}`)
+
+export const getUserAppSecret = (id: string) =>
+  API.Get<Restful<UserAppSecret[]>>(`/app/${id}/secret`)

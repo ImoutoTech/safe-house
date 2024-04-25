@@ -32,3 +32,12 @@ export interface UserAppRegParams {
 export interface UserAppUpdateParams extends UserAppRegParams {
   status: AppStatus
 }
+
+export interface UserAppSecretCreateRes {
+  value: string
+  enabled: boolean
+}
+
+export interface UserAppSecret extends UserAppSecretCreateRes {
+  id: number
+}
