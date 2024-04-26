@@ -12,6 +12,7 @@ export const useAppSecret = () => {
   const createLoading = ref(false)
   const deleteLoading = ref(false)
   const msg = useMessage()
+  const dialog = useDialog()
 
   const {
     loading: listLoading,
@@ -47,7 +48,11 @@ export const useAppSecret = () => {
     createLoading.value = true
     return createUserAppSecret(app.value)
       .then((res) => {
-        msg.success('创建成功')
+        dialog.success({
+          title: '创建成功',
+          content: `新的秘钥：${res.data.value}`,
+          positiveText: '确定'
+        })
         refresh()
         return res
       })
