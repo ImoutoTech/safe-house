@@ -41,3 +41,14 @@ export interface UserAppSecretCreateRes {
 export interface UserAppSecret extends UserAppSecretCreateRes {
   id: number
 }
+
+export interface AuthorizeParam {
+  client_id: string
+  redirect_uri: string
+  state: string
+}
+
+export interface AuthorizeRes {
+  access_token: string
+  state: string
+}

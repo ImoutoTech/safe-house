@@ -54,6 +54,22 @@ const router = createRouter({
               component: () => import('../views/callback/view-index.vue')
             }
           ]
+        },
+        {
+          path: 'oauth',
+          name: 'oauth-layout',
+          component: FlexCenterLayout,
+          props: {
+            type: 'router'
+          },
+          redirect: { name: 'home' },
+          children: [
+            {
+              path: 'authorize',
+              name: 'authorize-index',
+              component: () => import('../views/callback/authorize-index.vue')
+            }
+          ]
         }
       ]
     }
