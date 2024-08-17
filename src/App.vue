@@ -17,8 +17,10 @@
 </template>
 <script setup lang="ts">
 import { useBackendInit } from './composables/useBackendInit'
+import { useAuthGuard } from './composables/useAuthGuard'
 
 const { loading } = useBackendInit()
+useAuthGuard()
 </script>
 <style scoped lang="scss">
 .backend-waiting-wrapper {
