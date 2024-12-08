@@ -7,7 +7,7 @@ export const useEditUser = (callback?: () => void) => {
   const msg = useMessage()
   const { userData, updateUserData: updateData } = useUserStore()
   const { loading, onSuccess, send } = useRequest(
-    (data: UserModifyParams) => updateUserData(userData.value.id, data),
+    (data: Partial<UserModifyParams>) => updateUserData(userData.value.id, data),
     {
       immediate: false
     }
