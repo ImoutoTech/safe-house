@@ -44,7 +44,7 @@ export const useUserStore = defineStore(
       refresh_token,
       userData,
       hasLogin,
-      userPermissions: readonly(userPermissions),
+      userPermissions,
       updateToken,
       updateUserData,
       updateUserPermissions

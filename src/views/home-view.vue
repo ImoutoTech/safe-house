@@ -3,6 +3,7 @@ import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
 import { isNil } from 'lodash-es'
 import { useConfig } from '@/composables/useConfig'
 import { useUserStore } from '@/stores/user'
+import { useUserData } from '@/composables/useUserData'
 
 defineOptions({
   name: 'HomeView'
@@ -12,6 +13,7 @@ const router = useRouter()
 
 const { config } = useConfig(true)
 const userStore = useUserStore()
+useUserData(true)
 
 const displayTitle = computed(() =>
   config.value?.title?.length ? config.value.title : ['少女祈祷中']

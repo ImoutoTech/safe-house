@@ -30,13 +30,14 @@ defineOptions({
 
 const router = useRouter()
 const { userData } = useUserData()
-const { updateUserData, updateToken } = useUserStore()
+const { updateUserData, updateToken, updateUserPermissions } = useUserStore()
 
 const modifyVisible = ref(false)
 
 const logout = () => {
   updateUserData()
   updateToken()
+  updateUserPermissions([])
   router.push('/')
 }
 </script>

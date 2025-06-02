@@ -36,3 +36,5 @@ export const getAllUser = (page = 1, size = 10, search = '') =>
   api.Get<Restful<Pagination<UserInfo>>>(`/user/all`, {
     params: { page, size, search }
   })
+
+export const getUserPermissions = () => api.Get<Restful<string[]>>(`/user/permission`)

@@ -5,6 +5,7 @@ import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
 import { UserRole } from '@reus-able/types'
 import { useUserStore } from '@/stores/user'
 import { userRoutes } from './user-routes'
+import { useHasPermission } from '@/utils/permission'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,9 +34,6 @@ const router = createRouter({
           path: 'user',
           name: 'user-layout',
           component: () => import('../views/user/view-index.vue'),
-          meta: {
-            role: UserRole.USER
-          },
           redirect: { name: 'user-info' },
           children: userRoutes
         },
@@ -79,10 +77,21 @@ const router = createRouter({
 router.beforeEach((to) => {
   const userStore = useUserStore()
 
-  for (const route of [...to.matched].reverse()) {
+  if (userStore.userData.role === UserRole.ADMIN) {
+    return true
+  }
+
+  for (const route of to.matched) {
+    if (route.meta.permission) {
+      const hasPermission = useHasPermission(route.meta.permission as string)
+      if (!hasPermission) {
+        return { name: 'home' }
+      }
+    }
+
     if (route.meta.role) {
       const authMap = {
-        [UserRole.ADMIN]: userStore.hasLogin && userStore.userData.role === UserRole.ADMIN,
+        [UserRole.ADMIN]: false,
         [UserRole.USER]: userStore.hasLogin
       }
 
