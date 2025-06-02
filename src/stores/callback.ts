@@ -16,7 +16,7 @@ const INIT_DATA = {
   }
 }
 
-const useStore = defineStore(
+export const useCallbackStore = defineStore(
   'callback',
   () => {
     const app = ref<AppInfo>({ ...INIT_DATA })
@@ -37,12 +37,3 @@ const useStore = defineStore(
     persist: false
   }
 )
-
-export const useCallbackStore = () => {
-  const store = useStore()
-
-  return {
-    ...store,
-    ...storeToRefs(store)
-  }
-}

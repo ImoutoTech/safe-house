@@ -5,7 +5,7 @@ import { useRequest } from 'alova'
 
 export const useAuthorizeApp = (id: string, state: string, redirect: string) => {
   const msg = useMessage()
-  const { app, updateApp } = useCallbackStore()
+  const callbackStore = useCallbackStore()
   const {
     loading: appLoading,
     onSuccess: onLoaded,
@@ -35,7 +35,7 @@ export const useAuthorizeApp = (id: string, state: string, redirect: string) => 
   }
 
   onLoaded((res) => {
-    updateApp(res.data.data)
+    callbackStore.updateApp(res.data.data)
   })
 
   onSuccess((res) => {
@@ -45,5 +45,12 @@ export const useAuthorizeApp = (id: string, state: string, redirect: string) => 
   onLoadError(handleError)
   onError(handleError)
 
-  return { app, appLoading, cbLoading, appError, updateApp, authorize }
+  return {
+    app: computed(() => callbackStore.app),
+    appLoading,
+    cbLoading,
+    appError,
+    updateApp: callbackStore.updateApp,
+    authorize
+  }
 }
