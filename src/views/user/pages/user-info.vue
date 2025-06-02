@@ -19,7 +19,7 @@
   <user-data-modify v-model:visible="modifyVisible"></user-data-modify>
 </template>
 <script lang="ts" setup>
-import UserDataModify from './components/user-data-modify.vue'
+import UserDataModify from '../components/user-data-modify.vue'
 import { useUserData } from '@/composables/useUserData'
 import { useUserStore } from '@/stores/user'
 import dayjs from 'dayjs'
