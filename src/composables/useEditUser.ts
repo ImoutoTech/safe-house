@@ -5,9 +5,9 @@ import { useUserStore } from '@/stores/user'
 
 export const useEditUser = (callback?: () => void) => {
   const msg = useMessage()
-  const { userData, updateUserData: updateData } = useUserStore()
+  const userStore = useUserStore()
   const { loading, onSuccess, send } = useRequest(
-    (data: Partial<UserModifyParams>) => updateUserData(userData.value.id, data),
+    (data: Partial<UserModifyParams>) => updateUserData(userStore.userData.id, data),
     {
       immediate: false
     }
@@ -19,7 +19,7 @@ export const useEditUser = (callback?: () => void) => {
 
   onSuccess((res) => {
     msg.success('修改成功')
-    updateData(res.data.data)
+    userStore.updateUserData(res.data.data)
     callback?.()
   })
 

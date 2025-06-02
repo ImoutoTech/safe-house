@@ -11,14 +11,14 @@ defineOptions({
 const router = useRouter()
 
 const { config } = useConfig(true)
-const { hasLogin } = useUserStore()
+const userStore = useUserStore()
 
 const displayTitle = computed(() =>
   config.value?.title?.length ? config.value.title : ['少女祈祷中']
 )
 
 const handleDirect = (name: 'login' | 'register') => {
-  if (name === 'login' && hasLogin.value) {
+  if (name === 'login' && userStore.hasLogin) {
     router.push({ name: 'user-layout' })
     return
   }
@@ -35,7 +35,7 @@ const handleDirect = (name: 'login' | 'register') => {
           {{ line }}
         </span>
         <n-flex v-if="!isNil(config)" justify="center" :size="24">
-          <n-tooltip v-if="!hasLogin" trigger="hover">
+          <n-tooltip v-if="!userStore.hasLogin" trigger="hover">
             <template #trigger>
               <n-button strong secondary type="primary" @click="handleDirect('register')">
                 {{ config.register.btn }}

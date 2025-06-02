@@ -77,13 +77,13 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const { hasLogin, userData } = useUserStore()
+  const userStore = useUserStore()
 
   for (const route of [...to.matched].reverse()) {
     if (route.meta.role) {
       const authMap = {
-        [UserRole.ADMIN]: hasLogin.value && userData.value.role === UserRole.ADMIN,
-        [UserRole.USER]: hasLogin.value
+        [UserRole.ADMIN]: userStore.hasLogin && userStore.userData.role === UserRole.ADMIN,
+        [UserRole.USER]: userStore.hasLogin
       }
 
       return authMap[route.meta.role as UserRole] || { name: 'login' }

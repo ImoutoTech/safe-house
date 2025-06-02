@@ -3,22 +3,22 @@ import { useUserStore } from '@/stores/user'
 import { useSerialRequest } from '@alova/scene-vue'
 
 export const useUserData = (needRefresh = false) => {
-  const { userData, hasLogin, updateUserData, updateToken } = useUserStore()
+  const userStore = useUserStore()
   const { loading, onSuccess, onError } = useSerialRequest(
     [validateToken, (res) => getUserData(res.data.id)],
     {
-      immediate: hasLogin.value && needRefresh
+      immediate: userStore.hasLogin && needRefresh
     }
   )
 
   onSuccess((res) => {
-    updateUserData(res.data.data)
+    userStore.updateUserData(res.data.data)
   })
 
   onError(() => {
-    updateUserData()
-    updateToken()
+    userStore.updateUserData()
+    userStore.updateToken()
   })
 
-  return { hasLogin, loading, userData }
+  return { hasLogin: userStore.hasLogin, loading, userData: userStore.userData }
 }

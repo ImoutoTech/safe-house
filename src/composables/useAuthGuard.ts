@@ -1,11 +1,11 @@
 import { useUserStore } from '../stores/user'
 
 export const useAuthGuard = () => {
-  const { hasLogin } = useUserStore()
+  const userStore = useUserStore()
   const router = useRouter()
 
   watch(
-    () => hasLogin.value,
+    () => userStore.hasLogin,
     (val, old) => {
       if (old && !val) {
         router.push('/')
