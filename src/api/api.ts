@@ -23,9 +23,9 @@ const { onAuthRequired, onResponseRefreshToken } = createServerTokenAuthenticati
 
     handler: async () => {
       const res = await refreshToken()
-      const { updateToken, refresh_token } = useUserStore()
+      const userStore = useUserStore()
       console.log('token刷新成功')
-      updateToken(res.data.token, refresh_token.value)
+      userStore.updateToken(res.data.token, userStore.refresh_token)
     }
   }
 })
@@ -35,14 +35,14 @@ const alovaInstance = createAlova({
   requestAdapter: axiosRequestAdapter(),
   baseURL: ENV.API_URL,
   beforeRequest: onAuthRequired((method) => {
-    const { access_token, refresh_token } = useUserStore()
+    const userStore = useUserStore()
 
-    if (access_token.value) {
-      method.config.headers.Authorization = `${access_token.value}`
+    if (userStore.access_token) {
+      method.config.headers.Authorization = `${userStore.access_token}`
     }
 
-    if (method.meta && method.meta.authRole === 'refreshToken' && refresh_token.value) {
-      method.config.headers.Authorization = `${refresh_token.value}`
+    if (method.meta && method.meta.authRole === 'refreshToken' && userStore.refresh_token) {
+      method.config.headers.Authorization = `${userStore.refresh_token}`
     }
   }),
   responded: onResponseRefreshToken({
@@ -55,9 +55,9 @@ const alovaInstance = createAlova({
       }
 
       if (e.response.data.code === BUSINESS_ERROR_CODE.EXPIRED_TOKEN) {
-        const { updateToken, updateUserData } = useUserStore()
-        updateToken()
-        updateUserData()
+        const userStore = useUserStore()
+        userStore.updateToken()
+        userStore.updateUserData()
       }
 
       throw new Error(e?.response?.data?.msg || e)

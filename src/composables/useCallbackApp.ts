@@ -4,7 +4,7 @@ import { useRequest } from 'alova'
 
 export const useCallbackApp = (id: string) => {
   const msg = useMessage()
-  const { app, updateApp } = useCallbackStore()
+  const callbackStore = useCallbackStore()
   const {
     loading: appLoading,
     onSuccess: onLoaded,
@@ -26,17 +26,24 @@ export const useCallbackApp = (id: string) => {
   }
 
   onLoaded((res) => {
-    updateApp(res.data.data)
+    callbackStore.updateApp(res.data.data)
   })
 
   onSuccess((res) => {
     const ticket = res.data.data.ticket
-    const url = app.value.callback
+    const url = callbackStore.app.callback
     window.location.href = `${url}?ticket=${ticket}`
   })
 
   onLoadError(handleError)
   onError(handleError)
 
-  return { app, appLoading, cbLoading, appError, updateApp, send }
+  return {
+    app: computed(() => callbackStore.app),
+    appLoading,
+    cbLoading,
+    appError,
+    updateApp: callbackStore.updateApp,
+    send
+  }
 }

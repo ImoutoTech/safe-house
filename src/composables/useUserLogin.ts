@@ -18,7 +18,7 @@ export const useUserLogin = () => {
   })
 
   const { updateToken } = useUserStore()
-  const { app, isCallback } = useCallbackStore()
+  const callbackStore = useCallbackStore()
   const msg = useMessage()
   const router = useRouter()
 
@@ -43,8 +43,8 @@ export const useUserLogin = () => {
   onSuccess(() => {
     updateToken(data.value.data.token, data.value.data.refresh)
     msg.success('登录成功')
-    if (isCallback.value) {
-      router.push({ name: 'callback-index', params: { id: app.value.id } })
+    if (callbackStore.isCallback) {
+      router.push({ name: 'callback-index', params: { id: callbackStore.app.id } })
     } else {
       router.push({ name: 'user-info' })
     }

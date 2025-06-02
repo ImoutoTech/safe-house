@@ -4,14 +4,14 @@ import { useRequest } from 'alova'
 import { isNil } from 'lodash-es'
 
 export const useConfig = (needRefresh = false) => {
-  const { config, updateConfig } = useConfigStore()
+  const configStore = useConfigStore()
   const { loading, onSuccess } = useRequest(getDynamicConfig<Config>('safe-house-index'), {
-    immediate: needRefresh || isNil(config.value)
+    immediate: needRefresh || isNil(configStore.config)
   })
 
   onSuccess((res) => {
-    updateConfig(res.data)
+    configStore.updateConfig(res.data)
   })
 
-  return { loading, config }
+  return { loading, config: computed(() => configStore.config) }
 }

@@ -37,10 +37,10 @@
 </template>
 <script lang="ts" setup>
 import type { AppInfo } from '@/types'
-import CreateUserApp from './components/create-user-app.vue'
-import UpdateUserApp from './components/update-user-app.vue'
-import UserAppSecret from './components/user-app-secret.vue'
-import UserAppItem from './components/user-app-item.vue'
+import CreateUserApp from '../components/create-user-app.vue'
+import UpdateUserApp from '../components/update-user-app.vue'
+import UserAppSecret from '../components/user-app-secret.vue'
+import UserAppItem from '../components/user-app-item.vue'
 import { useAppList } from '@/composables/useAppList'
 
 defineOptions({

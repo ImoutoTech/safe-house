@@ -12,12 +12,13 @@ const INIT_USER_DATA: UserInfo = {
   updated_at: ''
 }
 
-const useStore = defineStore(
+export const useUserStore = defineStore(
   'user',
   () => {
     const access_token = ref('')
     const refresh_token = ref('')
     const userData = reactive<UserInfo>({ ...INIT_USER_DATA })
+    const userPermissions = ref<string[]>([])
 
     const hasLogin = computed(() => !!refresh_token.value)
 
@@ -34,13 +35,19 @@ const useStore = defineStore(
       })
     }
 
+    const updateUserPermissions = (permissions: string[]) => {
+      userPermissions.value = permissions
+    }
+
     return {
       access_token,
       refresh_token,
       userData,
       hasLogin,
+      userPermissions,
       updateToken,
-      updateUserData
+      updateUserData,
+      updateUserPermissions
     }
   },
   {
@@ -49,12 +56,3 @@ const useStore = defineStore(
     }
   }
 )
-
-export const useUserStore = () => {
-  const store = useStore()
-
-  return {
-    ...store,
-    ...storeToRefs(store)
-  }
-}

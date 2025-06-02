@@ -6,7 +6,7 @@ export interface Config {
   register: Record<'btn' | 'description', string>
 }
 
-const useStore = defineStore(
+export const useConfigStore = defineStore(
   'config',
   () => {
     const config = ref<Config>()
@@ -27,12 +27,3 @@ const useStore = defineStore(
     }
   }
 )
-
-export const useConfigStore = () => {
-  const store = useStore()
-
-  return {
-    ...store,
-    ...storeToRefs(store)
-  }
-}

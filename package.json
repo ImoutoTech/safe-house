@@ -25,8 +25,8 @@
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "ts-md5": "^1.3.1",
-    "vue": "^3.4.15",
-    "vue-router": "^4.2.5"
+    "vue": "^3.5.16",
+    "vue-router": "^4.5.1"
   },
   "devDependencies": {
     "@reus-able/types": "^1.0.5",
@@ -44,11 +44,12 @@
     "npm-run-all2": "^6.1.1",
     "prettier": "^3.0.3",
     "sass": "^1.75.0",
-    "typescript": "~5.3.0",
+    "typescript": "~5.8.0",
     "unplugin-auto-import": "^0.17.5",
     "unplugin-vue-components": "^0.26.0",
     "vfonts": "^0.0.3",
-    "vite": "^5.0.11",
+    "vite": "^6.3.5",
     "vue-tsc": "^1.8.27"
-  }
+  },
+  "packageManager": "pnpm@10.7.0+sha512.6b865ad4b62a1d9842b61d674a393903b871d9244954f652b8842c2b553c72176b278f64c463e52d40fff8aba385c235c8c9ecf5cc7de4fd78b8bb6d49633ab6"
 }
