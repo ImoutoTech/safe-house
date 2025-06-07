@@ -26,7 +26,7 @@
       <template #header>
         <n-flex justify="space-between">
           <n-input v-bind="searchBindings" class="search-input" placeholder="按名称搜索" />
-          <n-button tertiary type="info" @click="createVisible = true">创建子应用</n-button>
+          <n-button v-permission="PERMISSION_CODE_MAP['新建子应用']" tertiary type="info" @click="createVisible = true">创建子应用</n-button>
         </n-flex>
       </template>
     </n-list>
@@ -42,6 +42,7 @@ import UpdateUserApp from '../components/update-user-app.vue'
 import UserAppSecret from '../components/user-app-secret.vue'
 import UserAppItem from '../components/user-app-item.vue'
 import { useAppList } from '@/composables/useAppList'
+import { PERMISSION_CODE_MAP } from '@/utils/constants'
 
 defineOptions({
   name: 'UserApp'

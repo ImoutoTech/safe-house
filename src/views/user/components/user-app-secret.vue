@@ -15,7 +15,7 @@
 
         <n-flex justify="space-between" align="center">
           <n-text strong>秘钥</n-text>
-          <n-button text type="info" :loading="createLoading" @click="create">新建</n-button>
+          <n-button v-permission="PERMISSION_CODE_MAP['修改子应用']" text type="info" :loading="createLoading" @click="create">新建</n-button>
         </n-flex>
 
         <n-spin :show="loading">
@@ -28,6 +28,7 @@
                   <n-tooltip>
                     <template #trigger>
                       <n-switch
+                        v-permission="{ permission: PERMISSION_CODE_MAP['修改子应用'], mode: 'disable' }"
                         :value="secret.enabled"
                         size="small"
                         @update:value="toggle(secret.id)"
@@ -43,7 +44,7 @@
                     @positive-click="del(secret.id)"
                   >
                     <template #trigger>
-                      <n-button type="error" size="small" tertiary>
+                      <n-button v-permission="PERMISSION_CODE_MAP['修改子应用']" type="error" size="small" tertiary>
                         <n-icon :component="TrashOutline"></n-icon>
                       </n-button>
                     </template>
@@ -64,6 +65,7 @@
 import { useAppSecret } from '@/composables/useAppSecret'
 import { TrashOutline } from '@vicons/ionicons5'
 import { type AppInfo } from '@/types'
+import { PERMISSION_CODE_MAP } from '@/utils/constants'
 
 defineOptions({
   name: 'UserAppSecret'

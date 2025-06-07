@@ -20,9 +20,9 @@
         </n-text>
 
         <n-flex>
-          <n-button size="small" tertiary @click="emit('inspect')">秘钥</n-button>
-          <n-button size="small" tertiary @click="emit('update')">编辑</n-button>
-          <n-button size="small" type="error" tertiary @click="submit">删除</n-button>
+          <n-button v-permission="PERMISSION_CODE_MAP['查看子应用']" size="small" tertiary @click="emit('inspect')">秘钥</n-button>
+          <n-button v-permission="PERMISSION_CODE_MAP['修改子应用']" size="small" tertiary @click="emit('update')">编辑</n-button>
+          <n-button v-permission="PERMISSION_CODE_MAP['删除子应用']" size="small" type="error" tertiary @click="submit">删除</n-button>
         </n-flex>
       </n-flex>
     </template>
@@ -50,6 +50,7 @@ import { CopyOutline } from '@vicons/ionicons5'
 import { useClipboard } from '@vueuse/core'
 import type { AppInfo } from '@/types'
 import dayjs from 'dayjs'
+import { PERMISSION_CODE_MAP } from '@/utils/constants'
 
 defineOptions({
   name: 'UserAppItem'
