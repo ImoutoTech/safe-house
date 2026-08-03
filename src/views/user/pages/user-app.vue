@@ -26,7 +26,13 @@
       <template #header>
         <n-flex justify="space-between">
           <n-input v-bind="searchBindings" class="search-input" placeholder="按名称搜索" />
-          <n-button v-permission="PERMISSION_CODE_MAP['新建子应用']" tertiary type="info" @click="createVisible = true">创建子应用</n-button>
+          <n-button
+            v-permission="PERMISSION_CODE_MAP['新建子应用']"
+            tertiary
+            type="info"
+            @click="createVisible = true"
+            >创建子应用</n-button
+          >
         </n-flex>
       </template>
     </n-list>

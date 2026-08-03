@@ -6,4 +6,4 @@ export default function setupDirectives(app: App) {
   app.directive('permission', permission)
 }
 
-export { permission } 
+export { permission }

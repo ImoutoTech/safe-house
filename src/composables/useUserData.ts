@@ -7,10 +7,7 @@ export const useUserData = (needRefresh = false) => {
   const userStore = useUserStore()
 
   const { loading, onSuccess, onError } = useSerialRequest(
-    [
-      validateToken,
-      (res) => getUserData(res.data.id)
-    ],
+    [validateToken, (res) => getUserData(res.data.id)],
     {
       immediate: userStore.hasLogin && needRefresh
     }

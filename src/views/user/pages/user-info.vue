@@ -12,7 +12,13 @@
     </n-descriptions>
     <n-divider></n-divider>
     <n-flex justify="space-between">
-      <n-button v-permission="PERMISSION_CODE_MAP['修改用户']" type="info" secondary @click="modifyVisible = true">编辑</n-button>
+      <n-button
+        v-permission="PERMISSION_CODE_MAP['修改用户']"
+        type="info"
+        secondary
+        @click="modifyVisible = true"
+        >编辑</n-button
+      >
       <n-button type="error" secondary @click="logout">退出登录</n-button>
     </n-flex>
   </div>
