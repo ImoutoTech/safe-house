@@ -13,7 +13,6 @@ const { providers, loading, error, save, refresh } = useProviderAdmin()
       <n-button @click="refresh()">重试</n-button>
     </n-flex>
     <n-spin :show="loading">
-      <n-empty v-if="!loading && !error && !providers.length" description="暂无提供方配置" />
       <n-grid cols="1 768:2" :x-gap="16" :y-gap="16">
         <n-grid-item v-for="provider in providers" :key="provider.provider">
           <ProviderConfigCard :provider="provider" :loading="loading" @save="save" />

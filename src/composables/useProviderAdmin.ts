@@ -1,5 +1,6 @@
 import { getAdminProviders, updateAdminProvider } from '@/api/oauth'
 import type { ExternalProvider, ProviderUpdate } from '@/types'
+import { projectAdminProviders } from '@/utils/providerAdmin'
 import { useRequest } from 'alova'
 
 export const useProviderAdmin = () => {
@@ -24,7 +25,7 @@ export const useProviderAdmin = () => {
   }
 
   return {
-    providers: computed(() => listRequest.data.value?.data ?? []),
+    providers: computed(() => projectAdminProviders(listRequest.data.value?.data ?? [])),
     loading: computed(() => listRequest.loading.value || saveRequest.loading.value),
     error: computed(() => listRequest.error.value || saveRequest.error.value),
     refresh: listRequest.send,
