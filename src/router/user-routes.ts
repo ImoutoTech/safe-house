@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router'
 import { PERMISSION_CODE_MAP } from '@/utils/constants'
+import { UserRole } from '@reus-able/types'
 
 export const userRoutes: RouteRecordRaw[] = [
   {
@@ -19,5 +20,11 @@ export const userRoutes: RouteRecordRaw[] = [
       title: '📦 子应用',
       permission: PERMISSION_CODE_MAP['查看子应用']
     }
+  },
+  {
+    name: 'user-identities',
+    path: 'identities',
+    component: () => import('@/views/user/pages/user-identities.vue'),
+    meta: { title: '🔗 登录方式', role: UserRole.USER }
   }
 ]

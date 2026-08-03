@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "前端权限、交互与构建质量门禁"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "API与组件契约类型审查"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "表单、可访问性与响应式组件审查"}
+{"file": ".trellis/tasks/08-03-oauth-login-center-ui/research/backend-dependency.md", "reason": "后端契约和原子发布依赖核对"}

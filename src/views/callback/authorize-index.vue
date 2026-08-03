@@ -1,100 +1,56 @@
-<template>
-  <n-spin :show="appLoading || userLoading">
-    <n-card v-if="!appError" class="callback">
-      <n-flex vertical :size="32">
-        <div class="callback-title">登录到「{{ app.name }}」</div>
-        <div v-if="hasLogin" class="callback-avatar">
-          <n-avatar v-if="userData.avatar" :size="128" round :src="userData.avatar"></n-avatar>
-          <n-avatar v-else :size="128" round>{{ userData.nickname.slice(0, 3) }}</n-avatar>
-        </div>
-        <n-alert v-else title="当前无登录用户" type="warning" :bordered="false"></n-alert>
-        <n-card embedded size="small" :title="`${app.name}将获得你的部分信息`" :bordered="false">
-          <n-ul>
-            <n-li v-for="item in DATA_ACCESS_LIST" :key="item">{{ item }}</n-li>
-          </n-ul>
-        </n-card>
-        <n-flex v-if="isAppRunning" vertical :size="16">
-          <template v-if="hasLogin">
-            <n-button block type="info" secondary :loading="cbLoading" @click="authorize">
-              使用{{ userData.nickname }}登录
-            </n-button>
-            <n-button block type="warning" text @click="switchAccount">切换账号</n-button>
-          </template>
-          <template v-else>
-            <n-button block type="info" secondary @click="redirect('login')">登录</n-button>
-            <n-button block type="warning" text @click="redirect('register')">注册</n-button>
-          </template>
-        </n-flex>
-        <n-alert v-else title="当前应用不可用" type="error" :bordered="false">
-          {{ STATUS_DES_MAP[app.meta.status] }}
-        </n-alert>
-      </n-flex>
-    </n-card>
-    <n-result v-else status="500" title="出了点问题" :description="appError.message">
-      <template #footer>
-        <n-button text type="info" @click="cancel">返回首页</n-button>
-      </template>
-    </n-result>
-  </n-spin>
-</template>
 <script setup lang="ts">
-import { useAuthorizeApp } from '@/composables/useAuthorizeApp'
-import { useUserData } from '@/composables/useUserData'
+import { useOidcInteraction } from '@/composables/useOidcInteraction'
 import { useUserStore } from '@/stores/user'
-import { AppStatus, type AuthorizeParam } from '@/types'
-import { STATUS_DES_MAP } from '@/utils/constants'
 
-defineOptions({
-  name: 'AuthorizeIndex'
-})
-
+defineOptions({ name: 'AuthorizeIndex' })
 const route = useRoute()
 const router = useRouter()
-const appParams = ref<AuthorizeParam>({
-  client_id: String(route.query.client_id),
-  redirect_uri: String(route.query.redirect_uri),
-  state: String(route.query.state) === 'undefined' ? '' : String(route.query.state)
-})
-const { loading: userLoading, userData, hasLogin } = useUserData(true)
-const { updateToken, updateUserData } = useUserStore()
+const uid = String(route.params.uid ?? '')
+const { interaction, loading, error, complete, refresh } = useOidcInteraction(uid)
+const userStore = useUserStore()
+const scopes = computed(() => interaction.value?.scope.split(' ').filter(Boolean) ?? [])
 
-const { app, appLoading, cbLoading, appError, authorize, updateApp } = useAuthorizeApp(
-  appParams.value.client_id,
-  appParams.value.state,
-  appParams.value.redirect_uri
-)
-
-const DATA_ACCESS_LIST = ['邮箱', '用户ID', '头像', '用户名', '角色（管理员/用户）']
-
-const isAppRunning = computed(() => app.value.meta.status === AppStatus.RUNNING)
-
-const redirect = (name: string) => {
-  router.push({ name })
-}
-
-const switchAccount = () => {
-  updateUserData()
-  updateToken()
-  redirect('login')
-}
-
-const cancel = () => {
-  updateApp()
-  redirect('home')
+const decide = async (approved: boolean) => {
+  await complete(approved)
 }
 </script>
-<style scoped lang="scss">
-.callback {
-  width: 400px;
 
-  &-title {
-    font-size: 24px;
-    font-weight: 500;
-    text-align: center;
-  }
+<template>
+  <n-spin :show="loading">
+    <n-result v-if="error" status="warning" title="授权请求不可用" :description="error.message">
+      <template #footer><n-button @click="refresh()">重试</n-button></template>
+    </n-result>
+    <n-card v-else-if="interaction" class="interaction-card">
+      <n-flex vertical :size="24">
+        <n-thing
+          :title="`登录到「${interaction.client.name}」`"
+          :description="interaction.client.description || undefined"
+        />
+        <n-alert v-if="!userStore.hasLogin" type="warning" title="请先登录">
+          登录后将回到本授权请求。
+        </n-alert>
+        <n-card embedded title="应用将获得">
+          <n-ul
+            ><n-li v-for="scope in scopes" :key="scope">{{ scope }}</n-li></n-ul
+          >
+        </n-card>
+        <n-flex v-if="userStore.hasLogin" justify="end">
+          <n-button :disabled="loading" @click="decide(false)">拒绝</n-button>
+          <n-button type="primary" :loading="loading" @click="decide(true)">批准</n-button>
+        </n-flex>
+        <n-button
+          v-else
+          type="primary"
+          @click="router.push({ name: 'login', query: { return_to: route.fullPath } })"
+          >登录</n-button
+        >
+      </n-flex>
+    </n-card>
+  </n-spin>
+</template>
 
-  &-avatar {
-    text-align: center;
-  }
+<style scoped>
+.interaction-card {
+  width: min(92vw, 460px);
 }
 </style>

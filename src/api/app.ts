@@ -1,8 +1,6 @@
 import type {
   AppCallbackResult,
   AppInfo,
-  AuthorizeParam,
-  AuthorizeRes,
   Pagination,
   Restful,
   UserAppRegParams,
@@ -27,9 +25,6 @@ export const updateUserApp = (id: string, data: UserAppUpdateParams) =>
 export const GetUserAppData = (id: string) => API.Get<Restful<AppInfo>>(`/app/${id}`)
 
 export const callbackUserApp = (id: string) => API.Post<Restful<AppCallbackResult>>(`/app/${id}`)
-
-export const authorizeUserApp = (data: AuthorizeParam) =>
-  API.Post<Restful<AuthorizeRes>>(`/oauth/authorize`, data)
 
 export const createUserAppSecret = (id: string) =>
   API.Post<Restful<UserAppSecretCreateRes>>(`/app/${id}/secret`)

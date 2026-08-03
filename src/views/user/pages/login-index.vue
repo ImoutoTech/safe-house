@@ -1,3 +1,25 @@
+<script setup lang="ts">
+import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
+import { useUserLogin } from '@/composables/useUserLogin'
+import { normalizeLocalReturnTo, useExternalLogin } from '@/composables/useExternalLogin'
+import type { FormInst } from 'naive-ui'
+
+defineOptions({ name: 'LoginIndex' })
+
+const { loginParam, formRules, loading, handleUpdateVal, submit } = useUserLogin()
+const { providers, loading: externalLoading, error: providerError, start } = useExternalLogin()
+const formRef = ref<FormInst>()
+const router = useRouter()
+const route = useRoute()
+const returnTo = computed(() => normalizeLocalReturnTo(route.query.return_to))
+
+const handleConfirm = () => {
+  formRef.value?.validate((errors) => {
+    if (!errors) submit()
+  })
+}
+</script>
+
 <template>
   <flex-center-layout>
     <main class="login-container" @keypress.enter="handleConfirm">
@@ -30,31 +52,22 @@
             开门
           </n-button>
         </n-flex>
+        <n-divider v-if="providers.length">其他登录方式</n-divider>
+        <n-alert v-if="providerError" type="warning" title="外部登录暂不可用" />
+        <n-flex v-else vertical>
+          <n-button
+            v-for="provider in providers"
+            :key="provider.provider"
+            :loading="externalLoading"
+            @click="start(provider.provider, returnTo)"
+          >
+            使用 {{ provider.provider === 'github' ? 'GitHub' : 'Google' }} 登录
+          </n-button>
+        </n-flex>
       </n-flex>
     </main>
   </flex-center-layout>
 </template>
-<script setup lang="ts">
-import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
-import { useUserLogin } from '@/composables/useUserLogin'
-import type { FormInst } from 'naive-ui'
-
-defineOptions({
-  name: 'LoginIndex'
-})
-
-const { loginParam, formRules, loading, handleUpdateVal, submit } = useUserLogin()
-const formRef = ref<FormInst>()
-const router = useRouter()
-
-const handleConfirm = () => {
-  formRef.value?.validate((errors) => {
-    if (errors) return
-
-    submit()
-  })
-}
-</script>
 <style lang="scss" scoped>
 .login-container {
   width: 300px;
