@@ -36,6 +36,16 @@ Inspect the lint diff because the command applies fixes. Also verify no sensitiv
 - Never couple a frontend commit to an unfrozen backend response shape.
 - The frontend is not independently deployable; rollback must match the backend release.
 
+## Acceptance checkpoint (2026-08-04)
+
+- [x] Password login plus real GitHub and Google login entry/callback smoke tests passed.
+- [x] Linked GitHub/Google identities render correctly for an authenticated user.
+- [x] Administrator provider configuration renders masked secrets, enabled state, and blank-secret preservation semantics.
+- [x] `pnpm type-check`, `pnpm lint`, and `pnpm build` pass with a clean worktree.
+- [x] The legacy authorization API is absent and the OIDC interaction route is wired to the opaque interaction UID contract.
+- [ ] Complete ordinary-user provider-admin denial, approve/deny, cancellation/expiry, and desktop/mobile browser cases.
+- [ ] Record the matching backend/frontend commits after the isolated migration and complete relying-party OIDC flow pass.
+
 ## Pre-start checks
 
 - [ ] PRD/design/implementation artifacts are approved.
