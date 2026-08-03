@@ -52,13 +52,7 @@ const submit = async () => {
         }}</template>
       </n-form-item>
       <n-form-item label="启用"><n-switch v-model:value="draft.enabled" /></n-form-item>
-      <n-button
-        v-permission="'oauth-provider-admin'"
-        type="primary"
-        :loading="loading"
-        @click="submit"
-        >保存</n-button
-      >
+      <n-button type="primary" :loading="loading" @click="submit">保存</n-button>
     </n-form>
   </n-card>
 </template>
