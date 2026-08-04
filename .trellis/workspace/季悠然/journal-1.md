@@ -47,3 +47,24 @@ Initialized Trellis across supported agent platforms, documented the existing Vu
 ### Status
 
 [OK] **Completed**
+
+
+## Session 3: Move provider management into user center
+
+**Date**: 2026-08-04
+**Task**: Move provider management into user center
+**Branch**: `codex/oauth-login-center-ui`
+
+### Summary
+
+Moved provider administration to /user/manage, added permission-aware user-center tab visibility, removed the pre-launch admin route, updated focused tests and OAuth UI contracts, and passed lint, type-check, and production build.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `2936ac3` | (see git log) |
+
+### Status
+
+[OK] **Completed**
