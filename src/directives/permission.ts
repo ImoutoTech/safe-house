@@ -15,26 +15,29 @@ export const permission: Directive = {
   mounted(el: PermissionElement, binding: PermissionBinding) {
     checkPermission(el, binding.value)
   },
-  
+
   updated(el: PermissionElement, binding: PermissionBinding) {
     checkPermission(el, binding.value)
   }
 }
 
-function checkPermission(el: PermissionElement, bindingValue: string | { permission: string; mode?: 'hide' | 'disable' }) {
+function checkPermission(
+  el: PermissionElement,
+  bindingValue: string | { permission: string; mode?: 'hide' | 'disable' }
+) {
   // 解析绑定值
   let permissionValue: string
   let mode: 'hide' | 'disable' = 'hide' // 默认模式为隐藏
-  
+
   if (typeof bindingValue === 'string') {
     permissionValue = bindingValue
   } else {
     permissionValue = bindingValue.permission
     mode = bindingValue.mode || 'hide'
   }
-  
+
   const hasPermission = useHasPermission(permissionValue)
-  
+
   if (!hasPermission) {
     // 如果没有权限
     if (!el._isPermissionHidden) {
@@ -53,7 +56,7 @@ function checkPermission(el: PermissionElement, bindingValue: string | { permiss
         el.style.pointerEvents = 'none'
         el.style.cursor = 'not-allowed'
       }
-      
+
       el._isPermissionHidden = true
     }
   } else {
@@ -76,7 +79,7 @@ function checkPermission(el: PermissionElement, bindingValue: string | { permiss
         el.style.removeProperty('pointer-events')
         el.style.removeProperty('cursor')
       }
-      
+
       el._isPermissionHidden = false
     }
   }

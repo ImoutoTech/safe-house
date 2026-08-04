@@ -34,6 +34,7 @@ import UserRoleTag from '@/components/user-role-tag.vue'
 import { useUserData } from '@/composables/useUserData'
 import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
 import { userRoutes } from '@/router/user-routes'
+import { UserRole } from '@reus-able/types'
 
 defineOptions({
   name: 'UserIndex'
@@ -41,13 +42,22 @@ defineOptions({
 const route = useRoute()
 const router = useRouter()
 const tabValue = ref('')
-const { userData } = useUserData(true)
+const { userData, userPermissions } = useUserData(true)
 
 const tabList = computed(() =>
-  userRoutes.map((r) => ({
-    name: r.meta?.title || '',
-    value: r.name as string
-  }))
+  userRoutes
+    .filter((route) => {
+      if (!route.meta?.hideTabWithoutPermission || userData.value.role === UserRole.ADMIN) {
+        return true
+      }
+
+      const permission = route.meta.permission
+      return typeof permission === 'string' && userPermissions.value.includes(permission)
+    })
+    .map((route) => ({
+      name: route.meta?.title || '',
+      value: route.name as string
+    }))
 )
 
 watch(

@@ -3,8 +3,7 @@ import VueHook from 'alova/vue'
 import { axiosRequestAdapter } from '@alova/adapter-axios'
 import { createServerTokenAuthentication } from '@alova/scene-vue'
 import { ENV } from '@/utils/constants'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import _axios from 'axios'
+import axios from 'axios'
 import { useUserStore } from '@/stores/user'
 import { BUSINESS_ERROR_CODE } from '@reus-able/const'
 import { refreshToken } from './user'
@@ -32,7 +31,9 @@ const { onAuthRequired, onResponseRefreshToken } = createServerTokenAuthenticati
 
 const alovaInstance = createAlova({
   statesHook: VueHook,
-  requestAdapter: axiosRequestAdapter(),
+  requestAdapter: axiosRequestAdapter({
+    axios: axios.create({ withCredentials: true })
+  }),
   baseURL: ENV.API_URL,
   beforeRequest: onAuthRequired((method) => {
     const userStore = useUserStore()

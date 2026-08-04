@@ -63,9 +63,23 @@ const router = createRouter({
           redirect: { name: 'home' },
           children: [
             {
-              path: 'authorize',
+              path: 'interaction/:uid',
               name: 'authorize-index',
-              component: () => import('../views/callback/authorize-index.vue')
+              component: () => import('../views/callback/authorize-index.vue'),
+              meta: { role: UserRole.USER }
+            }
+          ]
+        },
+        {
+          path: 'external/callback',
+          name: 'external-callback',
+          component: FlexCenterLayout,
+          props: { type: 'router' },
+          children: [
+            {
+              path: '',
+              name: 'external-callback-result',
+              component: () => import('../views/oauth/ExternalCallbackView.vue')
             }
           ]
         }
@@ -95,7 +109,12 @@ router.beforeEach((to) => {
         [UserRole.USER]: userStore.hasLogin
       }
 
-      return authMap[route.meta.role as UserRole] || { name: 'login' }
+      return (
+        authMap[route.meta.role as UserRole] || {
+          name: 'login',
+          query: { return_to: to.fullPath }
+        }
+      )
     }
   }
 

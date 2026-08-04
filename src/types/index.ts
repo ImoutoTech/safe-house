@@ -1,5 +1,6 @@
 export * from './user'
 export * from './app'
+export * from './oauth'
 
 export interface Restful<T> {
   code: number

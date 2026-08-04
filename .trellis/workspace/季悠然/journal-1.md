@@ -26,3 +26,45 @@ Initialized Trellis across supported agent platforms, documented the existing Vu
 ### Status
 
 [OK] **Completed**
+
+
+## Session 2: 完成 OAuth 登录中心前端验收
+
+**Date**: 2026-08-04
+**Task**: 完成 OAuth 登录中心前端验收
+**Branch**: `codex/oauth-login-center-ui`
+
+### Summary
+
+完成普通用户权限、OIDC 批准拒绝、取消过期和桌面移动端浏览器矩阵验收。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `55c4e99` | (see git log) |
+
+### Status
+
+[OK] **Completed**
+
+
+## Session 3: Move provider management into user center
+
+**Date**: 2026-08-04
+**Task**: Move provider management into user center
+**Branch**: `codex/oauth-login-center-ui`
+
+### Summary
+
+Moved provider administration to /user/manage, added permission-aware user-center tab visibility, removed the pre-launch admin route, updated focused tests and OAuth UI contracts, and passed lint, type-check, and production build.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `2936ac3` | (see git log) |
+
+### Status
+
+[OK] **Completed**

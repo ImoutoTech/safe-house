@@ -10,6 +10,7 @@ These documents describe the current `safe-house` Vue 3 frontend. They are evide
 | [State Management](./state-management.md) | Local state, Pinia, persistence, server state, and URL state |
 | [Type Safety](./type-safety.md) | Domain/transport types and typed API/component boundaries |
 | [Quality Guidelines](./quality-guidelines.md) | Validation commands, review checks, permissions, and accessibility |
+| [OAuth / OIDC UI](./oauth-ui-guidelines.md) | Callback outcomes, session/binding state, Provider admin, interaction navigation, and browser checks |
 
 The repository is a single-package Vue 3 + TypeScript application built with Vite. Its primary runtime libraries are Naive UI, Alova, Pinia, Vue Router, and VueUse.
 

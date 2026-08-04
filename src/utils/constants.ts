@@ -130,10 +130,7 @@ export const PERMISSION_LIST = [
   }
 ]
 
-export const PERMISSION_CODE_MAP = PERMISSION_LIST.reduce<Record<string, string>>(
-  (acc, curr) => {
-    acc[curr.name] = curr.code
-    return acc
-  },
-  {}
-)
+export const PERMISSION_CODE_MAP = PERMISSION_LIST.reduce<Record<string, string>>((acc, curr) => {
+  acc[curr.name] = curr.code
+  return acc
+}, {})

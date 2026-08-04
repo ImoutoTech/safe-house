@@ -26,7 +26,30 @@
       <template #header>
         <n-flex justify="space-between">
           <n-input v-bind="searchBindings" class="search-input" placeholder="按名称搜索" />
-          <n-button v-permission="PERMISSION_CODE_MAP['新建子应用']" tertiary type="info" @click="createVisible = true">创建子应用</n-button>
+          <n-flex class="guide-actions" :wrap="false">
+            <n-tooltip>
+              <template #trigger>
+                <n-button
+                  class="guide-button"
+                  tertiary
+                  aria-label="查看 OIDC / SSO 接入说明"
+                  @click="guideVisible = true"
+                >
+                  <template #icon>
+                    <n-icon :component="InformationCircleOutline" />
+                  </template>
+                </n-button>
+              </template>
+              OIDC / SSO 接入说明
+            </n-tooltip>
+            <n-button
+              v-permission="PERMISSION_CODE_MAP['新建子应用']"
+              tertiary
+              type="info"
+              @click="createVisible = true"
+              >创建子应用</n-button
+            >
+          </n-flex>
         </n-flex>
       </template>
     </n-list>
@@ -34,10 +57,13 @@
   <create-user-app v-model:visible="createVisible" @create="refresh"></create-user-app>
   <update-user-app v-model:visible="editVisible" :app="editApp" @update="refresh"></update-user-app>
   <user-app-secret v-model:visible="secretVisible" :app="editApp"></user-app-secret>
+  <oidc-integration-guide v-model:visible="guideVisible"></oidc-integration-guide>
 </template>
 <script lang="ts" setup>
 import type { AppInfo } from '@/types'
+import { InformationCircleOutline } from '@vicons/ionicons5'
 import CreateUserApp from '../components/create-user-app.vue'
+import OidcIntegrationGuide from '../components/oidc-integration-guide.vue'
 import UpdateUserApp from '../components/update-user-app.vue'
 import UserAppSecret from '../components/user-app-secret.vue'
 import UserAppItem from '../components/user-app-item.vue'
@@ -52,6 +78,7 @@ const { refresh, pageBindings, searchBindings, loading, data } = useAppList()
 const createVisible = ref(false)
 const editVisible = ref(false)
 const secretVisible = ref(false)
+const guideVisible = ref(false)
 const editApp = ref<AppInfo>()
 
 const handleEditApp = (app: AppInfo) => {
@@ -84,8 +111,20 @@ const handleInspectSecret = (app: AppInfo) => {
     width: 300px;
 
     @media (max-width: 768px) {
-      width: calc(100% - 120px);
+      flex: 1;
+      width: auto;
+      min-width: 0;
     }
+  }
+
+  .guide-actions {
+    flex-shrink: 0;
+  }
+
+  .guide-button {
+    width: 34px;
+    padding: 0;
+    border-radius: 3px;
   }
 }
 </style>

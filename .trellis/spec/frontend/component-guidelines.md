@@ -37,6 +37,7 @@ Naive UI forms use a typed `FormInst` ref, a rules object, and `validate` before
 - Use class selectors and local SCSS nesting. Use `:deep()` only to target library internals, as in `src/views/user/pages/user-app.vue`.
 - Existing responsive layout uses a `768px` breakpoint in `BaseLayout.vue`, `user-app.vue`, and `user/view-index.vue`.
 - Modals include `role="dialog"` and `aria-modal="true"`; preserve this pattern. Icon-only or ambiguous actions should retain tooltip/visible context, as in `user-app-item.vue` and `user-app-secret.vue`.
+- Large viewport-filling modals must keep their footer actions inside the mobile visual viewport. Provide a `vh` fallback followed by the equivalent `dvh` height, make the content area flex with `min-height: 0`, and let the content scroll independently instead of allowing a dynamic browser toolbar to cover the modal footer.
 
 ## Avoid
 
