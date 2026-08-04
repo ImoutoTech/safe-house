@@ -46,6 +46,8 @@ Inspect the lint diff because the command applies fixes. Also verify no sensitiv
 - [ ] Complete ordinary-user provider-admin denial, approve/deny, cancellation/expiry, and desktop/mobile browser cases.
 - [ ] Record the matching backend/frontend commits after the isolated migration and complete relying-party OIDC flow pass.
 
+Acceptance follow-up (2026-08-04): `pnpm type-check`, `pnpm lint`, and `pnpm build` pass. Static coverage confirms the provider-admin route requires `oauth-provider-admin`, and callback rendering includes distinct cancellation and expired-state outcomes. The backend standard-client S256/wrong-verifier/replay flow passes under Node `v22.13.0`, and the post-fix disposable MySQL revert/run plus final applied-state check pass without logging SQL, parameters, or secrets. Chrome browser checks at 1280×800 and 390×844 verified unauthenticated `/admin/providers` denial, OIDC interaction redirect to login with the complete `return_to`, terminal invalid/cancelled-or-expired guidance when the callback result is missing, and no horizontal overflow in the callback card or login form at 390px. Redis database 1 is now configured and distinct from every configured non-test target. Authenticated ordinary-user denial, live approve/deny, and separate backend-produced `cancelled`/`state_invalid_or_expired` responses remain blocked because execution policy rejected backend startup against the external disposable MySQL and Redis endpoints before ephemeral accounts or session state could be created; no acceptance mutation occurred.
+
 ## Pre-start checks
 
 - [ ] PRD/design/implementation artifacts are approved.
