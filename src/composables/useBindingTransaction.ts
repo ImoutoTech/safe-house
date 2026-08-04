@@ -9,6 +9,14 @@ export const useBindingTransaction = () => {
     bindingToken.value = ''
     return token
   }
+  const clearBindingToken = () => {
+    bindingToken.value = ''
+  }
 
-  return { bindingToken: readonly(bindingToken), setBindingToken, consumeBindingToken }
+  return {
+    bindingToken: readonly(bindingToken),
+    setBindingToken,
+    consumeBindingToken,
+    clearBindingToken
+  }
 }

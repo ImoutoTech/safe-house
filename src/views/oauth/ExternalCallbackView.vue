@@ -8,12 +8,12 @@ defineOptions({ name: 'ExternalCallbackView' })
 const route = useRoute()
 const router = useRouter()
 const resultId = typeof route.query.result === 'string' ? route.query.result : ''
-const status = shallowRef<'loading' | 'authenticated' | 'bound' | 'binding' | 'email' | 'error'>(
-  'loading'
-)
+const status = shallowRef<
+  'loading' | 'authenticated' | 'bound' | 'unbound' | 'binding' | 'email' | 'error'
+>('loading')
 const description = shallowRef('正在完成外部登录…')
 const { finish } = useExternalCallback()
-const { setBindingToken } = useBindingTransaction()
+const { setBindingToken, clearBindingToken } = useBindingTransaction()
 const userStore = useUserStore()
 const wasLoggedIn = userStore.hasLogin
 
@@ -36,6 +36,11 @@ onMounted(async () => {
       status.value = 'bound'
       description.value = '身份绑定成功，正在返回登录方式设置…'
       await router.replace({ name: 'user-identities' })
+    } else if (result.outcome === 'identity_not_bound') {
+      clearBindingToken()
+      status.value = 'unbound'
+      description.value =
+        '此提供方账号尚未绑定本地账号。请先使用本地账号登录，再到“登录方式”设置中重新发起绑定。'
     } else if (result.outcome === 'binding_required') {
       setBindingToken(result.bindingToken)
       status.value = 'binding'

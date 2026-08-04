@@ -14,6 +14,7 @@ export interface ProviderProjection {
 export type ExternalCallbackOutcome =
   | { outcome: 'authenticated'; token: string; refresh: string; user: UserInfo }
   | { outcome: 'bound'; user: UserInfo }
+  | { outcome: 'identity_not_bound' }
   | { outcome: 'binding_required'; bindingToken: string }
   | { outcome: 'verified_email_required' }
   | { outcome: 'cancelled' }
