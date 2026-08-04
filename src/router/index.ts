@@ -82,12 +82,6 @@ const router = createRouter({
               component: () => import('../views/oauth/ExternalCallbackView.vue')
             }
           ]
-        },
-        {
-          path: 'admin/providers',
-          name: 'provider-admin',
-          component: () => import('../views/admin/ProviderAdminView.vue'),
-          meta: { permission: 'oauth-provider-admin' }
         }
       ]
     }

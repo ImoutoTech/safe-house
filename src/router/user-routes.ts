@@ -26,5 +26,15 @@ export const userRoutes: RouteRecordRaw[] = [
     path: 'identities',
     component: () => import('@/views/user/pages/user-identities.vue'),
     meta: { title: '🔗 登录方式', role: UserRole.USER }
+  },
+  {
+    name: 'user-manage',
+    path: 'manage',
+    component: () => import('@/views/user/pages/user-manage.vue'),
+    meta: {
+      title: '🛠️ 管理',
+      permission: 'oauth-provider-admin',
+      hideTabWithoutPermission: true
+    }
   }
 ]

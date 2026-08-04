@@ -12,6 +12,7 @@ Use this contract for external login/callback, identity binding, provider admini
 - Exchange: `GET /external/result/:id` with credentials; the result is single-use.
 - Identity APIs: `/external/identities/me`, `/external/identities/:provider/start`, `/external/identities/bind`, `/external/identities/:id`.
 - Provider admin APIs: `/external/admin/providers` and `/external/admin/providers/:provider`.
+- Provider admin UI route: `/user/manage`, nested under the user-center layout.
 - Interaction APIs: `GET|POST /oauth/interaction/:uid`; POST returns `{ continuationUrl }`.
 
 ### 3. Contracts
@@ -21,6 +22,7 @@ Use this contract for external login/callback, identity binding, provider admini
 - Never persist opaque callback result IDs, binding tokens, provider tokens, client secrets, code verifiers, nonce, or interaction UIDs beyond the active flow.
 - Callback outcomes include `authenticated`, `bound`, `binding_required`, `verified_email_required`, `cancelled`, `state_invalid_or_expired`, `provider_disabled`, `provider_misconfigured`, and `provider_error`.
 - Admin client secret is write-only: start blank, omit when unchanged, and clear component memory immediately after submit.
+- The provider-management tab and `/user/manage` route share the existing access semantics: allow `UserRole.ADMIN` or users with `oauth-provider-admin`; hiding the tab never replaces route protection.
 - Navigate to `continuationUrl` only after it is returned by the authenticated backend interaction completion; never construct a relying-party callback from route query data.
 
 ### 4. Validation & Error Matrix
@@ -42,7 +44,7 @@ Use this contract for external login/callback, identity binding, provider admini
 
 - Type/build/lint for every change.
 - Focused tests when a runner exists: result exchange/replay, discriminated outcomes, session rotation, return-path normalization, secret clearing, permissions, and interaction continuation.
-- Browser matrix: password/GitHub/Google login, collision/binding/unbinding, approve/deny/cancel/expiry, admin/non-admin, cross-origin cookie behavior, 768px mobile layout, and keyboard/error accessibility.
+- Browser matrix: password/GitHub/Google login, collision/binding/unbinding, approve/deny/cancel/expiry, provider-admin permission/admin/non-admin tab and direct-route access, cross-origin cookie behavior, 768px mobile layout, and keyboard/error accessibility.
 
 ### 7. Wrong vs Correct
 

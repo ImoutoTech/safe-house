@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useProviderAdmin } from '@/composables/useProviderAdmin'
-import ProviderConfigCard from './ProviderConfigCard.vue'
+import ProviderConfigCard from '../components/provider-config-card.vue'
 
-defineOptions({ name: 'ProviderAdminView' })
+defineOptions({ name: 'UserManage' })
 const { providers, loading, error, save, refresh } = useProviderAdmin()
 </script>
 
@@ -24,7 +24,6 @@ const { providers, loading, error, save, refresh } = useProviderAdmin()
 
 <style scoped>
 .provider-page {
-  width: min(92vw, 900px);
-  margin: 48px auto;
+  width: 100%;
 }
 </style>

@@ -4,18 +4,29 @@ import test from 'node:test'
 import type { ProviderProjection } from '../src/types/oauth.js'
 import { projectAdminProviders } from '../src/utils/providerAdmin.js'
 
-test('relies on the protected admin route instead of hiding the save action again', () => {
+test('nests provider management under the protected user management route', () => {
   const cardSource = readFileSync(
-    new URL('../src/views/admin/ProviderConfigCard.vue', import.meta.url),
+    new URL('../src/views/user/components/provider-config-card.vue', import.meta.url),
     'utf8'
   )
   const routerSource = readFileSync(new URL('../src/router/index.ts', import.meta.url), 'utf8')
+  const userRoutesSource = readFileSync(
+    new URL('../src/router/user-routes.ts', import.meta.url),
+    'utf8'
+  )
+  const userViewSource = readFileSync(
+    new URL('../src/views/user/view-index.vue', import.meta.url),
+    'utf8'
+  )
 
   assert.doesNotMatch(cardSource, /v-permission/)
+  assert.doesNotMatch(routerSource, /path:\s*['"]admin\/providers['"]/)
   assert.match(
-    routerSource,
-    /path:\s*['"]admin\/providers['"][\s\S]*?permission:\s*['"]oauth-provider-admin['"]/m
+    userRoutesSource,
+    /path:\s*['"]manage['"][\s\S]*?permission:\s*['"]oauth-provider-admin['"]/m
   )
+  assert.match(userViewSource, /userData\.value\.role\s*===\s*UserRole\.ADMIN/)
+  assert.match(userViewSource, /userPermissions\.value\.includes\(permission\)/)
 })
 
 test('projects safe GitHub and Google drafts when the backend has no records', () => {
