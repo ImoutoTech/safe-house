@@ -12,6 +12,7 @@ export const normalizeLocalReturnTo = (value: unknown, fallback = '/user') => {
 
 export const useExternalLogin = () => {
   const providersRequest = useRequest(getEnabledProviders)
+  const activeProvider = shallowRef<ExternalProvider | null>(null)
   const startRequest = useRequest(
     ({ provider, returnTo }: { provider: ExternalProvider; returnTo: string }) =>
       startExternalLogin(provider, returnTo),
@@ -24,16 +25,22 @@ export const useExternalLogin = () => {
   )
 
   const start = async (provider: ExternalProvider, returnTo: string) => {
+    if (activeProvider.value) return
+
+    activeProvider.value = provider
     try {
       const response = await startRequest.send({ provider, returnTo })
       window.location.assign(response.data.authorizationUrl)
     } catch (error) {
       message.error(error instanceof Error ? error.message : '无法发起外部登录')
+    } finally {
+      activeProvider.value = null
     }
   }
 
   return {
     providers: enabledProviders,
+    activeProvider: readonly(activeProvider),
     loading: computed(() => providersRequest.loading.value || startRequest.loading.value),
     error: computed(() => providersRequest.error.value || startRequest.error.value),
     start
