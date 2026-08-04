@@ -66,7 +66,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <n-card class="callback-card">
+  <n-card class="callback-card" :bordered="false">
     <n-result
       :status="status === 'authenticated' ? 'success' : status === 'loading' ? 'info' : 'warning'"
       :title="status === 'loading' ? '处理中' : '外部登录结果'"
