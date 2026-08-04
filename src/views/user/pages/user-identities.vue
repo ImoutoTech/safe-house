@@ -14,6 +14,11 @@ const linkedProviders = computed(() => new Set(identities.value.map((item) => it
 const availableProviders = computed(() =>
   providers.value.filter((item) => !linkedProviders.value.has(item.provider))
 )
+const providerLabel = (provider: string) => {
+  if (provider === 'github') return 'GitHub'
+  if (provider === 'google') return 'Google'
+  return provider
+}
 
 const confirmUnbind = (identity: LinkedIdentity) => {
   dialog.warning({
@@ -27,40 +32,98 @@ const confirmUnbind = (identity: LinkedIdentity) => {
 </script>
 
 <template>
-  <n-spin :show="loading">
+  <n-spin class="identity-page" :show="loading">
     <n-flex v-if="error" vertical align="start">
       <n-alert type="error" title="身份操作失败">{{ error.message }}</n-alert>
       <n-button @click="refresh()">重试</n-button>
     </n-flex>
-    <n-empty v-else-if="!identities.length" description="尚未绑定外部身份" />
-    <n-list v-else bordered>
-      <n-list-item v-for="identity in identities" :key="identity.id">
-        <n-thing
-          :title="identity.provider"
-          :description="identity.email || identity.displayName || '已绑定'"
-        />
+    <n-empty
+      v-else-if="!identities.length && !availableProviders.length"
+      description="暂无可用的外部登录方式"
+    />
+    <n-list v-else :bordered="false">
+      <n-list-item
+        v-for="identity in identities"
+        :key="`linked-${identity.id}`"
+        class="identity-line identity-line--hierarchy"
+      >
+        <div class="identity-line__copy">
+          <strong class="identity-line__provider">{{ providerLabel(identity.provider) }}</strong>
+          <span class="identity-line__separator" aria-hidden="true">·</span>
+          <span class="identity-line__account">{{
+            identity.email || identity.displayName || '已绑定'
+          }}</span>
+        </div>
         <template #suffix>
           <n-button type="error" text :disabled="loading" @click="confirmUnbind(identity)"
             >解绑</n-button
           >
         </template>
       </n-list-item>
-    </n-list>
-    <n-flex class="bind-actions" wrap>
-      <n-button
+      <n-list-item
         v-for="provider in availableProviders"
-        :key="provider.provider"
-        :disabled="loading"
-        @click="startBinding(provider.provider, route.fullPath)"
+        :key="`available-${provider.provider}`"
+        class="identity-line identity-line--hierarchy"
       >
-        绑定 {{ provider.provider }}
-      </n-button>
-    </n-flex>
+        <div class="identity-line__copy">
+          <strong class="identity-line__provider">{{ providerLabel(provider.provider) }}</strong>
+          <span class="identity-line__separator" aria-hidden="true">·</span>
+          <span class="identity-line__account">未绑定</span>
+        </div>
+        <template #suffix>
+          <n-button
+            type="primary"
+            text
+            :disabled="loading"
+            @click="startBinding(provider.provider, route.fullPath)"
+            >去绑定</n-button
+          >
+        </template>
+      </n-list-item>
+    </n-list>
   </n-spin>
 </template>
 
 <style scoped>
-.bind-actions {
-  margin-top: 16px;
+.identity-page {
+  display: block;
+  margin-top: 12px;
+}
+
+.identity-line {
+  min-height: 52px;
+  padding-block: 10px;
+}
+
+.identity-line__copy {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.identity-line__provider {
+  color: rgb(31, 34, 37);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.identity-line__separator,
+.identity-line__account {
+  color: rgb(118, 124, 130);
+}
+
+@media (max-width: 560px) {
+  .identity-line__copy {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .identity-line__separator {
+    display: none;
+  }
 }
 </style>
