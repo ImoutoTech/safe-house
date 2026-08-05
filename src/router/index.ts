@@ -54,7 +54,7 @@ const router = createRouter({
           ]
         },
         {
-          path: 'oauth',
+          path: 'authorize',
           name: 'oauth-layout',
           component: FlexCenterLayout,
           props: {
