@@ -14,6 +14,7 @@ Use this contract for external login/callback, identity binding, provider admini
 - Provider admin APIs: `/external/admin/providers` and `/external/admin/providers/:provider`.
 - Provider admin UI route: `/user/manage`, nested under the user-center layout.
 - Interaction APIs: `GET|POST /oauth/interaction/:uid`; POST returns `{ continuationUrl }`.
+- Interaction page route: `/authorize/interaction/:uid`; keep it outside the `/oauth` API proxy prefix.
 
 ### 3. Contracts
 
