@@ -37,8 +37,10 @@ test('serves the original guide from the public directory', () => {
   const guideSource = readFileSync(guideUrl, 'utf8')
   assert.equal(
     createHash('sha256').update(guideSource).digest('hex'),
-    '0fe3706d987aecc32bf575fc8e8fa2708aadb70b474cbc78570dfe9316d4d0b6'
+    '30ce3e5af547b6502f004bdf807f6b20ecbd0951640338f9ca0ee0ecee6751db'
   )
+  assert.match(guideSource, /https:\/\/sf\.imouto\.tech\/oidc/)
+  assert.doesNotMatch(guideSource, /h\.exia\.xyz/)
   assert.match(dialogSource, /import\.meta\.env\.BASE_URL}third-party-oidc-integration-guide\.html/)
   assert.match(dialogSource, /<iframe[^>]*:src="guidePath"/)
 })
