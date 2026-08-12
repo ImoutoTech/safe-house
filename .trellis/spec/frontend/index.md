@@ -11,6 +11,7 @@ These documents describe the current `safe-house` Vue 3 frontend. They are evide
 | [Type Safety](./type-safety.md) | Domain/transport types and typed API/component boundaries |
 | [Quality Guidelines](./quality-guidelines.md) | Validation commands, review checks, permissions, and accessibility |
 | [OAuth / OIDC UI](./oauth-ui-guidelines.md) | Callback outcomes, session/binding state, Provider admin, interaction navigation, and browser checks |
+| [Notification Administration UI](./notification-ui-guidelines.md) | SMTP/template/policy administration, owner Keys, least-privilege reads, and ephemeral secret handling |
 
 The repository is a single-package Vue 3 + TypeScript application built with Vite. Its primary runtime libraries are Naive UI, Alova, Pinia, Vue Router, and VueUse.
 

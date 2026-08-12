@@ -3,8 +3,8 @@ import type { ExternalProvider, ProviderUpdate } from '@/types'
 import { projectAdminProviders } from '@/utils/providerAdmin'
 import { useRequest } from 'alova'
 
-export const useProviderAdmin = () => {
-  const listRequest = useRequest(getAdminProviders)
+export const useProviderAdmin = (immediate = true) => {
+  const listRequest = useRequest(getAdminProviders, { immediate })
   const saveRequest = useRequest(
     ({ provider, data }: { provider: ExternalProvider; data: ProviderUpdate }) =>
       updateAdminProvider(provider, data),

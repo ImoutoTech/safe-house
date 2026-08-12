@@ -134,3 +134,9 @@ export const PERMISSION_CODE_MAP = PERMISSION_LIST.reduce<Record<string, string>
   acc[curr.name] = curr.code
   return acc
 }, {})
+
+export const NOTIFICATION_PERMISSION = {
+  channel: 'notification-channel-admin',
+  template: 'notification-template-admin',
+  policy: 'notification-policy-admin'
+} as const

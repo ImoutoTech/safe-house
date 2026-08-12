@@ -1,8 +1,8 @@
 <template>
   <n-modal v-model:show="visible">
     <n-card
-      class="common-dialog"
-      title="子应用秘钥"
+      class="common-dialog credential-dialog"
+      title="子应用凭据"
       :bordered="false"
       role="dialog"
       aria-modal="true"
@@ -14,7 +14,10 @@
         </div>
 
         <n-flex justify="space-between" align="center">
-          <n-text strong>秘钥</n-text>
+          <div>
+            <n-text strong>OIDC Client Secret</n-text>
+            <n-text class="credential-description" depth="3">用于 OIDC 客户端认证。</n-text>
+          </div>
           <n-button
             v-permission="PERMISSION_CODE_MAP['修改子应用']"
             text
@@ -72,6 +75,7 @@
             <n-empty v-if="!secrets.length" class="user-app-secrets-empty">暂无秘钥</n-empty>
           </n-list>
         </n-spin>
+        <NotificationApiKeys v-if="app" :app-id="app.id" :active="Boolean(visible)" />
       </n-flex>
     </n-card>
   </n-modal>
@@ -81,6 +85,7 @@ import { useAppSecret } from '@/composables/useAppSecret'
 import { TrashOutline } from '@vicons/ionicons5'
 import { type AppInfo } from '@/types'
 import { PERMISSION_CODE_MAP } from '@/utils/constants'
+import NotificationApiKeys from './notification-api-keys.vue'
 
 defineOptions({
   name: 'UserAppSecret'
@@ -114,5 +119,22 @@ watch(
 
 .user-app-secrets-empty {
   margin: 20px 0;
+}
+
+.credential-description {
+  display: block;
+  margin-top: 4px;
+}
+
+.credential-dialog {
+  display: flex;
+  width: min(640px, 95vw);
+  max-height: 90vh;
+  max-height: 90dvh;
+}
+
+.credential-dialog :deep(.n-card__content) {
+  min-height: 0;
+  overflow-y: auto;
 }
 </style>
