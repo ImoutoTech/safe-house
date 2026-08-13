@@ -68,3 +68,24 @@ Moved provider administration to /user/manage, added permission-aware user-cente
 ### Status
 
 [OK] **Completed**
+
+
+## Session 4: 增加通知服务接入指南
+
+**Date**: 2026-08-13
+**Task**: 增加通知服务接入指南
+**Branch**: `codex/unified-notification-service`
+
+### Summary
+
+将子应用 OIDC 接入弹窗升级为统一接入说明，增加登录接入与通知服务 Tab、动态复制和下载，并新增与 H 契约一致的完整通知服务 HTML 指南。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `920ce88` | (see git log) |
+
+### Status
+
+[OK] **Completed**
