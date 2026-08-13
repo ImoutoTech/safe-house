@@ -52,7 +52,16 @@ const tabList = computed(() =>
       }
 
       const permission = route.meta.permission
-      return typeof permission === 'string' && userPermissions.value.includes(permission)
+      if (typeof permission === 'string') return userPermissions.value.includes(permission)
+
+      const permissions = route.meta.permissions
+      return (
+        Array.isArray(permissions) &&
+        permissions.some(
+          (permission) =>
+            typeof permission === 'string' && userPermissions.value.includes(permission)
+        )
+      )
     })
     .map((route) => ({
       name: route.meta?.title || '',

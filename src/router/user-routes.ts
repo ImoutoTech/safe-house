@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
-import { PERMISSION_CODE_MAP } from '@/utils/constants'
+import { NOTIFICATION_PERMISSION, PERMISSION_CODE_MAP } from '@/utils/constants'
 import { UserRole } from '@reus-able/types'
 
 export const userRoutes: RouteRecordRaw[] = [
@@ -33,7 +33,12 @@ export const userRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/user/pages/user-manage.vue'),
     meta: {
       title: '🛠️ 管理',
-      permission: 'oauth-provider-admin',
+      permissions: [
+        'oauth-provider-admin',
+        NOTIFICATION_PERMISSION.channel,
+        NOTIFICATION_PERMISSION.template,
+        NOTIFICATION_PERMISSION.policy
+      ],
       hideTabWithoutPermission: true
     }
   }

@@ -103,6 +103,13 @@ router.beforeEach((to) => {
       }
     }
 
+    if (Array.isArray(route.meta.permissions)) {
+      const hasPermission = route.meta.permissions.some(
+        (permission) => typeof permission === 'string' && useHasPermission(permission)
+      )
+      if (!hasPermission) return { name: 'home' }
+    }
+
     if (route.meta.role) {
       const authMap = {
         [UserRole.ADMIN]: false,
