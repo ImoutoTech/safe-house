@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>H 通知服务接入指南</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7f7;
+      --surface: #ffffff;
+      --text: #182023;
+      --muted: #5c686c;
+      --line: #dce3e4;
+      --accent: #08736a;
+      --accent-soft: #e5f3f0;
+      --code: #f8faf9;
+      --code-label: #eef3f2;
+      --code-text: #243033;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+    main { width: min(820px, calc(100% - 32px)); margin: 0 auto; padding: 56px 0 72px; }
+    header { margin-bottom: 40px; }
+    h1 { margin: 0 0 10px; font-size: 36px; line-height: 1.2; letter-spacing: 0; }
+    h2 { margin: 42px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); font-size: 22px; letter-spacing: 0; }
+    h3 { margin: 26px 0 10px; font-size: 17px; letter-spacing: 0; }
+    p { margin: 9px 0; }
+    .lead { color: var(--muted); font-size: 17px; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    p code, li code, td code { padding: 2px 5px; border-radius: 3px; background: var(--accent-soft); font-size: 0.9em; }
+    table { width: 100%; margin: 14px 0; border-collapse: collapse; background: var(--surface); }
+    th, td { padding: 10px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #f3f6f5; color: #394649; font-size: 13px; }
+    td:first-child { width: 31%; }
+    .note { margin: 16px 0; padding: 13px 15px; border-left: 3px solid var(--accent); background: var(--accent-soft); }
+    ol, ul { padding-left: 22px; }
+    li { margin: 7px 0; }
+    .code-block { margin: 12px 0 22px; overflow: hidden; border: 1px solid var(--line); border-radius: 5px; background: var(--code); }
+    .code-label { padding: 7px 14px; border-bottom: 1px solid var(--line); background: var(--code-label); color: var(--muted); font-size: 12px; }
+    pre { margin: 0; padding: 16px; overflow-x: auto; color: var(--code-text); font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+    @media (max-width: 560px) {
+      main { width: min(100% - 24px, 820px); padding-top: 32px; }
+      h1 { font-size: 29px; }
+      table { display: block; overflow-x: auto; }
+      td:first-child { width: auto; }
+      pre { font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>H 通知服务接入指南</h1>
+      <p class="lead">子应用通过服务端 API 向 H 用户或指定 Email 地址发送受控通知，并查询异步投递状态。</p>
+    </header>
+
+    <section>
+      <h2>1. 准备 Notification Key</h2>
+      <ol>
+        <li>在 H 的子应用管理中打开目标应用，创建“通知 API Key”。</li>
+        <li>创建响应中的明文只显示一次，请立即存入服务端密钥管理系统。</li>
+        <li>通过环境变量注入运行环境，不要写入源码、前端包、日志、URL 或版本库。</li>
+        <li>Key 泄露时立即在 H 中停用或吊销，并签发新 Key 完成轮换。</li>
+      </ol>
+      <div class="note">Notification Key 仅用于通知 API，不是 OIDC Client Secret，也不能在浏览器中调用。本文所有值均为占位符，不含真实密钥。</div>
+      <div class="code-block"><div class="code-label">.env</div><pre><code>H_BASE_URL=https://sf.imouto.tech
+H_NOTIFICATION_KEY=replace-with-your-notification-key</code></pre></div>
+    </section>
+
+    <section>
+      <h2>2. API 概览</h2>
+      <table>
+        <thead><tr><th>项目</th><th>值或说明</th></tr></thead>
+        <tbody>
+          <tr><td>创建通知</td><td><code>POST https://sf.imouto.tech/v1/notifications</code></td></tr>
+          <tr><td>查询状态</td><td><code>GET https://sf.imouto.tech/v1/notifications/:id</code></td></tr>
+          <tr><td>认证</td><td><code>Authorization: NotificationKey &lt;value&gt;</code></td></tr>
+          <tr><td>请求格式</td><td><code>Content-Type: application/json</code></td></tr>
+        </tbody>
+      </table>
+      <p>成功响应统一包装为 <code>{ "code": 0, "msg": "success", "data": ... }</code>。创建通知时，<code>data</code> 为 <code>{ "notificationId": "..." }</code>。创建仅表示 H 已接受并排队处理，不代表 Email 已送达。</p>
+    </section>
+
+    <section>
+      <h2>3. 收件人</h2>
+      <p><code>recipients</code> 为数组。推荐使用 H 的 SSO 用户 ID；H 会解析该用户当前绑定的 Email。</p>
+      <div class="code-block"><div class="code-label">SSO 用户与手动 Email</div><pre><code>{
+  "recipients": [
+    { "kind": "user", "userId": 123 },
+    { "kind": "email", "email": "recipient@example.com" }
+  ]
+}</code></pre></div>
+      <ul>
+        <li><code>kind: "user"</code> 只传正整数 <code>userId</code>，不要同时传 <code>email</code>。</li>
+        <li><code>kind: "email"</code> 只传合法 <code>email</code>，不要同时传 <code>userId</code>。</li>
+        <li>手动 Email 收件人必须由管理员在该应用的通知策略中允许，否则返回 <code>403</code>。</li>
+        <li>解析和去重后每次最多 20 个 Email 收件人；建议调用方自行分批。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4. 使用模板发送</h2>
+      <p>模板由 H 管理员维护。应用只能使用策略授予且已启用的模板；变量名和值都必须符合模板声明。<code>templateKey</code> 以小写字母开头，可使用小写字母、数字以及分段用的 <code>.</code> 或 <code>-</code>；示例 <code>account-alert</code> 是有效值。</p>
+      <div class="code-block"><div class="code-label">cURL · 模板内容</div><pre><code>curl --request POST "$H_BASE_URL/v1/notifications" \
+  --header "Authorization: NotificationKey $H_NOTIFICATION_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "recipients": [
+      { "kind": "user", "userId": 123 }
+    ],
+    "content": {
+      "kind": "template",
+      "templateKey": "account-alert",
+      "variables": {
+        "name": "示例用户",
+        "action": "查看详情"
+      }
+    },
+    "idempotencyKey": "account-alert-event-20260813-001"
+  }'</code></pre></div>
+      <div class="note">模板请求只能包含 <code>templateKey</code> 和 <code>variables</code>，不要同时提交 <code>subject</code>、<code>text</code> 或 <code>html</code>。</div>
+    </section>
+
+    <section>
+      <h2>5. 直接提交内容</h2>
+      <p>仅当管理员为应用开启“允许直接内容”时可用。<code>subject</code> 和 <code>text</code> 必填，<code>html</code> 可选；H 会按服务端规则清理 HTML。</p>
+      <div class="code-block"><div class="code-label">cURL · 直接内容与手动 Email</div><pre><code>curl --request POST "$H_BASE_URL/v1/notifications" \
+  --header "Authorization: NotificationKey $H_NOTIFICATION_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "recipients": [
+      { "kind": "email", "email": "recipient@example.com" }
+    ],
+    "content": {
+      "kind": "content",
+      "subject": "任务处理完成",
+      "text": "你的任务已经处理完成，请登录系统查看。",
+      "html": "&lt;p&gt;你的任务已经处理完成，请登录系统查看。&lt;/p&gt;"
+    },
+    "idempotencyKey": "task-finished-20260813-001"
+  }'</code></pre></div>
+      <div class="note">直接内容和手动 Email 是两项独立策略能力。示例同时使用两者，因此应用必须同时获准；无权限时应联系 H 管理员调整策略。</div>
+    </section>
+
+    <section>
+      <h2>6. TypeScript / JavaScript 示例</h2>
+      <div class="code-block"><div class="code-label">notification.ts · Node.js 18+</div><pre><code>const baseUrl = process.env.H_BASE_URL ?? 'https://sf.imouto.tech';
+const notificationKey = process.env.H_NOTIFICATION_KEY;
+
+if (!notificationKey) throw new Error('H_NOTIFICATION_KEY is required');
+
+async function hRequest(path: string, init: RequestInit = {}) {
+  const response = await fetch(`${baseUrl}${path}`, {
+    ...init,
+    headers: {
+      Authorization: `NotificationKey ${notificationKey}`,
+      'Content-Type': 'application/json',
+      ...init.headers,
+    },
+  });
+
+  const body = await response.json() as {
+    code: number;
+    msg: string;
+    data: unknown;
+  };
+  if (!response.ok) {
+    throw new Error(`H notification API ${response.status}: ${JSON.stringify(body)}`);
+  }
+  return body.data;
+}
+
+export async function sendAccountAlert(userId: number, eventId: string) {
+  return hRequest('/v1/notifications', {
+    method: 'POST',
+    body: JSON.stringify({
+      recipients: [{ kind: 'user', userId }],
+      content: {
+        kind: 'template',
+        templateKey: 'account-alert',
+        variables: { name: '示例用户', action: '查看详情' },
+      },
+      idempotencyKey: `account-alert-${eventId}`,
+    }),
+  }) as Promise&lt;{ notificationId: string }&gt;;
+}
+
+export async function getNotificationStatus(notificationId: string) {
+  return hRequest(`/v1/notifications/${encodeURIComponent(notificationId)}`);
+}</code></pre></div>
+    </section>
+
+    <section>
+      <h2>7. 幂等与状态查询</h2>
+      <p><code>idempotencyKey</code> 可选，长度为 1–191 个字符。建议使用业务事件类型与不可变事件 ID 组合，并在网络超时重试时复用同一个值。</p>
+      <ul>
+        <li>同一 Key 与相同通知内容重复提交：返回原 <code>notificationId</code>，不会重复创建。</li>
+        <li>同一 Key 用于不同收件人或内容：返回 <code>409 notification_idempotency_conflict</code>。</li>
+        <li>不要为每次重试随机生成新 Key，否则无法防止重复通知。</li>
+      </ul>
+      <div class="code-block"><div class="code-label">cURL · 查询状态</div><pre><code>curl "$H_BASE_URL/v1/notifications/$NOTIFICATION_ID" \
+  --header "Authorization: NotificationKey $H_NOTIFICATION_KEY"</code></pre></div>
+      <div class="code-block"><div class="code-label">状态响应示例</div><pre><code>{
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "notificationId": "00000000-0000-4000-8000-000000000000",
+    "status": "partial_failed",
+    "total": 2,
+    "sent": 1,
+    "failed": 1,
+    "pending": 0,
+    "errorClasses": { "recipient_rejected": 1 },
+    "createdAt": "2026-08-13T08:00:00.000Z",
+    "updatedAt": "2026-08-13T08:01:00.000Z"
+  }
+}</code></pre></div>
+      <p><code>status</code> 可能为 <code>pending</code>、<code>processing</code>、<code>sent</code>、<code>partial_failed</code> 或 <code>failed</code>。仅 <code>sent</code>、<code>partial_failed</code>、<code>failed</code> 是终态。</p>
+    </section>
+
+    <section>
+      <h2>8. 常见 HTTP 错误</h2>
+      <table>
+        <thead><tr><th>HTTP</th><th>常见原因与处理</th></tr></thead>
+        <tbody>
+          <tr><td><code>400</code></td><td>收件人结构、模板变量或直接内容字段无效；按错误码修正请求，不要原样重试。</td></tr>
+          <tr><td><code>401</code></td><td>Key 缺失、无效或已停用；检查 Header，并安全轮换 Key。</td></tr>
+          <tr><td><code>403</code></td><td>应用未获模板、直接内容或手动收件人能力；联系管理员检查应用策略。</td></tr>
+          <tr><td><code>404</code></td><td>模板不存在，或该 Key 所属应用查不到指定通知；确认 ID 与调用应用。</td></tr>
+          <tr><td><code>409</code></td><td>模板已停用，或幂等键对应的请求内容发生变化。</td></tr>
+          <tr><td><code>429</code></td><td>超过速率限制；尊重服务端响应并采用带抖动的指数退避。</td></tr>
+          <tr><td><code>503</code></td><td>Email 渠道暂不可用；保留相同幂等键后重试，并告警运维人员。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>9. 安全与运维建议</h2>
+      <ul>
+        <li>所有请求只通过 HTTPS 从可信服务端发出；绝不把 Key 下发给浏览器或移动端。</li>
+        <li>日志中隐藏 <code>Authorization</code> Header、收件人地址和通知正文，错误日志只保留必要的错误码与请求追踪信息。</li>
+        <li>为生产、测试环境使用不同 Key；定期轮换并删除不再使用的 Key。</li>
+        <li>优先使用受控模板，变量只传业务所需的最少数据；不要把密码、Token 或其他秘密写入通知。</li>
+        <li>超时重试必须复用幂等键；对 <code>429</code> 和可恢复的服务错误限次退避，避免重试风暴。</li>
+        <li>保存 <code>notificationId</code> 以便追踪异步状态，但不要假设创建成功即代表送达。</li>
+      </ul>
+    </section>
+
+    <footer>H 通知服务 · Base URL: https://sf.imouto.tech · 服务端调用</footer>
+  </main>
+</body>
+</html>
