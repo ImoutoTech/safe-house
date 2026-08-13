@@ -2,14 +2,22 @@
   <n-modal v-model:show="visible">
     <n-card
       class="oidc-guide-dialog"
-      title="OIDC / SSO 接入说明"
+      title="接入说明"
       :bordered="false"
       role="dialog"
       aria-modal="true"
       closable
       @close="visible = false"
     >
-      <iframe class="oidc-guide-frame" :src="guidePath" title="OIDC / SSO 接入说明"></iframe>
+      <n-tabs v-model:value="activeGuide" class="integration-guide-tabs" type="line">
+        <n-tab name="login">登录接入</n-tab>
+        <n-tab name="notification">通知服务</n-tab>
+      </n-tabs>
+      <iframe
+        class="oidc-guide-frame"
+        :src="currentGuide.path"
+        :title="currentGuide.iframeTitle"
+      ></iframe>
 
       <template #footer>
         <n-flex class="oidc-guide-toolbar" justify="end">
@@ -19,12 +27,7 @@
             </template>
             复制链接
           </n-button>
-          <n-button
-            tag="a"
-            secondary
-            :href="guidePath"
-            download="third-party-oidc-integration-guide.html"
-          >
+          <n-button tag="a" secondary :href="currentGuide.path" :download="currentGuide.fileName">
             <template #icon>
               <n-icon :component="DownloadOutline" />
             </template>
@@ -45,10 +48,27 @@ defineOptions({
 
 const visible = defineModel('visible', { type: Boolean })
 const message = useMessage()
-const guidePath = `${import.meta.env.BASE_URL}third-party-oidc-integration-guide.html`
+const activeGuide = shallowRef<'login' | 'notification'>('login')
+const guides = {
+  login: {
+    path: `${import.meta.env.BASE_URL}third-party-oidc-integration-guide.html`,
+    fileName: 'third-party-oidc-integration-guide.html',
+    iframeTitle: 'H 登录接入说明'
+  },
+  notification: {
+    path: `${import.meta.env.BASE_URL}third-party-notification-integration-guide.html`,
+    fileName: 'third-party-notification-integration-guide.html',
+    iframeTitle: 'H 通知服务接入说明'
+  }
+} as const
+const currentGuide = computed(() => guides[activeGuide.value])
+
+watch(visible, (isVisible) => {
+  if (isVisible) activeGuide.value = 'login'
+})
 
 const copyGuideLink = async () => {
-  const guideUrl = new URL(guidePath, window.location.href).href
+  const guideUrl = new URL(currentGuide.value.path, window.location.href).href
 
   try {
     await navigator.clipboard.writeText(guideUrl)
@@ -73,12 +93,19 @@ const copyGuideLink = async () => {
     flex: 1;
     min-height: 0;
     padding: 0;
+    flex-direction: column;
   }
 }
 
+.integration-guide-tabs {
+  flex: none;
+  padding: 0 20px;
+}
+
 .oidc-guide-frame {
+  flex: 1;
+  min-height: 0;
   width: 100%;
-  height: 100%;
   border: 0;
   background: #fff;
 }

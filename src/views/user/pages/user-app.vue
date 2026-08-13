@@ -32,7 +32,7 @@
                 <n-button
                   class="guide-button"
                   tertiary
-                  aria-label="查看 OIDC / SSO 接入说明"
+                  aria-label="查看接入说明"
                   @click="guideVisible = true"
                 >
                   <template #icon>
@@ -40,7 +40,7 @@
                   </template>
                 </n-button>
               </template>
-              OIDC / SSO 接入说明
+              接入说明
             </n-tooltip>
             <n-button
               v-permission="PERMISSION_CODE_MAP['新建子应用']"
