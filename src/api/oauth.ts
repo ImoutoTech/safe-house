@@ -14,10 +14,8 @@ import type {
 export const getEnabledProviders = () =>
   api.Get<Restful<ProviderProjection[]>>('/external/providers')
 
-export const startExternalLogin = (provider: ExternalProvider, returnTo: string) =>
-  api.Get<Restful<{ authorizationUrl: string }>>(`/external/${provider}/start`, {
-    params: { return_to: returnTo }
-  })
+export const startExternalLogin = (provider: ExternalProvider) =>
+  api.Get<Restful<{ authorizationUrl: string }>>(`/external/${provider}/start`)
 
 export const exchangeExternalResult = (id: string) =>
   api.Get<Restful<ExternalCallbackOutcome>>(`/external/result/${encodeURIComponent(id)}`)

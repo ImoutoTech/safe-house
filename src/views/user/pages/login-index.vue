@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
 import { useUserLogin } from '@/composables/useUserLogin'
-import { normalizeLocalReturnTo, useExternalLogin } from '@/composables/useExternalLogin'
+import { useExternalLogin } from '@/composables/useExternalLogin'
 import type { FormInst } from 'naive-ui'
 import { LogoGithub, LogoGoogle } from '@vicons/ionicons5'
-import { peekAuthorizationContinuation } from '@/utils/authorizationContinuation'
 
 defineOptions({ name: 'LoginIndex' })
 
@@ -18,10 +17,6 @@ const {
 } = useExternalLogin()
 const formRef = ref<FormInst>()
 const router = useRouter()
-const route = useRoute()
-const returnTo = computed(() =>
-  normalizeLocalReturnTo(route.query.return_to, peekAuthorizationContinuation() ?? '/user')
-)
 const providerLabel = (provider: string) => (provider === 'github' ? 'GitHub' : 'Google')
 const providerIcon = (provider: string) => (provider === 'github' ? LogoGithub : LogoGoogle)
 
@@ -74,7 +69,7 @@ const handleConfirm = () => {
             class="external-login-button"
             :disabled="externalLoading && activeProvider !== provider.provider"
             :loading="activeProvider === provider.provider"
-            @click="start(provider.provider, returnTo)"
+            @click="start(provider.provider)"
           >
             <template #icon>
               <n-icon

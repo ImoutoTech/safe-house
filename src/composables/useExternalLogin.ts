@@ -13,23 +13,21 @@ export const normalizeLocalReturnTo = (value: unknown, fallback = '/user') => {
 export const useExternalLogin = () => {
   const providersRequest = useRequest(getEnabledProviders)
   const activeProvider = shallowRef<ExternalProvider | null>(null)
-  const startRequest = useRequest(
-    ({ provider, returnTo }: { provider: ExternalProvider; returnTo: string }) =>
-      startExternalLogin(provider, returnTo),
-    { immediate: false }
-  )
+  const startRequest = useRequest((provider: ExternalProvider) => startExternalLogin(provider), {
+    immediate: false
+  })
   const message = useMessage()
 
   const enabledProviders = computed(() =>
     (providersRequest.data.value?.data ?? []).filter((item) => item.enabled)
   )
 
-  const start = async (provider: ExternalProvider, returnTo: string) => {
+  const start = async (provider: ExternalProvider) => {
     if (activeProvider.value) return
 
     activeProvider.value = provider
     try {
-      const response = await startRequest.send({ provider, returnTo })
+      const response = await startRequest.send(provider)
       window.location.assign(response.data.authorizationUrl)
     } catch (error) {
       message.error(error instanceof Error ? error.message : '无法发起外部登录')

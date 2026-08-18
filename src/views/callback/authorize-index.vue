@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { useOidcInteraction } from '@/composables/useOidcInteraction'
-import { useUserStore } from '@/stores/user'
+import { useUserData } from '@/composables/useUserData'
 
 defineOptions({ name: 'AuthorizeIndex' })
 const route = useRoute()
 const uid = String(route.params.uid ?? '')
 const { interaction, loading, interactionError, completionError, complete, refresh } =
   useOidcInteraction(uid)
-const userStore = useUserStore()
+const { loading: userLoading, userData } = useUserData(true)
+const pageLoading = computed(() => loading.value || userLoading.value)
 const scopes = computed(() => interaction.value?.scope.split(' ').filter(Boolean) ?? [])
-const userName = computed(() => userStore.userData.nickname || userStore.userData.email)
+const userName = computed(() => userData.value.nickname || userData.value.email)
 const avatarFallback = computed(() => userName.value.slice(0, 1).toUpperCase())
 
 const scopeDescriptions: Record<string, string> = {
@@ -25,7 +26,7 @@ const decide = async (approved: boolean) => {
 </script>
 
 <template>
-  <n-spin :show="loading">
+  <n-spin :show="pageLoading">
     <n-result
       v-if="interactionError"
       status="warning"
@@ -36,7 +37,7 @@ const decide = async (approved: boolean) => {
     </n-result>
     <main v-else-if="interaction" class="interaction-page">
       <n-flex vertical align="center" :size="24">
-        <n-avatar round :size="72" :src="userStore.userData.avatar || undefined">
+        <n-avatar round :size="72" :src="userData.avatar || undefined">
           {{ avatarFallback }}
         </n-avatar>
         <p class="login-relation">
@@ -68,8 +69,10 @@ const decide = async (approved: boolean) => {
           {{ completionError.message }}，请重试。
         </n-alert>
         <n-flex class="interaction-actions" :wrap="false">
-          <n-button block :disabled="loading" @click="decide(false)">取消</n-button>
-          <n-button block type="primary" :loading="loading" @click="decide(true)"> 继续 </n-button>
+          <n-button block :disabled="pageLoading" @click="decide(false)">取消</n-button>
+          <n-button block type="primary" :loading="pageLoading" @click="decide(true)">
+            继续
+          </n-button>
         </n-flex>
       </n-flex>
     </main>
