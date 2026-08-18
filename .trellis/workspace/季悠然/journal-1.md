@@ -110,3 +110,24 @@ Moved provider administration to /user/manage, added permission-aware user-cente
 ### Status
 
 [OK] **Completed**
+
+
+## Session 6: 修复 OIDC 登录回归
+
+**Date**: 2026-08-18
+**Task**: 修复 OIDC 登录回归
+**Branch**: `master`
+
+### Summary
+
+授权页进入时刷新用户资料以恢复头像展示；普通 Google/GitHub 登录启动请求移除 OIDC return_to，继续通过当前标签页 sessionStorage 恢复授权，身份绑定合约保持不变。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e42982d` | (see git log) |
+
+### Status
+
+[OK] **Completed**
