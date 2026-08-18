@@ -89,3 +89,24 @@ Moved provider administration to /user/manage, added permission-aware user-cente
 ### Status
 
 [OK] **Completed**
+
+
+## Session 5: 恢复 OIDC 授权流程
+
+**Date**: 2026-08-18
+**Task**: 恢复 OIDC 授权流程
+**Branch**: `master`
+
+### Summary
+
+未登录进入 OIDC 授权时在当前标签页暂存安全回跳地址，登录成功后一次性恢复；重构授权页为头像、登录关系、权限表格和并排操作按钮，并完善提交失败重试。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e7bf086` | (see git log) |
+
+### Status
+
+[OK] **Completed**
