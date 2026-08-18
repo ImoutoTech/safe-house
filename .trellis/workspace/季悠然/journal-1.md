@@ -131,3 +131,24 @@ Moved provider administration to /user/manage, added permission-aware user-cente
 ### Status
 
 [OK] **Completed**
+
+
+## Session 7: 修复授权页头像异步渲染
+
+**Date**: 2026-08-18
+**Task**: 修复授权页头像异步渲染
+**Branch**: `master`
+
+### Summary
+
+确认 Naive UI Avatar 默认插槽优先于 src；将授权页图片头像与文字占位拆成 v-if/v-else 独立实例，使异步头像 URL 返回后正确切换渲染。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f89e789` | (see git log) |
+
+### Status
+
+[OK] **Completed**
