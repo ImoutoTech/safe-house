@@ -8,6 +8,7 @@ import { useCallbackStore } from '@/stores/callback'
 import { useBindingTransaction } from './useBindingTransaction'
 import { bindExternalIdentity } from '@/api/oauth'
 import { normalizeLocalReturnTo } from './useExternalLogin'
+import { consumeAuthorizationContinuation } from '@/utils/authorizationContinuation'
 
 const formRules: FormRules = {
   email: [{ required: true, message: '请输入邮箱' }],
@@ -47,6 +48,8 @@ export const useUserLogin = () => {
 
   onSuccess(async () => {
     updateToken(data.value.data.token, data.value.data.refresh)
+    updateUserData(data.value.data.user)
+    const authorizationContinuation = consumeAuthorizationContinuation()
     const bindingToken = consumeBindingToken()
     if (bindingToken) {
       try {
@@ -54,16 +57,18 @@ export const useUserLogin = () => {
         updateToken(result.data.token, result.data.refresh)
         updateUserData(result.data.user)
         msg.success('登录并绑定成功')
-        await router.push({ name: 'user-identities' })
+        await router.push(authorizationContinuation || { name: 'user-identities' })
         return
       } catch (error) {
         msg.error(error instanceof Error ? error.message : '身份绑定失败')
-        await router.push({ name: 'user-identities' })
+        await router.push(authorizationContinuation || { name: 'user-identities' })
         return
       }
     }
     msg.success('登录成功')
-    if (callbackStore.isCallback) {
+    if (authorizationContinuation) {
+      await router.push(authorizationContinuation)
+    } else if (callbackStore.isCallback) {
       router.push({ name: 'callback-index', params: { id: callbackStore.app.id } })
     } else if (route.query.return_to) {
       router.push(normalizeLocalReturnTo(route.query.return_to))

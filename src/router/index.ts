@@ -6,6 +6,7 @@ import { UserRole } from '@reus-able/types'
 import { useUserStore } from '@/stores/user'
 import { userRoutes } from './user-routes'
 import { useHasPermission } from '@/utils/permission'
+import { saveAuthorizationContinuation } from '@/utils/authorizationContinuation'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -116,12 +117,16 @@ router.beforeEach((to) => {
         [UserRole.USER]: userStore.hasLogin
       }
 
-      return (
-        authMap[route.meta.role as UserRole] || {
+      if (!authMap[route.meta.role as UserRole]) {
+        if (to.name === 'authorize-index') saveAuthorizationContinuation(to.fullPath)
+
+        return {
           name: 'login',
           query: { return_to: to.fullPath }
         }
-      )
+      }
+
+      return true
     }
   }
 

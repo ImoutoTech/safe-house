@@ -2,6 +2,7 @@
 import { useBindingTransaction } from '@/composables/useBindingTransaction'
 import { useExternalCallback } from '@/composables/useExternalLogin'
 import { useUserStore } from '@/stores/user'
+import { consumeAuthorizationContinuation } from '@/utils/authorizationContinuation'
 
 defineOptions({ name: 'ExternalCallbackView' })
 
@@ -30,7 +31,10 @@ onMounted(async () => {
       userStore.updateUserData(result.user)
       status.value = 'authenticated'
       description.value = '登录成功，正在返回…'
-      await router.replace({ name: wasLoggedIn ? 'user-identities' : 'user-info' })
+      const authorizationContinuation = consumeAuthorizationContinuation()
+      await router.replace(
+        authorizationContinuation || { name: wasLoggedIn ? 'user-identities' : 'user-info' }
+      )
     } else if (result.outcome === 'bound') {
       userStore.updateUserData(result.user)
       status.value = 'bound'

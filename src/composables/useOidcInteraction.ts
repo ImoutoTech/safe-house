@@ -22,7 +22,8 @@ export const useOidcInteraction = (uid: string) => {
   return {
     interaction: computed(() => interactionRequest.data.value?.data),
     loading: computed(() => interactionRequest.loading.value || completeRequest.loading.value),
-    error: computed(() => interactionRequest.error.value || completeRequest.error.value),
+    interactionError: interactionRequest.error,
+    completionError: completeRequest.error,
     refresh: interactionRequest.send,
     complete
   }

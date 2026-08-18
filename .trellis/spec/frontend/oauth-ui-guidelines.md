@@ -21,6 +21,7 @@ Use this contract for external login/callback, identity binding, provider admini
 - API calls remain in `src/api`, flows in typed composables, cross-route local session in the user store, and views own presentation state.
 - All API requests use credentials for the OIDC interaction cookie. Local `token`/`refresh` are updated only from normalized local-session outcomes.
 - Never persist opaque callback result IDs, binding tokens, provider tokens, client secrets, code verifiers, nonce, or interaction UIDs beyond the active flow.
+- When an unauthenticated interaction redirects to login, keep only its normalized same-origin route in tab-scoped `sessionStorage`. Consume and remove it immediately after either local or external login succeeds; reject absolute and protocol-relative values.
 - Callback outcomes include `authenticated`, `bound`, `identity_not_bound`, legacy `binding_required`, `verified_email_required`, `cancelled`, `state_invalid_or_expired`, `provider_disabled`, `provider_misconfigured`, and `provider_error`.
 - `identity_not_bound` contains no local session or binding token. Keep its guidance visible until the user chooses to return to local login; after login, binding must start again from the login-method settings page.
 - Admin client secret is write-only: start blank, omit when unchanged, and clear component memory immediately after submit.
