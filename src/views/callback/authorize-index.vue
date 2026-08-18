@@ -37,7 +37,8 @@ const decide = async (approved: boolean) => {
     </n-result>
     <main v-else-if="interaction" class="interaction-page">
       <n-flex vertical align="center" :size="24">
-        <n-avatar round :size="72" :src="userData.avatar || undefined">
+        <n-avatar v-if="userData.avatar" round :size="72" :src="userData.avatar" />
+        <n-avatar v-else round :size="72">
           {{ avatarFallback }}
         </n-avatar>
         <p class="login-relation">

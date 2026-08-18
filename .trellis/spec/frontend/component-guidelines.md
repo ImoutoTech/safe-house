@@ -33,6 +33,7 @@ Naive UI forms use a typed `FormInst` ref, a rules object, and `validate` before
 ## Styling and UI
 
 - Build UI primarily with auto-imported Naive UI components (`n-card`, `n-flex`, `n-form`, and related controls).
+- When a Naive UI `n-avatar` uses an image with a text fallback, render separate `v-if`/`v-else` avatar instances. Do not pass `src` and a default text slot to the same instance because the slot takes precedence and prevents the image from appearing after an asynchronous URL update.
 - Use `<style scoped lang="scss">` for component styles. Global rules and shared dialog sizing live in `src/assets/base.css`.
 - Use class selectors and local SCSS nesting. Use `:deep()` only to target library internals, as in `src/views/user/pages/user-app.vue`.
 - Existing responsive layout uses a `768px` breakpoint in `BaseLayout.vue`, `user-app.vue`, and `user/view-index.vue`.
