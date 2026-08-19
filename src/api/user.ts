@@ -5,7 +5,12 @@ import type {
   UserInfo,
   UserLoginParams,
   UserModifyParams,
-  UserRegisterParams
+  UserRegisterParams,
+  EmailChallengeResult,
+  EmailProofResult,
+  EmailVerificationPurpose,
+  ChangeEmailParams,
+  ChangePasswordParams
 } from '@/types'
 import api from './api'
 import type { UserJwtPayload } from '@reus-able/types'
@@ -38,3 +43,17 @@ export const getAllUser = (page = 1, size = 10, search = '') =>
   })
 
 export const getUserPermissions = () => api.Get<Restful<string[]>>(`/user/permission`)
+
+export const createEmailChallenge = (data: { purpose: EmailVerificationPurpose; email?: string }) =>
+  api.Post<Restful<EmailChallengeResult>>('/user/email-verification/challenges', data)
+
+export const verifyEmailChallenge = (challengeId: string, code: string) =>
+  api.Post<Restful<EmailProofResult>>(`/user/email-verification/challenges/${challengeId}/verify`, {
+    code
+  })
+
+export const changeUserEmail = (id: number, data: ChangeEmailParams) =>
+  api.Put<Restful<UserInfo>>(`/user/${id}/email`, data)
+
+export const changeUserPassword = (id: number, data: ChangePasswordParams, md5 = true) =>
+  api.Put<Restful<UserInfo>>(`/user/${id}/password?md5=${md5}`, data)

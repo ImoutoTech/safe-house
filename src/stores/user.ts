@@ -9,7 +9,9 @@ const INIT_USER_DATA: UserInfo = {
   avatar: '',
   role: UserRole.USER,
   created_at: '',
-  updated_at: ''
+  updated_at: '',
+  emailVerified: false,
+  hasPassword: false
 }
 
 export const useUserStore = defineStore(

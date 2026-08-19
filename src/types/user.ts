@@ -8,6 +8,8 @@ export interface UserInfo {
   role: UserRole
   created_at: string
   updated_at: string
+  emailVerified: boolean
+  hasPassword: boolean
 }
 
 export interface LoginResult {
@@ -23,10 +25,33 @@ export interface UserLoginParams {
 
 export interface UserRegisterParams extends UserLoginParams {
   nickname: string
+  verificationProof: string
 }
 
 export interface UserModifyParams {
-  email: string
   nickname: string
   avatar: string
+}
+
+export type EmailVerificationPurpose = 'register' | 'change_email' | 'change_password'
+
+export interface EmailChallengeResult {
+  challengeId: string
+  expiresAt: string
+  resendAt: string
+}
+
+export interface EmailProofResult {
+  verificationProof: string
+}
+
+export interface ChangeEmailParams {
+  email: string
+  verificationProof: string
+}
+
+export interface ChangePasswordParams {
+  oldVal?: string
+  newVal: string
+  verificationProof: string
 }

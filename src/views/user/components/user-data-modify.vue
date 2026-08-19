@@ -11,9 +11,6 @@
         <n-form-item label="用户名" path="nickname">
           <n-input v-model:value="value.nickname" :placeholder="userData.nickname"></n-input>
         </n-form-item>
-        <n-form-item label="邮箱" path="email">
-          <n-input v-model:value="value.email" :placeholder="userData.email"></n-input>
-        </n-form-item>
         <n-form-item label="更新头像" path="avatar">
           <n-flex style="width: 100%" vertical>
             <n-radio-group v-model:value="avatarType" name="radiogroup">
@@ -27,9 +24,19 @@
           </n-flex>
         </n-form-item>
       </n-form>
+      <n-flex class="security-actions" vertical>
+        <n-button block secondary type="primary" aria-haspopup="dialog" @click="openEmailModal">
+          更换邮箱
+        </n-button>
+        <n-button block secondary type="warning" aria-haspopup="dialog" @click="openPasswordModal">
+          {{ userData.hasPassword ? '修改密码' : '设置密码' }}
+        </n-button>
+      </n-flex>
       <n-button :loading="loading" block secondary type="info" @click="handleSubmit">保存</n-button>
     </n-card>
   </n-modal>
+  <change-email-modal v-model:visible="emailVisible" />
+  <change-password-modal v-model:visible="passwordVisible" />
 </template>
 <script setup lang="ts">
 import { useUserData } from '@/composables/useUserData'
@@ -38,6 +45,8 @@ import { ENV } from '@/utils/constants'
 import { Md5 } from 'ts-md5'
 import type { UserModifyParams } from '@/types'
 import { useEditUser } from '@/composables/useEditUser'
+import ChangeEmailModal from './change-email-modal.vue'
+import ChangePasswordModal from './change-password-modal.vue'
 
 defineOptions({
   name: 'UserDataModify'
@@ -50,13 +59,14 @@ const { userData } = useUserData()
 const formRef = ref<FormInst>()
 const avatarType = ref<AvatarType>('gravatar')
 const avatar = ref('')
+const emailVisible = ref(false)
+const passwordVisible = ref(false)
 const { loading, submit } = useEditUser(() => (visible.value = false))
 
 const value = ref({ ...userData.value })
 
 const formRules = {
-  nickname: [{ required: true, message: '请输入用户名' }],
-  email: [{ required: true, message: '请输入邮箱' }]
+  nickname: [{ required: true, message: '请输入用户名' }]
 }
 
 const avatarPlaceholder = computed(() =>
@@ -82,8 +92,7 @@ const handleSubmit = () => {
     if (errors) return
 
     const submitData: Partial<UserModifyParams> = {
-      nickname: value.value.nickname,
-      email: value.value.email
+      nickname: value.value.nickname
     }
 
     if (avatarType.value !== 'qq' || avatar.value) {
@@ -93,6 +102,19 @@ const handleSubmit = () => {
     submit(submitData)
   })
 }
+
+const openSecurityModal = async (target: 'email' | 'password') => {
+  passwordVisible.value = false
+  emailVisible.value = false
+  visible.value = false
+  await nextTick()
+  emailVisible.value = target === 'email'
+  passwordVisible.value = target === 'password'
+}
+
+const openEmailModal = () => openSecurityModal('email')
+
+const openPasswordModal = () => openSecurityModal('password')
 
 const restoreData = () => {
   value.value = { ...userData.value }
@@ -108,14 +130,18 @@ watch(
   }
 )
 
-watch(
-  () => visible.value,
-  (val) => {
-    if (val) restoreData()
-    else avatar.value = ''
-  },
-  {
-    deep: true
+watch(visible, (val) => {
+  if (val) restoreData()
+  else {
+    avatar.value = ''
+    emailVisible.value = false
+    passwordVisible.value = false
   }
-)
+})
 </script>
+<style lang="scss" scoped>
+.security-actions {
+  width: 100%;
+  margin-bottom: 12px;
+}
+</style>
