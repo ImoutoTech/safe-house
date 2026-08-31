@@ -175,3 +175,24 @@ Moved provider administration to /user/manage, added permission-aware user-cente
 ### Status
 
 [OK] **Completed**
+
+
+## Session 9: 去除 AI Slop 与 UI 修复
+
+**Date**: 2026-08-31
+**Task**: 去除 AI Slop 与 UI 修复
+**Branch**: `master`
+
+### Summary
+
+去掉首页和登录注册钥匙 icon 与首页副标题；修复 vue-sonner 缺样式导致 toast 不显示、弹窗 focus ring 裁切、接入说明 iframe 留白、通知渠道行高、子应用卡片阴影和三条多余分割线；用 Origin UI Vue comp-164 卡片式 radio 替换原生 radio。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4358b7f` | (see git log) |
+
+### Status
+
+[OK] **Completed**
