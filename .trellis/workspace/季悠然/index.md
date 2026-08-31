@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 7
-- **Last Active**: 2026-08-18
+- **Total Sessions**: 8
+- **Last Active**: 2026-08-31
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~154 | Active |
+| `journal-1.md` | ~177 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 8 | 2026-08-31 | 迁移至 Origin UI Vue | `db25877`, `8efad4f`, `038c14d` | `master` |
 | 7 | 2026-08-18 | 修复授权页头像异步渲染 | `f89e789` | `master` |
 | 6 | 2026-08-18 | 修复 OIDC 登录回归 | `e42982d` | `master` |
 | 5 | 2026-08-18 | 恢复 OIDC 授权流程 | `e7bf086` | `master` |

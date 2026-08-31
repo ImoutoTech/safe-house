@@ -152,3 +152,26 @@ Moved provider administration to /user/manage, added permission-aware user-cente
 ### Status
 
 [OK] **Completed**
+
+
+## Session 8: 迁移至 Origin UI Vue
+
+**Date**: 2026-08-31
+**Task**: 迁移至 Origin UI Vue
+**Branch**: `master`
+
+### Summary
+
+完成 Safe House 全量 Origin UI Vue 迁移，引入 source-owned primitives、Extended 场景组合与新表单/反馈契约，移除 Naive UI，并通过测试、lint、类型检查、构建和独立视觉复审。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `db25877` | (see git log) |
+| `8efad4f` | (see git log) |
+| `038c14d` | (see git log) |
+
+### Status
+
+[OK] **Completed**
