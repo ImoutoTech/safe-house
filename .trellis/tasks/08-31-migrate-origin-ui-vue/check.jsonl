@@ -1,0 +1,6 @@
+{"file":".trellis/spec/frontend/index.md","reason":"Review against the complete current frontend guideline set."}
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Check typed contracts, form semantics, responsive behavior, dialog accessibility and removal of Naive-specific patterns."}
+{"file":".trellis/spec/frontend/type-safety.md","reason":"Check runtime validation and typed UI/domain boundaries after the form migration."}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"Run the repository quality gates and verify permissions, states and accessibility."}
+{"file":".trellis/tasks/08-31-migrate-origin-ui-vue/research/origin-ui-vue.md","reason":"Verify the implementation follows the official source-owned Origin model and audited Extended/dependency constraints."}
+{"file":".trellis/tasks/08-31-migrate-origin-ui-vue/research/current-ui-inventory.md","reason":"Verify every inventoried Naive dependency and user-facing surface has been migrated."}

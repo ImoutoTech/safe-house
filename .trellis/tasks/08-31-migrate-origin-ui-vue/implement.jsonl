@@ -1,0 +1,7 @@
+{"file":".trellis/spec/frontend/index.md","reason":"Frontend stack and guideline routing for the single-package Vue application."}
+{"file":".trellis/spec/frontend/directory-structure.md","reason":"Preserve view, feature component, global component, composable and layout boundaries while adding source-owned UI primitives."}
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Current typed component, form, styling, responsive and dialog accessibility contracts to preserve or deliberately replace."}
+{"file":".trellis/spec/frontend/type-safety.md","reason":"Keep API, component and runtime-validation boundaries typed during form-system migration."}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"Required commands, permission checks, responsive behavior and manual verification expectations."}
+{"file":".trellis/tasks/08-31-migrate-origin-ui-vue/research/origin-ui-vue.md","reason":"Official Origin registry model, dependency stack, component coverage, Extended mappings and migration risks."}
+{"file":".trellis/tasks/08-31-migrate-origin-ui-vue/research/current-ui-inventory.md","reason":"Local Naive UI usage inventory, affected surfaces, behavior constraints and baseline limitations."}
