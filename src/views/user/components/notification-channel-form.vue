@@ -80,7 +80,7 @@ const submit = () => {
       <label class="flex items-center justify-between rounded-lg border p-3 text-sm font-medium"
         >启用 Email 渠道<UiSwitch v-model="draft.enabled" aria-label="启用 Email 渠道"
       /></label>
-      <div class="grid gap-4 md:grid-cols-2">
+      <div class="grid items-start gap-4 md:grid-cols-2">
         <UiField label="SMTP Host" for="smtp-host" :error="errors.host"
           ><UiInput
             id="smtp-host"

@@ -4,6 +4,7 @@ import UiButton from '@/components/ui/ui-button.vue'
 import UiDialog from '@/components/ui/ui-dialog.vue'
 import UiField from '@/components/ui/ui-field.vue'
 import UiInput from '@/components/ui/ui-input.vue'
+import UiRadioCards from '@/components/ui/ui-radio-cards.vue'
 import { useEditUser } from '@/composables/useEditUser'
 import { useFormValidation } from '@/composables/useFormValidation'
 import { useUserData } from '@/composables/useUserData'
@@ -81,19 +82,13 @@ watch(visible, (shown) => {
         <legend class="text-sm font-medium leading-none">更新头像</legend>
         <p class="text-xs leading-relaxed text-muted-foreground">{{ avatarHint }}</p>
         <div class="grid gap-3">
-          <div class="flex gap-4">
-            <label
-              v-for="type in ['gravatar', 'qq'] as const"
-              :key="type"
-              class="flex items-center gap-2 text-sm"
-              ><input
-                v-model="avatarType"
-                type="radio"
-                :value="type"
-                class="size-4 accent-foreground"
-              />{{ type === 'qq' ? 'QQ' : 'Gravatar' }}</label
-            >
-          </div>
+          <UiRadioCards
+            v-model="avatarType"
+            :items="[
+              { value: 'gravatar', label: 'Gravatar' },
+              { value: 'qq', label: 'QQ' }
+            ]"
+          />
           <UiInput
             v-model="avatar"
             :placeholder="avatarPlaceholder"

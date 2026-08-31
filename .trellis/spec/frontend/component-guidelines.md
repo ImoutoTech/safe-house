@@ -38,7 +38,11 @@ Forms keep the existing feature/composable state as their source of truth and va
 - Do not target Reka/Origin internal class names. Extend the owned primitive or pass a documented class/variant instead.
 - Existing responsive layout uses a `768px` breakpoint in `BaseLayout.vue`, `user-app.vue`, and `user/view-index.vue`.
 - Use `UiDialog` and `UiConfirmDialog` for overlays so Reka UI owns dialog roles, focus trapping, Escape behavior, announcements, and focus return. Every dialog needs a visible title and useful description. Icon-only actions require an `aria-label` or visible text.
-- Large viewport-filling modals must keep their footer actions inside the mobile visual viewport. Provide a `vh` fallback followed by the equivalent `dvh` height, make the content area flex with `min-height: 0`, and let the content scroll independently instead of allowing a dynamic browser toolbar to cover the modal footer.
+- Large viewport-filling modals must keep their footer actions inside the mobile visual viewport. Provide a `vh` fallback followed by the equivalent `dvh` height, make the content area flex with `min-height: 0`, and let the content scroll independently instead of allowing a dynamic browser toolbar to cover the modal footer. `UiDialog` is a flex column; the scroll body needs at least `p-1.5` so a 3px focus ring is not clipped by `overflow-y-auto`.
+- Toast feedback goes through `useFeedback`. `src/main.ts` must import `vue-sonner/style.css`; without it the Toaster host is in the DOM but has no fixed positioning or colors.
+- Exclusive choices that should look like selectable cards use `UiRadioCards` (Origin `comp-164`). Keep hidden card radios as `type="button"` so they do not submit enclosing forms. Reka `RadioGroup` `modelValue` is `AcceptableValue` (`string | number | …`) and compares with value equality, so numeric enums such as `AppStatus` can bind without stringifying.
+- `UiRadioCards` titles must use the same `grid gap-2` + `text-sm font-medium leading-none` stack as `UiField`. Do not use a native `legend` for that title: browsers pull it out of normal flow and the gap next to neighboring fields looks wrong.
+- Card radios hide the control with `sr-only`. Do not reuse `UiRadioGroupItem` there: its `size-4` circle classes win over `sr-only` and inflate the card. Use a bare Reka `RadioGroupItem` with only `sr-only after:absolute after:inset-0`.
 
 ## Avoid
 

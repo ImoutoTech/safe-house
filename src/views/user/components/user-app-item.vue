@@ -28,9 +28,9 @@ const copyId = async () => {
 </script>
 
 <template>
-  <UiCard
-    ><template #header
-      ><div class="flex w-full items-start justify-between gap-4">
+  <UiCard class="shadow-none"
+    ><template #header>
+      <div class="flex w-full items-start justify-between gap-4">
         <div class="grid gap-2">
           <div class="flex flex-wrap items-center gap-2">
             <h3 class="font-semibold">{{ app.name }}</h3>

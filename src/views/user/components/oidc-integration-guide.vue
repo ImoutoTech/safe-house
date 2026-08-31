@@ -39,10 +39,9 @@ const copyGuideLink = async () => {
   <UiDialog
     v-model:open="visible"
     title="接入说明"
-    description="在登录接入与通知服务指南之间切换。"
     class="h-[calc(100vh-2rem)] h-[calc(100dvh-2rem)] max-w-6xl"
     ><TabsRoot v-model="activeGuide" class="flex h-full min-h-0 flex-col">
-      <TabsList class="flex border-b" aria-label="接入说明类型">
+      <TabsList class="flex shrink-0 border-b" aria-label="接入说明类型">
         <TabsTrigger
           value="login"
           class="border-b-2 border-transparent px-4 py-2 text-sm font-medium text-muted-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[state=active]:border-foreground data-[state=active]:text-foreground"
@@ -53,16 +52,16 @@ const copyGuideLink = async () => {
           >通知服务</TabsTrigger
         >
       </TabsList>
-      <TabsContent value="login" class="min-h-0 flex-1 outline-none">
+      <TabsContent value="login" class="flex min-h-0 flex-1 flex-col outline-none">
         <iframe
-          class="size-full border-0 bg-white"
+          class="h-full w-full border-0 bg-white"
           :src="guides.login.path"
           :title="guides.login.iframeTitle"
         />
       </TabsContent>
-      <TabsContent value="notification" class="min-h-0 flex-1 outline-none">
+      <TabsContent value="notification" class="flex min-h-0 flex-1 flex-col outline-none">
         <iframe
-          class="size-full border-0 bg-white"
+          class="h-full w-full border-0 bg-white"
           :src="guides.notification.path"
           :title="guides.notification.iframeTitle"
         />

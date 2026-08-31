@@ -26,7 +26,17 @@ useAuthGuard()
       <component v-else :is="Component" />
     </Transition>
   </router-view>
-  <Toaster position="top-center" rich-colors close-button />
+  <Toaster
+    class="z-[100]"
+    position="top-center"
+    rich-colors
+    close-button
+    :style="{
+      '--normal-bg': 'var(--popover)',
+      '--normal-text': 'var(--popover-foreground)',
+      '--normal-border': 'var(--border)'
+    }"
+  />
 </template>
 
 <style scoped>

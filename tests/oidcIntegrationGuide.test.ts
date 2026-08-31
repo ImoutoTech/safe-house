@@ -29,6 +29,7 @@ test('uses an accessible Origin icon action for the guide', () => {
     /<UiButton[^>]*variant="outline"[^>]*size="icon"[^>]*aria-label="查看接入说明"/
   )
   assert.match(dialogSource, /<UiDialog[^>]*title="接入说明"/)
+  assert.doesNotMatch(dialogSource, /在登录接入与通知服务指南之间切换。/)
 })
 
 test('serves the original guide from the public directory', () => {

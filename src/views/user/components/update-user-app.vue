@@ -4,6 +4,7 @@ import UiButton from '@/components/ui/ui-button.vue'
 import UiDialog from '@/components/ui/ui-dialog.vue'
 import UiField from '@/components/ui/ui-field.vue'
 import UiInput from '@/components/ui/ui-input.vue'
+import UiRadioCards from '@/components/ui/ui-radio-cards.vue'
 import { useEditApp } from '@/composables/useEditApp'
 import { useFormValidation } from '@/composables/useFormValidation'
 import { AppStatus, type AppInfo, type UserAppUpdateParams } from '@/types'
@@ -60,19 +61,7 @@ watch(
       ><UiField label="描述" for="edit-app-description"
         ><UiInput id="edit-app-description" v-model="params.description"
       /></UiField>
-      <fieldset class="grid gap-2">
-        <legend class="text-sm font-medium leading-none">状态</legend>
-        <div class="flex gap-4">
-          <label v-for="item in options" :key="item.value" class="flex items-center gap-2 text-sm"
-            ><input
-              v-model="params.status"
-              type="radio"
-              :value="item.value"
-              class="size-4 accent-foreground"
-            />{{ item.label }}</label
-          >
-        </div>
-      </fieldset>
+      <UiRadioCards v-model="params.status" legend="状态" :items="options" />
       <UiField label="回调地址" for="edit-app-callback" :error="errors.callback"
         ><template #default="field"
           ><UiInput

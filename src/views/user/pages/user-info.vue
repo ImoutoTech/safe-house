@@ -33,7 +33,7 @@ const logout = () => {
         <dd class="break-all text-sm">{{ fact.value }}</dd>
       </div>
     </dl>
-    <div class="flex flex-wrap justify-between gap-3 border-t pt-5">
+    <div class="flex flex-wrap justify-between gap-3">
       <UiButton
         v-permission="PERMISSION_CODE_MAP['修改用户']"
         variant="outline"

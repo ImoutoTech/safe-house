@@ -79,7 +79,7 @@ const handleInspectSecret = (app: AppInfo) => {
         ></template
       ></EmptyState
     >
-    <footer class="flex items-center justify-between border-t pt-4 text-sm text-muted-foreground">
+    <footer class="flex items-center justify-between pt-4 text-sm text-muted-foreground">
       <span>共 {{ total }} 个子应用</span>
       <div class="flex items-center gap-2">
         <UiButton size="sm" variant="outline" :disabled="page <= 1 || loading" @click="page--"

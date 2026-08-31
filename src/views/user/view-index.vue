@@ -31,7 +31,7 @@ const tabList = computed(() =>
 
 <template>
   <div class="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
-    <header class="flex w-full flex-wrap items-center gap-4 border-b pb-6">
+    <header class="flex w-full flex-wrap items-center gap-4 pb-6">
       <UiAvatar
         :src="userData.avatar"
         :alt="userData.nickname"
