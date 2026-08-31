@@ -5,14 +5,14 @@ import {
   switchUserAppSecret
 } from '@/api/app'
 import { useRequest } from 'alova'
+import { useFeedback } from './useFeedback'
 
 export const useAppSecret = () => {
   const app = ref('')
   const toggleLoading = ref(false)
   const createLoading = ref(false)
   const deleteLoading = ref(false)
-  const msg = useMessage()
-  const dialog = useDialog()
+  const feedback = useFeedback()
 
   const {
     loading: listLoading,
@@ -26,57 +26,61 @@ export const useAppSecret = () => {
     () => toggleLoading.value || createLoading.value || deleteLoading.value || listLoading.value
   )
 
-  const refresh = () => {
-    if (app.value) {
-      send()
+  const refresh = async () => {
+    if (!app.value) return
+    try {
+      await send()
+    } catch (error) {
+      feedback.error(error instanceof Error ? error.message : 'Client Secret 加载失败')
     }
   }
 
   const toggle = async (id: number) => {
     toggleLoading.value = true
-    return switchUserAppSecret(app.value, id)
-      .then((res) => {
-        refresh()
-        return res
-      })
-      .finally(() => {
-        toggleLoading.value = false
-      })
+    try {
+      const response = await switchUserAppSecret(app.value, id)
+      void refresh()
+      return response
+    } catch (error) {
+      feedback.error(error instanceof Error ? error.message : '凭据状态更新失败')
+      return null
+    } finally {
+      toggleLoading.value = false
+    }
   }
 
   const create = async () => {
     createLoading.value = true
-    return createUserAppSecret(app.value)
-      .then((res) => {
-        dialog.success({
-          title: '创建成功',
-          content: `新的秘钥：${res.data.value}`,
-          positiveText: '确定'
-        })
-        refresh()
-        return res
-      })
-      .finally(() => {
-        createLoading.value = false
-      })
+    try {
+      const response = await createUserAppSecret(app.value)
+      void refresh()
+      return response.data.value
+    } catch (error) {
+      feedback.error(error instanceof Error ? error.message : 'Client Secret 创建失败')
+      return null
+    } finally {
+      createLoading.value = false
+    }
   }
 
   const del = async (id: number) => {
     deleteLoading.value = true
-    return delUserAppSecret(app.value, id)
-      .then((res) => {
-        msg.success('删除成功')
-        refresh()
-        return res
-      })
-      .finally(() => {
-        deleteLoading.value = false
-      })
+    try {
+      const response = await delUserAppSecret(app.value, id)
+      feedback.success('删除成功')
+      void refresh()
+      return response
+    } catch (error) {
+      feedback.error(error instanceof Error ? error.message : 'Client Secret 删除失败')
+      return null
+    } finally {
+      deleteLoading.value = false
+    }
   }
 
   const updateApp = (id: string) => {
     app.value = id
-    refresh()
+    void refresh()
   }
 
   return {

@@ -1,60 +1,68 @@
-<template>
-  <n-modal v-model:show="visible">
-    <n-card
-      class="common-dialog"
-      title="创建子应用"
-      :bordered="false"
-      role="dialog"
-      aria-modal="true"
-    >
-      <n-form ref="formRef" :model="params" :rules="formRules">
-        <n-form-item label="应用名" path="name">
-          <n-input v-model:value="params.name" placeholder="新的子应用"></n-input>
-        </n-form-item>
-        <n-form-item label="描述" path="description">
-          <n-input v-model:value="params.description" placeholder="本地/测试/正式"></n-input>
-        </n-form-item>
-        <n-form-item label="回调地址" path="callback">
-          <n-input v-model:value="params.callback" placeholder="https://example.com"></n-input>
-        </n-form-item>
-      </n-form>
-      <n-button :loading="loading" block secondary type="info" @click="handleSubmit">保存</n-button>
-    </n-card>
-  </n-modal>
-</template>
 <script setup lang="ts">
+import { z } from 'zod'
+import UiButton from '@/components/ui/ui-button.vue'
+import UiDialog from '@/components/ui/ui-dialog.vue'
+import UiField from '@/components/ui/ui-field.vue'
+import UiInput from '@/components/ui/ui-input.vue'
 import { useCreateApp } from '@/composables/useCreateApp'
-import type { FormInst } from 'naive-ui'
+import { useFormValidation } from '@/composables/useFormValidation'
+import type { UserAppRegParams } from '@/types'
 
-defineOptions({
-  name: 'CreateUserApp'
-})
-
+defineOptions({ name: 'CreateUserApp' })
 const visible = defineModel('visible', { type: Boolean })
-const formRef = ref<FormInst>()
-const emit = defineEmits<{
-  (e: 'create'): void
-}>()
-
-const formRules = {
-  name: [{ required: true, message: '请输入应用名' }],
-  callback: [{ required: true, message: '请输入回调地址' }]
-}
-
+const emit = defineEmits<{ create: [] }>()
+const schema = z.object({
+  name: z.string().trim().min(1, '请输入应用名'),
+  description: z.string(),
+  callback: z.string().trim().url('请输入有效的回调地址')
+})
+const { errors, validate, clear } = useFormValidation<UserAppRegParams>(schema)
 const { params, loading, reset, submit } = useCreateApp(() => {
   visible.value = false
   emit('create')
 })
-
 const handleSubmit = () => {
-  formRef.value?.validate((errors) => {
-    if (errors) return
-
-    submit()
-  })
+  if (validate({ ...params.value })) submit()
 }
-
-watch(() => visible.value, reset, {
-  immediate: true
+watch(visible, (shown) => {
+  if (shown) {
+    reset()
+    clear()
+  }
 })
 </script>
+
+<template>
+  <UiDialog
+    v-model:open="visible"
+    title="创建子应用"
+    description="为 OAuth/OIDC 客户端设置基本信息。"
+    ><form class="grid gap-4" @submit.prevent="handleSubmit">
+      <UiField label="应用名" for="create-app-name" :error="errors.name"
+        ><template #default="field"
+          ><UiInput
+            id="create-app-name"
+            v-model="params.name"
+            placeholder="新的子应用"
+            :invalid="field.invalid"
+            :aria-describedby="field.describedBy"
+            @update:model-value="clear('name')" /></template></UiField
+      ><UiField label="描述" for="create-app-description"
+        ><UiInput
+          id="create-app-description"
+          v-model="params.description"
+          placeholder="本地 / 测试 / 正式" /></UiField
+      ><UiField label="回调地址" for="create-app-callback" :error="errors.callback"
+        ><template #default="field"
+          ><UiInput
+            id="create-app-callback"
+            v-model="params.callback"
+            type="url"
+            placeholder="https://example.com/callback"
+            :invalid="field.invalid"
+            :aria-describedby="field.describedBy"
+            @update:model-value="clear('callback')" /></template></UiField
+      ><UiButton type="submit" block :loading="loading">保存</UiButton>
+    </form></UiDialog
+  >
+</template>

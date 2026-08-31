@@ -1,26 +1,11 @@
-<template>
-  <n-flex class="flex-center-layout" justify="center" align="center">
-    <slot v-if="type === 'slot'" />
-    <router-view v-if="type === 'router'"></router-view>
-  </n-flex>
-</template>
 <script setup lang="ts">
-defineOptions({
-  name: 'FlexCenterLayout'
-})
-
-withDefaults(
-  defineProps<{
-    type?: 'router' | 'slot'
-  }>(),
-  {
-    type: 'slot'
-  }
-)
+defineOptions({ name: 'FlexCenterLayout' })
+withDefaults(defineProps<{ type?: 'router' | 'slot' }>(), { type: 'slot' })
 </script>
-<style lang="scss" scoped>
-.flex-center-layout {
-  width: 100%;
-  height: 100%;
-}
-</style>
+
+<template>
+  <div class="flex min-h-full w-full items-center justify-center px-4 py-10 sm:px-6">
+    <slot v-if="type === 'slot'" />
+    <router-view v-else />
+  </div>
+</template>

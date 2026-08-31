@@ -1,6 +1,7 @@
 import { regUserApp } from '@/api/app'
 import type { UserAppRegParams } from '@/types'
 import { useRequest } from 'alova'
+import { useFeedback } from './useFeedback'
 
 const INIT_DATA = {
   name: '',
@@ -11,7 +12,7 @@ const INIT_DATA = {
 export const useCreateApp = (callback?: () => void) => {
   const params = ref<UserAppRegParams>({ ...INIT_DATA })
 
-  const msg = useMessage()
+  const feedback = useFeedback()
 
   const { send, loading, onSuccess } = useRequest((data: UserAppRegParams) => regUserApp(data), {
     immediate: false
@@ -26,7 +27,7 @@ export const useCreateApp = (callback?: () => void) => {
   }
 
   onSuccess(() => {
-    msg.success('创建成功')
+    feedback.success('创建成功')
     callback?.()
   })
 

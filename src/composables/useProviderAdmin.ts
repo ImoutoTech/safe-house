@@ -2,6 +2,7 @@ import { getAdminProviders, updateAdminProvider } from '@/api/oauth'
 import type { ExternalProvider, ProviderUpdate } from '@/types'
 import { projectAdminProviders } from '@/utils/providerAdmin'
 import { useRequest } from 'alova'
+import { useFeedback } from './useFeedback'
 
 export const useProviderAdmin = (immediate = true) => {
   const listRequest = useRequest(getAdminProviders, { immediate })
@@ -10,7 +11,7 @@ export const useProviderAdmin = (immediate = true) => {
       updateAdminProvider(provider, data),
     { immediate: false }
   )
-  const message = useMessage()
+  const feedback = useFeedback()
 
   const save = async (provider: ExternalProvider, draft: ProviderUpdate) => {
     const data = { ...draft }
@@ -18,9 +19,9 @@ export const useProviderAdmin = (immediate = true) => {
     try {
       await saveRequest.send({ provider, data })
       await listRequest.send()
-      message.success('配置已保存')
+      feedback.success('配置已保存')
     } catch (error) {
-      message.error(error instanceof Error ? error.message : '配置保存失败')
+      feedback.error(error instanceof Error ? error.message : '配置保存失败')
     }
   }
 

@@ -6,12 +6,13 @@ import {
 } from '@/api/notification'
 import type { NotificationApiKey } from '@/types'
 import { useRequest } from 'alova'
+import { useFeedback } from './useFeedback'
 
 export const useNotificationKeys = () => {
   const appId = shallowRef('')
   const keys = shallowRef<NotificationApiKey[]>([])
   const listError = shallowRef<Error>()
-  const message = useMessage()
+  const feedback = useFeedback()
 
   const listRequest = useRequest((id: string) => getNotificationApiKeys(id), { immediate: false })
   const createRequest = useRequest(() => createNotificationApiKey(appId.value), {
@@ -28,7 +29,7 @@ export const useNotificationKeys = () => {
   )
 
   const reportError = (error: unknown, fallback: string) => {
-    message.error(error instanceof Error ? error.message : fallback)
+    feedback.error(error instanceof Error ? error.message : fallback)
   }
 
   const refresh = async () => {
@@ -63,7 +64,7 @@ export const useNotificationKeys = () => {
         data: { ...response.data, value: '' }
       }
       await refresh()
-      message.success('通知 API Key 已创建')
+      feedback.success('通知 API Key 已创建')
       return value
     } catch (error) {
       reportError(error, '通知 API Key 创建失败')
@@ -84,9 +85,11 @@ export const useNotificationKeys = () => {
     try {
       await deleteRequest.send(keyId)
       await refresh()
-      message.success('通知 API Key 已吊销')
+      feedback.success('通知 API Key 已吊销')
+      return true
     } catch (error) {
       reportError(error, '通知 API Key 吊销失败')
+      return false
     }
   }
 

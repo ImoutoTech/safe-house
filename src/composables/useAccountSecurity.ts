@@ -3,10 +3,11 @@ import { useUserStore } from '@/stores/user'
 import { useRequest } from 'alova'
 import { Md5 } from 'ts-md5'
 import { useEmailVerification } from './useEmailVerification'
+import { useFeedback } from './useFeedback'
 
 export const useChangeEmail = (onDone?: () => void) => {
   const userStore = useUserStore()
-  const message = useMessage()
+  const feedback = useFeedback()
   const email = ref('')
   const code = ref('')
   const verification = useEmailVerification('change_email')
@@ -23,10 +24,10 @@ export const useChangeEmail = (onDone?: () => void) => {
     email.value = ''
     code.value = ''
     verification.reset()
-    message.success('邮箱换绑成功')
+    feedback.success('邮箱换绑成功')
     onDone?.()
   })
-  onError((event) => message.error(event.error.message))
+  onError((event) => feedback.error(event.error.message))
   watch(email, () => {
     code.value = ''
     verification.reset()
@@ -36,7 +37,7 @@ export const useChangeEmail = (onDone?: () => void) => {
 
 export const useChangePassword = (onDone?: () => void) => {
   const userStore = useUserStore()
-  const message = useMessage()
+  const feedback = useFeedback()
   const oldVal = ref('')
   const newVal = ref('')
   const code = ref('')
@@ -56,9 +57,9 @@ export const useChangePassword = (onDone?: () => void) => {
     newVal.value = ''
     code.value = ''
     verification.reset()
-    message.success('密码更新成功')
+    feedback.success('密码更新成功')
     onDone?.()
   })
-  onError((event) => message.error(event.error.message))
+  onError((event) => feedback.error(event.error.message))
   return { oldVal, newVal, code, loading, verification, submit: send }
 }

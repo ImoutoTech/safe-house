@@ -1,84 +1,41 @@
-<template>
-  <n-layout position="absolute">
-    <n-layout-header class="layout-header" bordered>
-      <n-flex justify="center" align="center">
-        <span class="layout-header-title" @click="router.push('/')">{{ ENV.TITLE }}</span>
-      </n-flex>
-    </n-layout-header>
-    <n-layout position="absolute" class="layout-content-wrapper">
-      <router-view></router-view>
-    </n-layout>
-    <n-layout-footer class="layout-footer" bordered position="absolute">
-      <template v-if="!isMobile">
-        <n-flex align="center">
-          <span> Copyright © {{ ENV.COPYRIGHT.YEAR }} - {{ dayjs().format('YYYY') }} </span>
-          <n-text strong>{{ ENV.COPYRIGHT.NAME }}</n-text>
-          <n-tag :bordered="false" type="warning">
-            <template #icon>
-              <n-icon :component="Code" />
-            </template>
-            {{ ENV.BUILD.COMMIT }}@{{ ENV.BUILD.BRANCH }}
-          </n-tag>
-        </n-flex>
-
-        <span>Made with ❤️ by youranreus</span>
-      </template>
-      <template v-else>
-        <n-tag :bordered="false" type="warning">
-          <template #icon>
-            <n-icon :component="Code" />
-          </template>
-          {{ ENV.BUILD.COMMIT }}@{{ ENV.BUILD.BRANCH }}
-        </n-tag>
-        <span>Made with ❤️ by youranreus</span>
-      </template>
-    </n-layout-footer>
-  </n-layout>
-</template>
 <script setup lang="ts">
-import { useConfigStore } from '@/stores/config'
-import { ENV } from '@/utils/constants'
-import { CodeSlashOutline as Code } from '@vicons/ionicons5'
+import { Code2 } from 'lucide-vue-next'
 import dayjs from 'dayjs'
+import UiBadge from '@/components/ui/ui-badge.vue'
+import { ENV } from '@/utils/constants'
 
-defineOptions({
-  name: 'BaseLayout'
-})
-
+defineOptions({ name: 'BaseLayout' })
 const router = useRouter()
-const { isMobile } = useConfigStore()
 </script>
-<style lang="scss" scoped>
-$headerHeight: 64px;
-$footerHeight: 64px;
 
-.layout-content-wrapper {
-  top: $headerHeight;
-  height: calc(100% - $headerHeight - $footerHeight);
-  bottom: $footerHeight;
-}
-
-.layout-header {
-  height: $headerHeight;
-
-  .n-flex {
-    height: 100%;
-  }
-
-  &-title {
-    font-size: 28px;
-    font-weight: 600;
-    user-select: none;
-    cursor: pointer;
-  }
-}
-
-.layout-footer {
-  height: $footerHeight;
-  line-height: $footerHeight;
-  padding-inline: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-</style>
+<template>
+  <div class="grid min-h-dvh grid-rows-[4rem_minmax(0,1fr)_auto] bg-muted/20">
+    <!-- THESIS: Safe House is a calm digital foyer; refuse the generic enterprise dashboard. OWN-WORLD: Origin New York neutral surfaces, crisp borders, compact controls. STORY: recognize the house, complete the identity task, understand the security consequence. FIRST VIEWPORT: centered product masthead over a focused task surface. FORM: operational identity workspace, seed safe-house-origin-neutral. FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md -->
+    <header
+      class="sticky top-0 z-30 flex items-center justify-center border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80"
+    >
+      <button
+        class="rounded-md px-3 py-2 text-xl font-semibold tracking-tight outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        @click="router.push('/')"
+      >
+        {{ ENV.TITLE }}
+      </button>
+    </header>
+    <main class="min-h-0"><router-view /></main>
+    <footer
+      class="flex min-h-14 flex-wrap items-center justify-between gap-2 border-t bg-background px-4 py-3 text-xs text-muted-foreground sm:px-6"
+    >
+      <span
+        >Copyright © {{ ENV.COPYRIGHT.YEAR }} - {{ dayjs().format('YYYY') }} ·
+        <strong class="text-foreground">{{ ENV.COPYRIGHT.NAME }}</strong></span
+      >
+      <div class="flex items-center gap-3">
+        <UiBadge variant="secondary"
+          ><Code2 class="size-3" aria-hidden="true" />{{ ENV.BUILD.COMMIT }}@{{
+            ENV.BUILD.BRANCH
+          }}</UiBadge
+        ><span class="hidden sm:inline">Made with ❤️ by youranreus</span>
+      </div>
+    </footer>
+  </div>
+</template>

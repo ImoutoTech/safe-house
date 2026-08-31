@@ -2,18 +2,13 @@ import { userLogin } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 import type { UserLoginParams } from '@/types'
 import { useRequest } from 'alova'
-import type { FormRules } from 'naive-ui'
 import { Md5 } from 'ts-md5'
 import { useCallbackStore } from '@/stores/callback'
 import { useBindingTransaction } from './useBindingTransaction'
 import { bindExternalIdentity } from '@/api/oauth'
 import { normalizeLocalReturnTo } from './useExternalLogin'
 import { consumeAuthorizationContinuation } from '@/utils/authorizationContinuation'
-
-const formRules: FormRules = {
-  email: [{ required: true, message: '请输入邮箱' }],
-  password: [{ required: true, message: '请输入密码' }]
-}
+import { useFeedback } from './useFeedback'
 
 export const useUserLogin = () => {
   const loginParam = reactive<UserLoginParams>({
@@ -23,7 +18,7 @@ export const useUserLogin = () => {
 
   const { updateToken, updateUserData } = useUserStore()
   const callbackStore = useCallbackStore()
-  const msg = useMessage()
+  const feedback = useFeedback()
   const router = useRouter()
   const route = useRoute()
   const { consumeBindingToken } = useBindingTransaction()
@@ -56,16 +51,16 @@ export const useUserLogin = () => {
         const result = await bindExternalIdentity(bindingToken)
         updateToken(result.data.token, result.data.refresh)
         updateUserData(result.data.user)
-        msg.success('登录并绑定成功')
+        feedback.success('登录并绑定成功')
         await router.push(authorizationContinuation || { name: 'user-identities' })
         return
       } catch (error) {
-        msg.error(error instanceof Error ? error.message : '身份绑定失败')
+        feedback.error(error instanceof Error ? error.message : '身份绑定失败')
         await router.push(authorizationContinuation || { name: 'user-identities' })
         return
       }
     }
-    msg.success('登录成功')
+    feedback.success('登录成功')
     if (authorizationContinuation) {
       await router.push(authorizationContinuation)
     } else if (callbackStore.isCallback) {
@@ -78,8 +73,8 @@ export const useUserLogin = () => {
   })
 
   onError((e) => {
-    msg.error(e.error.message)
+    feedback.error(e.error.message)
   })
 
-  return { loading, data, formRules, loginParam: readonly(loginParam), handleUpdateVal, submit }
+  return { loading, data, loginParam: readonly(loginParam), handleUpdateVal, submit }
 }

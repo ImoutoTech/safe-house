@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { CircleCheck, CircleX, LoaderCircle, TriangleAlert } from 'lucide-vue-next'
+import UiButton from '@/components/ui/ui-button.vue'
+import UiCard from '@/components/ui/ui-card.vue'
 import { useBindingTransaction } from '@/composables/useBindingTransaction'
 import { useExternalCallback } from '@/composables/useExternalLogin'
 import { useUserStore } from '@/stores/user'
 import { consumeAuthorizationContinuation } from '@/utils/authorizationContinuation'
 
 defineOptions({ name: 'ExternalCallbackView' })
-
 const route = useRoute()
 const router = useRouter()
 const resultId = typeof route.query.result === 'string' ? route.query.result : ''
@@ -17,7 +19,15 @@ const { finish } = useExternalCallback()
 const { setBindingToken, clearBindingToken } = useBindingTransaction()
 const userStore = useUserStore()
 const wasLoggedIn = userStore.hasLogin
-
+const statusIcon = computed(() =>
+  status.value === 'loading'
+    ? LoaderCircle
+    : status.value === 'authenticated' || status.value === 'bound'
+      ? CircleCheck
+      : status.value === 'error'
+        ? CircleX
+        : TriangleAlert
+)
 onMounted(async () => {
   if (!resultId) {
     status.value = 'error'
@@ -31,10 +41,8 @@ onMounted(async () => {
       userStore.updateUserData(result.user)
       status.value = 'authenticated'
       description.value = '登录成功，正在返回…'
-      const authorizationContinuation = consumeAuthorizationContinuation()
-      await router.replace(
-        authorizationContinuation || { name: wasLoggedIn ? 'user-identities' : 'user-info' }
-      )
+      const continuation = consumeAuthorizationContinuation()
+      await router.replace(continuation || { name: wasLoggedIn ? 'user-identities' : 'user-info' })
     } else if (result.outcome === 'bound') {
       userStore.updateUserData(result.user)
       status.value = 'bound'
@@ -70,33 +78,28 @@ onMounted(async () => {
 </script>
 
 <template>
-  <n-card class="callback-card" :bordered="false">
-    <n-result
-      :status="status === 'authenticated' ? 'success' : status === 'loading' ? 'info' : 'warning'"
-      :title="status === 'loading' ? '处理中' : '外部登录结果'"
-      :description="description"
-    >
-      <template #footer>
-        <n-button
-          v-if="status === 'binding'"
-          type="primary"
-          @click="router.push({ name: 'login' })"
-        >
-          登录并绑定
-        </n-button>
-        <n-button
-          v-else-if="status !== 'loading' && status !== 'authenticated'"
-          @click="router.push({ name: 'login' })"
-        >
-          返回登录
-        </n-button>
-      </template>
-    </n-result>
-  </n-card>
+  <UiCard class="w-[min(92vw,30rem)]"
+    ><div class="grid justify-items-center gap-5 py-4 text-center" aria-live="polite">
+      <span class="flex size-12 items-center justify-center rounded-full bg-muted"
+        ><component
+          :is="statusIcon"
+          :class="['size-6', status === 'loading' && 'animate-spin motion-reduce:animate-none']"
+          aria-hidden="true"
+      /></span>
+      <div class="grid gap-2">
+        <h1 class="text-xl font-semibold">
+          {{ status === 'loading' ? '处理中' : '外部登录结果' }}
+        </h1>
+        <p class="text-sm leading-relaxed text-muted-foreground">{{ description }}</p>
+      </div>
+      <UiButton v-if="status === 'binding'" @click="router.push({ name: 'login' })"
+        >登录并绑定</UiButton
+      ><UiButton
+        v-else-if="status !== 'loading' && status !== 'authenticated'"
+        variant="outline"
+        @click="router.push({ name: 'login' })"
+        >返回登录</UiButton
+      >
+    </div></UiCard
+  >
 </template>
-
-<style scoped>
-.callback-card {
-  width: min(92vw, 480px);
-}
-</style>

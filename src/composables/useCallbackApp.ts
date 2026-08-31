@@ -1,9 +1,10 @@
 import { GetUserAppData, callbackUserApp } from '@/api/app'
 import { useCallbackStore } from '@/stores/callback'
 import { useRequest } from 'alova'
+import { useFeedback } from './useFeedback'
 
 export const useCallbackApp = (id: string) => {
-  const msg = useMessage()
+  const feedback = useFeedback()
   const callbackStore = useCallbackStore()
   const {
     loading: appLoading,
@@ -22,7 +23,7 @@ export const useCallbackApp = (id: string) => {
   })
 
   const handleError = (e: any) => {
-    msg.error(e.error.message)
+    feedback.error(e.error.message)
   }
 
   onLoaded((res) => {

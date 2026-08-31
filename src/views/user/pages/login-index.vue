@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
-import { useUserLogin } from '@/composables/useUserLogin'
+import { Chrome, Github } from 'lucide-vue-next'
+import { z } from 'zod'
+import AuthPanel from '@/components/patterns/auth-panel.vue'
+import UiAlert from '@/components/ui/ui-alert.vue'
+import UiButton from '@/components/ui/ui-button.vue'
+import UiField from '@/components/ui/ui-field.vue'
+import UiInput from '@/components/ui/ui-input.vue'
 import { useExternalLogin } from '@/composables/useExternalLogin'
-import type { FormInst } from 'naive-ui'
-import { LogoGithub, LogoGoogle } from '@vicons/ionicons5'
+import { useFormValidation } from '@/composables/useFormValidation'
+import { useUserLogin } from '@/composables/useUserLogin'
+import FlexCenterLayout from '@/layout/FlexCenterLayout.vue'
 
 defineOptions({ name: 'LoginIndex' })
-
-const { loginParam, formRules, loading, handleUpdateVal, submit } = useUserLogin()
+const { loginParam, loading, handleUpdateVal, submit } = useUserLogin()
 const {
   providers,
   activeProvider,
@@ -15,85 +20,89 @@ const {
   error: providerError,
   start
 } = useExternalLogin()
-const formRef = ref<FormInst>()
 const router = useRouter()
+const schema = z.object({
+  email: z.string().trim().min(1, '请输入邮箱').email('请输入有效邮箱'),
+  password: z.string().min(1, '请输入密码')
+})
+const { errors, validate, clear } = useFormValidation(schema)
 const providerLabel = (provider: string) => (provider === 'github' ? 'GitHub' : 'Google')
-const providerIcon = (provider: string) => (provider === 'github' ? LogoGithub : LogoGoogle)
-
+const providerIcon = (provider: string) => (provider === 'github' ? Github : Chrome)
+const updateLoginField = (
+  field: 'email' | 'password',
+  value: string | number | null | undefined
+) => {
+  handleUpdateVal(field, String(value ?? ''))
+  clear(field)
+}
 const handleConfirm = () => {
-  formRef.value?.validate((errors) => {
-    if (!errors) submit()
-  })
+  if (validate({ ...loginParam })) submit()
 }
 </script>
 
 <template>
-  <flex-center-layout>
-    <main class="login-container" @keypress.enter="handleConfirm">
-      <n-flex vertical>
-        <n-form ref="formRef" :model="loginParam" :rules="formRules">
-          <n-form-item path="email" label="📮 邮箱">
-            <n-input
-              :value="loginParam.email"
-              :disabled="loading"
+  <FlexCenterLayout>
+    <AuthPanel title="欢迎回来" description="拿出你的钥匙，继续进入 Safe House。">
+      <form class="grid gap-4" novalidate @submit.prevent="handleConfirm">
+        <UiField label="邮箱" for="login-email" :error="errors.email"
+          ><template #default="field"
+            ><UiInput
+              id="login-email"
+              :model-value="loginParam.email"
+              type="email"
+              autocomplete="email"
               placeholder="i@example.com"
-              @input="handleUpdateVal('email', $event)"
-            />
-          </n-form-item>
-          <n-form-item path="password" label="🔐 钥匙">
-            <n-input
-              :value="loginParam.password"
               :disabled="loading"
+              :invalid="field.invalid"
+              :aria-describedby="field.describedBy"
+              @update:model-value="updateLoginField('email', $event)" /></template
+        ></UiField>
+        <UiField label="钥匙" for="login-password" :error="errors.password"
+          ><template #default="field"
+            ><UiInput
+              id="login-password"
+              :model-value="loginParam.password"
               type="password"
-              placeholder="***"
-              @input="handleUpdateVal('password', $event)"
-            />
-          </n-form-item>
-        </n-form>
-
-        <n-flex justify="space-between">
-          <n-button text type="info" :disabled="loading" @click="router.push({ name: 'register' })">
-            加入
-          </n-button>
-          <n-button secondary type="primary" :loading="loading" @click="handleConfirm">
-            开门
-          </n-button>
-        </n-flex>
-        <n-alert v-if="providerError" type="warning" title="外部登录暂不可用" />
-        <n-flex v-else-if="providers.length" class="external-login-actions" vertical>
-          <n-button
-            v-for="provider in providers"
-            :key="provider.provider"
-            block
-            secondary
-            class="external-login-button"
-            :disabled="externalLoading && activeProvider !== provider.provider"
-            :loading="activeProvider === provider.provider"
-            @click="start(provider.provider)"
-          >
-            <template #icon>
-              <n-icon
-                :color="provider.provider === 'google' ? '#4285f4' : undefined"
-                :component="providerIcon(provider.provider)"
-              />
-            </template>
-            使用 {{ providerLabel(provider.provider) }} 登录
-          </n-button>
-        </n-flex>
-      </n-flex>
-    </main>
-  </flex-center-layout>
+              autocomplete="current-password"
+              placeholder="输入密码"
+              :disabled="loading"
+              :invalid="field.invalid"
+              :aria-describedby="field.describedBy"
+              @update:model-value="updateLoginField('password', $event)" /></template
+        ></UiField>
+        <UiButton type="submit" block :loading="loading">开门</UiButton>
+        <UiButton
+          type="button"
+          variant="link"
+          block
+          :disabled="loading"
+          @click="router.push({ name: 'register' })"
+          >还没有钥匙？加入 Safe House</UiButton
+        >
+      </form>
+      <div v-if="providerError || providers.length" class="mt-5 grid gap-3">
+        <div
+          class="flex items-center gap-3 text-xs text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border"
+        >
+          或使用外部身份
+        </div>
+        <UiAlert v-if="providerError" variant="warning" title="外部登录暂不可用"
+          >你仍可以使用邮箱和密码登录。</UiAlert
+        >
+        <UiButton
+          v-for="provider in providers"
+          v-else
+          :key="provider.provider"
+          type="button"
+          variant="outline"
+          block
+          :disabled="externalLoading && activeProvider !== provider.provider"
+          :loading="activeProvider === provider.provider"
+          @click="start(provider.provider)"
+          ><component :is="providerIcon(provider.provider)" aria-hidden="true" />使用
+          {{ providerLabel(provider.provider) }} 登录</UiButton
+        >
+      </div>
+    </AuthPanel>
+  </FlexCenterLayout>
 </template>
-<style lang="scss" scoped>
-.login-container {
-  width: 300px;
-}
-
-.external-login-actions {
-  margin-top: 8px;
-}
-
-.external-login-button {
-  width: 100%;
-}
-</style>

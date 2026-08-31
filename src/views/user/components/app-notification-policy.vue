@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import EmptyState from '@/components/patterns/empty-state.vue'
+import UiAlert from '@/components/ui/ui-alert.vue'
+import UiButton from '@/components/ui/ui-button.vue'
+import UiField from '@/components/ui/ui-field.vue'
+import UiSwitch from '@/components/ui/ui-switch.vue'
 import type {
   AppNotificationPolicy,
   AppNotificationPolicyUpdate,
@@ -7,7 +12,6 @@ import type {
 } from '@/types'
 
 defineOptions({ name: 'AppNotificationPolicy' })
-
 const props = defineProps<{
   apps: NotificationAdminApp[]
   templates: NotificationTemplateOption[]
@@ -21,21 +25,12 @@ const emit = defineEmits<{
   save: [draft: AppNotificationPolicyUpdate]
   retry: []
 }>()
-
 const draft = reactive<AppNotificationPolicyUpdate>({
   directContent: false,
   manualRecipient: false,
   templateIds: []
 })
-const appOptions = computed(() => props.apps.map((app) => ({ label: app.name, value: app.id })))
-const templateOptions = computed(() =>
-  props.templates.map((template) => ({
-    label: `${template.name} (${template.key})${template.enabled ? '' : ' · 已停用'}`,
-    value: template.id
-  }))
-)
 const isCurrentPolicy = computed(() => props.policy?.appId === props.selectedAppId)
-
 watch(
   [() => props.selectedAppId, () => props.policy],
   ([appId, policy]) => {
@@ -46,85 +41,83 @@ watch(
   },
   { immediate: true }
 )
-
-const submit = () => {
+const submit = () =>
   emit('save', {
     directContent: draft.directContent,
     manualRecipient: draft.manualRecipient,
     templateIds: [...draft.templateIds]
   })
-}
 </script>
 
 <template>
-  <section class="policy-form">
-    <n-alert type="warning" :bordered="false">
-      直接内容与手动收件地址是高风险能力。策略收紧后，该应用的所有现有通知 Key 会立即受限。
-    </n-alert>
-    <n-form class="policy-form__body" label-placement="top">
-      <n-form-item label="子应用">
-        <n-select
-          :value="selectedAppId || null"
-          filterable
-          :options="appOptions"
-          :disabled="loading"
-          placeholder="选择要配置的子应用"
-          @update:value="emit('select', $event)"
-        />
-      </n-form-item>
-      <n-alert v-if="error" type="error" title="应用通知权限加载失败">
-        <n-button size="small" @click="emit('retry')">重试</n-button>
-      </n-alert>
-      <template v-if="selectedAppId">
-        <n-form-item label="允许模板">
-          <n-select
-            v-model:value="draft.templateIds"
-            multiple
-            filterable
-            clearable
-            :options="templateOptions"
+  <div class="grid gap-5">
+    <UiAlert variant="warning"
+      >直接内容与手动收件地址是高风险能力。策略收紧后，该应用的所有现有通知 Key
+      会立即受限。</UiAlert
+    ><UiField label="子应用" for="notification-policy-app"
+      ><select
+        id="notification-policy-app"
+        :value="selectedAppId"
+        class="h-9 w-full rounded-md border bg-background px-3 text-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        :disabled="loading"
+        @change="emit('select', ($event.target as HTMLSelectElement).value)"
+      >
+        <option value="">选择要配置的子应用</option>
+        <option v-for="app in apps" :key="app.id" :value="app.id">{{ app.name }}</option>
+      </select></UiField
+    ><UiAlert v-if="error" variant="destructive" title="应用通知权限加载失败"
+      ><UiButton size="sm" variant="outline" class="mt-2" @click="emit('retry')"
+        >重试</UiButton
+      ></UiAlert
+    >
+    <form v-if="selectedAppId" class="grid gap-5" @submit.prevent="submit">
+      <UiField
+        label="允许模板"
+        for="notification-policy-templates"
+        hint="按住 Command/Ctrl 可多选；默认不允许任何模板。"
+        ><select
+          id="notification-policy-templates"
+          v-model="draft.templateIds"
+          multiple
+          class="min-h-28 w-full rounded-md border bg-background p-2 text-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          :disabled="loading || !isCurrentPolicy"
+        >
+          <option v-for="template in templates" :key="template.id" :value="template.id">
+            {{ template.name }} ({{ template.key }}){{ template.enabled ? '' : ' · 已停用' }}
+          </option>
+        </select></UiField
+      >
+      <div class="grid gap-3 md:grid-cols-2">
+        <label class="flex items-start justify-between gap-4 rounded-lg border p-4"
+          ><span
+            ><strong class="text-sm">直接内容</strong
+            ><span class="mt-1 block text-xs text-muted-foreground"
+              >允许应用自行提交 subject/text/html。</span
+            ></span
+          ><UiSwitch
+            v-model="draft.directContent"
             :disabled="loading || !isCurrentPolicy"
-            placeholder="默认不允许任何模板"
-          />
-        </n-form-item>
-        <n-grid cols="1 768:2" :x-gap="16">
-          <n-form-item-gi label="直接内容">
-            <n-switch
-              v-model:value="draft.directContent"
-              :disabled="loading || !isCurrentPolicy"
-              aria-label="允许直接内容"
-            />
-            <n-text class="policy-form__hint" depth="3"
-              >允许应用自行提交 subject/text/html。</n-text
-            >
-          </n-form-item-gi>
-          <n-form-item-gi label="手动收件人">
-            <n-switch
-              v-model:value="draft.manualRecipient"
-              :disabled="loading || !isCurrentPolicy"
-              aria-label="允许手动收件人"
-            />
-            <n-text class="policy-form__hint" depth="3">允许应用向非 H 用户 Email 发送。</n-text>
-          </n-form-item-gi>
-        </n-grid>
-        <n-flex justify="end">
-          <n-button type="primary" :loading="loading" :disabled="!isCurrentPolicy" @click="submit">
-            保存应用通知权限
-          </n-button>
-        </n-flex>
-      </template>
-      <n-empty v-else description="请先选择子应用" />
-    </n-form>
-  </section>
+            aria-label="允许直接内容" /></label
+        ><label class="flex items-start justify-between gap-4 rounded-lg border p-4"
+          ><span
+            ><strong class="text-sm">手动收件人</strong
+            ><span class="mt-1 block text-xs text-muted-foreground"
+              >允许向非 Safe House 用户邮箱发送。</span
+            ></span
+          ><UiSwitch
+            v-model="draft.manualRecipient"
+            :disabled="loading || !isCurrentPolicy"
+            aria-label="允许手动收件人"
+        /></label>
+      </div>
+      <UiButton
+        type="submit"
+        class="justify-self-end"
+        :loading="loading"
+        :disabled="!isCurrentPolicy"
+        >保存应用通知权限</UiButton
+      >
+    </form>
+    <EmptyState v-else title="请先选择子应用" description="选择后可查看和调整它的通知能力。" />
+  </div>
 </template>
-
-<style scoped lang="scss">
-.policy-form__body {
-  margin-top: 18px;
-}
-
-.policy-form__hint {
-  display: block;
-  margin-top: 8px;
-}
-</style>

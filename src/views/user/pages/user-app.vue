@@ -1,130 +1,105 @@
-<template>
-  <div class="user-app">
-    <n-list :show-divider="false" :bordered="false">
-      <n-spin :show="loading">
-        <template v-if="data.length">
-          <n-list-item v-for="item in data" :key="item.id">
-            <user-app-item
-              :app="item"
-              @delete="refresh"
-              @update="handleEditApp(item)"
-              @inspect="handleInspectSecret(item)"
-            />
-          </n-list-item>
-        </template>
-        <template v-else>
-          <n-empty class="empty" description="没有找到子应用"></n-empty>
-        </template>
-      </n-spin>
-
-      <template #footer>
-        <n-flex justify="space-between" align="center">
-          <n-text depth="3">共{{ pageBindings.itemCount }}个子应用</n-text>
-          <n-pagination v-bind="pageBindings"></n-pagination>
-        </n-flex>
-      </template>
-      <template #header>
-        <n-flex justify="space-between">
-          <n-input v-bind="searchBindings" class="search-input" placeholder="按名称搜索" />
-          <n-flex class="guide-actions" :wrap="false">
-            <n-tooltip>
-              <template #trigger>
-                <n-button
-                  class="guide-button"
-                  tertiary
-                  aria-label="查看接入说明"
-                  @click="guideVisible = true"
-                >
-                  <template #icon>
-                    <n-icon :component="InformationCircleOutline" />
-                  </template>
-                </n-button>
-              </template>
-              接入说明
-            </n-tooltip>
-            <n-button
-              v-permission="PERMISSION_CODE_MAP['新建子应用']"
-              tertiary
-              type="info"
-              @click="createVisible = true"
-              >创建子应用</n-button
-            >
-          </n-flex>
-        </n-flex>
-      </template>
-    </n-list>
-  </div>
-  <create-user-app v-model:visible="createVisible" @create="refresh"></create-user-app>
-  <update-user-app v-model:visible="editVisible" :app="editApp" @update="refresh"></update-user-app>
-  <user-app-secret v-model:visible="secretVisible" :app="editApp"></user-app-secret>
-  <oidc-integration-guide v-model:visible="guideVisible"></oidc-integration-guide>
-</template>
-<script lang="ts" setup>
+<script setup lang="ts">
+import { Info, Plus, Search } from 'lucide-vue-next'
+import EmptyState from '@/components/patterns/empty-state.vue'
+import UiButton from '@/components/ui/ui-button.vue'
+import UiInput from '@/components/ui/ui-input.vue'
+import UiSpinner from '@/components/ui/ui-spinner.vue'
+import { useAppList } from '@/composables/useAppList'
 import type { AppInfo } from '@/types'
-import { InformationCircleOutline } from '@vicons/ionicons5'
+import { PERMISSION_CODE_MAP } from '@/utils/constants'
 import CreateUserApp from '../components/create-user-app.vue'
 import OidcIntegrationGuide from '../components/oidc-integration-guide.vue'
 import UpdateUserApp from '../components/update-user-app.vue'
-import UserAppSecret from '../components/user-app-secret.vue'
 import UserAppItem from '../components/user-app-item.vue'
-import { useAppList } from '@/composables/useAppList'
-import { PERMISSION_CODE_MAP } from '@/utils/constants'
+import UserAppSecret from '../components/user-app-secret.vue'
 
-defineOptions({
-  name: 'UserApp'
-})
-
-const { refresh, pageBindings, searchBindings, loading, data } = useAppList()
-const createVisible = ref(false)
-const editVisible = ref(false)
-const secretVisible = ref(false)
-const guideVisible = ref(false)
-const editApp = ref<AppInfo>()
-
+defineOptions({ name: 'UserApp' })
+const { refresh, loading, data, searchValue, page, pageSize, total } = useAppList()
+const createVisible = shallowRef(false)
+const editVisible = shallowRef(false)
+const secretVisible = shallowRef(false)
+const guideVisible = shallowRef(false)
+const editApp = shallowRef<AppInfo>()
+const pageCount = computed(() => Math.max(1, Math.ceil((total.value ?? 0) / pageSize.value)))
 const handleEditApp = (app: AppInfo) => {
   editApp.value = { ...app }
   editVisible.value = true
 }
-
 const handleInspectSecret = (app: AppInfo) => {
   editApp.value = { ...app }
   secretVisible.value = true
 }
 </script>
-<style lang="scss" scoped>
-.user-app {
-  margin-top: 8px;
 
-  .empty {
-    margin: 50px 0;
-  }
-
-  :deep(.n-list__header) {
-    padding: 12px 0;
-  }
-
-  :deep(.n-list__footer) {
-    padding: 12px 0;
-  }
-
-  .search-input {
-    width: 300px;
-
-    @media (max-width: 768px) {
-      flex: 1;
-      width: auto;
-      min-width: 0;
-    }
-  }
-
-  .guide-actions {
-    flex-shrink: 0;
-  }
-
-  .guide-button {
-    width: 34px;
-    padding: 0;
-    border-radius: 3px;
-  }
-}
-</style>
+<template>
+  <section class="grid gap-5">
+    <header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="relative w-full sm:max-w-sm">
+        <Search
+          class="pointer-events-none absolute left-3 top-2.5 size-4 text-muted-foreground"
+          aria-hidden="true"
+        /><UiInput
+          v-model="searchValue"
+          class="pl-9"
+          placeholder="按名称搜索"
+          :disabled="loading"
+          aria-label="按名称搜索子应用"
+        />
+      </div>
+      <div class="flex gap-2">
+        <UiButton
+          variant="outline"
+          size="icon"
+          aria-label="查看接入说明"
+          @click="guideVisible = true"
+          ><Info /></UiButton
+        ><UiButton v-permission="PERMISSION_CODE_MAP['新建子应用']" @click="createVisible = true"
+          ><Plus />创建子应用</UiButton
+        >
+      </div>
+    </header>
+    <div v-if="loading" class="py-12 text-center"><UiSpinner label="正在读取子应用" /></div>
+    <div v-else-if="data.length" class="grid gap-3">
+      <UserAppItem
+        v-for="item in data"
+        :key="item.id"
+        :app="item"
+        @delete="refresh"
+        @update="handleEditApp(item)"
+        @inspect="handleInspectSecret(item)"
+      />
+    </div>
+    <EmptyState
+      v-else
+      title="没有找到子应用"
+      description="创建一个子应用，开始接入统一登录与通知服务。"
+      ><template #action
+        ><UiButton v-permission="PERMISSION_CODE_MAP['新建子应用']" @click="createVisible = true"
+          ><Plus />创建子应用</UiButton
+        ></template
+      ></EmptyState
+    >
+    <footer class="flex items-center justify-between border-t pt-4 text-sm text-muted-foreground">
+      <span>共 {{ total }} 个子应用</span>
+      <div class="flex items-center gap-2">
+        <UiButton size="sm" variant="outline" :disabled="page <= 1 || loading" @click="page--"
+          >上一页</UiButton
+        ><span>{{ page }} / {{ pageCount }}</span
+        ><UiButton
+          size="sm"
+          variant="outline"
+          :disabled="page >= pageCount || loading"
+          @click="page++"
+          >下一页</UiButton
+        >
+      </div>
+    </footer>
+  </section>
+  <CreateUserApp v-model:visible="createVisible" @create="refresh" /><UpdateUserApp
+    v-model:visible="editVisible"
+    :app="editApp"
+    @update="refresh"
+  /><UserAppSecret v-model:visible="secretVisible" :app="editApp" /><OidcIntegrationGuide
+    v-model:visible="guideVisible"
+  />
+</template>

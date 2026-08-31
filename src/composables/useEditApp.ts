@@ -1,6 +1,7 @@
 import { updateUserApp } from '@/api/app'
 import { AppStatus, type AppInfo, type UserAppUpdateParams } from '@/types'
 import { useRequest } from 'alova'
+import { useFeedback } from './useFeedback'
 
 export const useEditApp = (callback?: () => void) => {
   const origin = ref<AppInfo>()
@@ -12,7 +13,7 @@ export const useEditApp = (callback?: () => void) => {
     status: AppStatus.RUNNING
   })
 
-  const msg = useMessage()
+  const feedback = useFeedback()
 
   const { send, loading, onSuccess } = useRequest(
     (data: UserAppUpdateParams) => updateUserApp(origin.value?.id || '', data),
@@ -37,7 +38,7 @@ export const useEditApp = (callback?: () => void) => {
   }
 
   onSuccess(() => {
-    msg.success('编辑成功')
+    feedback.success('编辑成功')
     callback?.()
   })
 

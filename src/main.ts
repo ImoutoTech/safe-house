@@ -1,5 +1,4 @@
 import './assets/base.css'
-import 'vfonts/Lato.css'
 
 import { createApp } from 'vue'
 import pinia from './stores/pinia'

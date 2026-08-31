@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import UiButton from '@/components/ui/ui-button.vue'
+import UiField from '@/components/ui/ui-field.vue'
+import UiInput from '@/components/ui/ui-input.vue'
+import UiSwitch from '@/components/ui/ui-switch.vue'
 import type { ProviderProjection, ProviderUpdate } from '@/types'
-import type { FormInst, FormRules } from 'naive-ui'
 
+defineOptions({ name: 'ProviderConfigCard' })
 const props = defineProps<{ provider: ProviderProjection; loading: boolean }>()
 const emit = defineEmits<{
   save: [provider: ProviderProjection['provider'], data: ProviderUpdate]
@@ -11,17 +15,7 @@ const draft = reactive({
   clientSecret: '',
   enabled: props.provider.enabled
 })
-const rules: FormRules = {
-  clientId: [
-    {
-      validator: () => !draft.enabled || Boolean(draft.clientId.trim()),
-      message: '启用前请输入 Client ID',
-      trigger: ['input', 'blur']
-    }
-  ]
-}
-const formRef = shallowRef<FormInst>()
-
+const errors = shallowRef<{ clientId?: string; clientSecret?: string }>({})
 watch(
   () => props.provider,
   (provider) => {
@@ -30,9 +24,16 @@ watch(
     draft.enabled = provider.enabled
   }
 )
-
-const submit = async () => {
-  await formRef.value?.validate()
+const submit = () => {
+  const next: typeof errors.value = {}
+  if (draft.enabled && !draft.clientId.trim()) {
+    next.clientId = '启用前请输入 Client ID'
+  }
+  if (draft.enabled && !props.provider.configured && !draft.clientSecret.trim()) {
+    next.clientSecret = '首次启用前请输入 Client Secret'
+  }
+  errors.value = next
+  if (Object.keys(next).length) return
   const data = { ...draft }
   draft.clientSecret = ''
   emit('save', props.provider.provider, data)
@@ -40,52 +41,41 @@ const submit = async () => {
 </script>
 
 <template>
-  <section class="provider-config">
-    <header class="provider-config__header">
-      <h2 class="provider-config__title">
-        {{ provider.provider === 'github' ? 'GitHub' : 'Google' }}
-      </h2>
-      <n-switch
-        v-model:value="draft.enabled"
-        :aria-label="`${provider.provider === 'github' ? 'GitHub' : 'Google'} 登录方式`"
-      />
+  <form class="grid gap-4 rounded-lg bg-muted/40 p-4" @submit.prevent="submit">
+    <header class="flex items-center justify-between gap-3">
+      <div>
+        <h3 class="font-medium">{{ provider.provider === 'github' ? 'GitHub' : 'Google' }}</h3>
+        <p class="text-xs text-muted-foreground">
+          {{ provider.configured ? `已配置 ${provider.secretHint || ''}` : '尚未配置' }}
+        </p>
+      </div>
+      <UiSwitch v-model="draft.enabled" :aria-label="`${provider.provider} 登录方式`" />
     </header>
-    <n-form ref="formRef" :model="draft" :rules="rules" label-placement="top">
-      <n-form-item label="Client ID" path="clientId"
-        ><n-input v-model:value="draft.clientId"
-      /></n-form-item>
-      <n-form-item label="Client Secret（留空则不修改）">
-        <n-input v-model:value="draft.clientSecret" type="password" show-password-on="click" />
-        <template #feedback>{{
-          provider.configured ? `已配置 ${provider.secretHint || ''}` : '尚未配置'
-        }}</template>
-      </n-form-item>
-      <n-flex justify="end">
-        <n-button type="primary" :loading="loading" @click="submit">保存</n-button>
-      </n-flex>
-    </n-form>
-  </section>
+    <UiField label="Client ID" :for="`${provider.provider}-client-id`" :error="errors.clientId"
+      ><template #default="field"
+        ><UiInput
+          :id="`${provider.provider}-client-id`"
+          v-model="draft.clientId"
+          autocomplete="off"
+          :invalid="field.invalid"
+          :aria-describedby="field.describedBy"
+          @update:model-value="errors = { ...errors, clientId: undefined }" /></template></UiField
+    ><UiField
+      label="Client Secret"
+      :for="`${provider.provider}-client-secret`"
+      :error="errors.clientSecret"
+      :hint="provider.configured ? '留空将保留现有密钥' : '启用前需要配置密钥'"
+      ><template #default="field"
+        ><UiInput
+          :id="`${provider.provider}-client-secret`"
+          v-model="draft.clientSecret"
+          type="password"
+          autocomplete="new-password"
+          :invalid="field.invalid"
+          :aria-describedby="field.describedBy"
+          @update:model-value="
+            errors = { ...errors, clientSecret: undefined }
+          " /></template></UiField
+    ><UiButton type="submit" block :loading="loading">保存</UiButton>
+  </form>
 </template>
-
-<style scoped>
-.provider-config {
-  padding: 0 8px 24px;
-}
-
-.provider-config__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0 0 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgb(239, 239, 245);
-}
-
-.provider-config__title {
-  margin: 0;
-  color: rgb(31, 34, 37);
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.6;
-}
-</style>

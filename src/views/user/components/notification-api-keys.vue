@@ -1,24 +1,29 @@
 <script setup lang="ts">
-import { useNotificationKeys } from '@/composables/useNotificationKeys'
-import { PERMISSION_CODE_MAP } from '@/utils/constants'
-import { CopyOutline, TrashOutline } from '@vicons/ionicons5'
+import { Trash2 } from 'lucide-vue-next'
 import { useClipboard } from '@vueuse/core'
 import dayjs from 'dayjs'
+import CredentialSnippet from '@/components/patterns/credential-snippet.vue'
+import EmptyState from '@/components/patterns/empty-state.vue'
+import UiAlert from '@/components/ui/ui-alert.vue'
+import UiButton from '@/components/ui/ui-button.vue'
+import UiConfirmDialog from '@/components/ui/ui-confirm-dialog.vue'
+import UiDialog from '@/components/ui/ui-dialog.vue'
+import UiSpinner from '@/components/ui/ui-spinner.vue'
+import UiSwitch from '@/components/ui/ui-switch.vue'
+import { useFeedback } from '@/composables/useFeedback'
+import { useNotificationKeys } from '@/composables/useNotificationKeys'
+import { PERMISSION_CODE_MAP } from '@/utils/constants'
 
 defineOptions({ name: 'NotificationApiKeys' })
-
-const props = defineProps<{
-  appId: string
-  active: boolean
-}>()
-
+const props = defineProps<{ appId: string; active: boolean }>()
 const { keys, loading, createLoading, error, updateApp, refresh, create, toggle, remove } =
   useNotificationKeys()
 const plaintextVisible = shallowRef(false)
 const plaintext = shallowRef('')
+const confirmOpen = shallowRef(false)
+const selectedKey = shallowRef('')
 const { copy } = useClipboard()
-const message = useMessage()
-
+const feedback = useFeedback()
 watch(
   [() => props.active, () => props.appId],
   ([active, appId]) => {
@@ -28,158 +33,104 @@ watch(
   },
   { immediate: true }
 )
-
-watch(plaintextVisible, (visible) => {
-  if (!visible) plaintext.value = ''
-})
-
 onBeforeUnmount(() => {
   plaintext.value = ''
 })
-
 const handleCreate = async () => {
   const value = await create()
   if (!value) return
   plaintext.value = value
   plaintextVisible.value = true
 }
-
-const copyPlaintext = async () => {
-  if (!plaintext.value) return
-  await copy(plaintext.value)
-  message.success('通知 API Key 已复制')
+const copyPlaintext = async (value: string) => {
+  await copy(value)
+  feedback.success('通知 API Key 已复制')
+}
+const requestRemove = (id: string) => {
+  selectedKey.value = id
+  confirmOpen.value = true
+}
+const handleRemove = async () => {
+  if (await remove(selectedKey.value)) confirmOpen.value = false
+}
+const acknowledgePlaintext = () => {
+  plaintextVisible.value = false
+  plaintext.value = ''
 }
 </script>
 
 <template>
-  <section class="notification-keys">
-    <n-flex justify="space-between" align="center">
+  <section class="grid gap-3 border-t pt-5">
+    <header class="flex items-center justify-between gap-4">
       <div>
-        <n-text strong>通知 API Key</n-text>
-        <n-text class="notification-keys__description" depth="3">
-          仅用于调用通知 API，不复用 OIDC Client Secret。
-        </n-text>
+        <h3 class="font-medium">通知 API Key</h3>
+        <p class="text-sm text-muted-foreground">仅用于调用通知 API，不复用 OIDC Client Secret。</p>
       </div>
-      <n-button
+      <UiButton
         v-permission="PERMISSION_CODE_MAP['修改子应用']"
-        text
-        type="info"
+        size="sm"
+        variant="outline"
         :loading="createLoading"
         :disabled="loading"
         @click="handleCreate"
+        >新建</UiButton
       >
-        新建
-      </n-button>
-    </n-flex>
-
-    <n-alert v-if="error" class="notification-keys__alert" type="error" title="加载失败">
-      <n-button size="small" @click="refresh">重试</n-button>
-    </n-alert>
-    <n-spin :show="loading">
-      <n-list class="notification-keys__list" bordered hoverable>
-        <n-list-item v-for="key in keys" :key="key.id">
-          <n-thing :title="key.hint">
-            <template #description>
-              创建于 {{ dayjs(key.createdAt).format('YYYY-MM-DD HH:mm') }}
-              <template v-if="key.lastUsedAt">
-                · 最后使用 {{ dayjs(key.lastUsedAt).fromNow() }}
-              </template>
-            </template>
-          </n-thing>
-          <template #suffix>
-            <n-flex align="center" :wrap="false">
-              <n-switch
-                v-permission="{
-                  permission: PERMISSION_CODE_MAP['修改子应用'],
-                  mode: 'disable'
-                }"
-                :value="key.enabled"
-                size="small"
-                :disabled="loading"
-                :aria-label="`${key.hint}启用状态`"
-                @update:value="toggle(key.id, $event)"
-              />
-              <n-popconfirm
-                placement="top-end"
-                :negative-text="null"
-                positive-text="确认吊销"
-                :positive-button-props="{ type: 'error', secondary: true }"
-                @positive-click="remove(key.id)"
-              >
-                <template #trigger>
-                  <n-button
-                    v-permission="PERMISSION_CODE_MAP['修改子应用']"
-                    type="error"
-                    size="small"
-                    tertiary
-                    :disabled="loading"
-                    aria-label="吊销通知 API Key"
-                  >
-                    <n-icon :component="TrashOutline" />
-                  </n-button>
-                </template>
-                吊销后无法恢复，确定继续吗？
-              </n-popconfirm>
-            </n-flex>
-          </template>
-        </n-list-item>
-        <n-empty v-if="!keys.length && !error" class="notification-keys__empty">
-          暂无通知 API Key
-        </n-empty>
-      </n-list>
-    </n-spin>
-
-    <n-modal v-model:show="plaintextVisible" :mask-closable="false">
-      <n-card
-        class="plaintext-dialog"
-        title="保存新的通知 API Key"
-        :bordered="false"
-        role="dialog"
-        aria-modal="true"
-      >
-        <n-alert type="warning" title="明文仅显示这一次">
-          关闭后 Safe House 会立即清除本地临时值，之后只能重新创建 Key。
-        </n-alert>
-        <n-input-group class="plaintext-dialog__value">
-          <n-input :value="plaintext" readonly type="password" show-password-on="click" />
-          <n-button type="primary" aria-label="复制通知 API Key" @click="copyPlaintext">
-            <template #icon><n-icon :component="CopyOutline" /></template>
-            复制
-          </n-button>
-        </n-input-group>
-        <n-flex justify="end">
-          <n-button type="primary" @click="plaintextVisible = false">我已保存</n-button>
-        </n-flex>
-      </n-card>
-    </n-modal>
+    </header>
+    <UiAlert v-if="error" variant="destructive" title="加载失败"
+      ><UiButton size="sm" variant="outline" class="mt-2" @click="refresh">重试</UiButton></UiAlert
+    >
+    <div v-if="loading && !keys.length" class="py-6 text-center"><UiSpinner /></div>
+    <div v-else-if="keys.length" class="divide-y rounded-lg border">
+      <div v-for="key in keys" :key="key.id" class="flex items-center justify-between gap-3 p-3">
+        <div class="min-w-0">
+          <code class="text-xs">{{ key.hint }}</code>
+          <p class="mt-1 text-xs text-muted-foreground">
+            创建于 {{ dayjs(key.createdAt).format('YYYY-MM-DD HH:mm')
+            }}<template v-if="key.lastUsedAt">
+              · 最后使用 {{ dayjs(key.lastUsedAt).fromNow() }}</template
+            >
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <UiSwitch
+            v-permission="{ permission: PERMISSION_CODE_MAP['修改子应用'], mode: 'disable' }"
+            :model-value="key.enabled"
+            :disabled="loading"
+            :aria-label="`${key.hint} 启用状态`"
+            @update:model-value="toggle(key.id, $event)"
+          /><UiButton
+            v-permission="PERMISSION_CODE_MAP['修改子应用']"
+            size="icon"
+            variant="ghost"
+            class="text-destructive"
+            aria-label="吊销通知 API Key"
+            @click="requestRemove(key.id)"
+            ><Trash2
+          /></UiButton>
+        </div>
+      </div>
+    </div>
+    <EmptyState v-else title="暂无通知 API Key" description="新建后请立即保存明文。" />
   </section>
+  <UiConfirmDialog
+    v-model:open="confirmOpen"
+    title="吊销通知 API Key"
+    description="吊销后无法恢复，依赖此 Key 的调用会立即失败。"
+    confirm-text="确认吊销"
+    destructive
+    :loading="loading"
+    @confirm="handleRemove"
+  /><UiDialog
+    v-model:open="plaintextVisible"
+    title="保存新的通知 API Key"
+    description="关闭后 Safe House 会立即清除本地临时值。"
+    blocking
+    ><CredentialSnippet
+      :value="plaintext"
+      label="Notification API Key"
+      @copy="copyPlaintext"
+    /><template #footer
+      ><UiButton @click="acknowledgePlaintext">我已安全保存</UiButton></template
+    ></UiDialog
+  >
 </template>
-
-<style scoped lang="scss">
-.notification-keys {
-  padding-top: 18px;
-  border-top: 1px solid rgb(239, 239, 245);
-}
-
-.notification-keys__description {
-  display: block;
-  margin-top: 4px;
-}
-
-.notification-keys__alert,
-.notification-keys__list {
-  margin-top: 12px;
-}
-
-.notification-keys__empty {
-  margin: 20px 0;
-}
-
-.plaintext-dialog {
-  width: min(560px, 95vw);
-}
-
-.plaintext-dialog__value {
-  margin: 20px 0;
-}
-</style>

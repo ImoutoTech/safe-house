@@ -22,10 +22,11 @@ import type {
 import { NOTIFICATION_PERMISSION } from '@/utils/constants'
 import { useRequest } from 'alova'
 import { UserRole } from '@reus-able/types'
+import { useFeedback } from './useFeedback'
 
 export const useNotificationAdmin = () => {
   const userStore = useUserStore()
-  const message = useMessage()
+  const feedback = useFeedback()
   const selectedAppId = shallowRef('')
   const selectedPolicy = shallowRef<AppNotificationPolicy>()
 
@@ -71,7 +72,7 @@ export const useNotificationAdmin = () => {
   )
 
   const reportError = (error: unknown, fallback: string) => {
-    message.error(error instanceof Error ? error.message : fallback)
+    feedback.error(error instanceof Error ? error.message : fallback)
   }
 
   const refreshChannel = async () => {
@@ -89,7 +90,7 @@ export const useNotificationAdmin = () => {
     try {
       await channelSaveRequest.send(data)
       await channelListRequest.send()
-      message.success('SMTP 配置已保存')
+      feedback.success('SMTP 配置已保存')
     } catch (error) {
       reportError(error, 'SMTP 配置保存失败')
     }
@@ -131,7 +132,7 @@ export const useNotificationAdmin = () => {
         await templateCreateRequest.send(draft)
       }
       await templateListRequest.send()
-      message.success('消息模板已保存')
+      feedback.success('消息模板已保存')
       return true
     } catch (error) {
       reportError(error, '消息模板保存失败')
@@ -143,7 +144,7 @@ export const useNotificationAdmin = () => {
     try {
       await templateToggleRequest.send({ id: template.id, enabled })
       await templateListRequest.send()
-      message.success(enabled ? '消息模板已启用' : '消息模板已停用')
+      feedback.success(enabled ? '消息模板已启用' : '消息模板已停用')
     } catch (error) {
       reportError(error, '消息模板状态更新失败')
     }
@@ -175,7 +176,7 @@ export const useNotificationAdmin = () => {
     try {
       await policySaveRequest.send({ appId: selectedAppId.value, data: draft })
       await selectPolicyApp(selectedAppId.value)
-      message.success('应用通知权限已保存')
+      feedback.success('应用通知权限已保存')
     } catch (error) {
       reportError(error, '应用通知权限保存失败')
     }

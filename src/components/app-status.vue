@@ -1,29 +1,17 @@
-<template>
-  <n-tag :type="STATUS_TYPE_MAP[status]" :bordered="false" :size="size">
-    {{ STATUS_NAME_MAP[status] }}
-  </n-tag>
-</template>
 <script setup lang="ts">
+import UiBadge from '@/components/ui/ui-badge.vue'
 import { AppStatus } from '@/types'
 import { STATUS_NAME_MAP } from '@/utils/constants'
 
-defineOptions({
-  name: 'AppStatus'
-})
-
-withDefaults(
-  defineProps<{
-    status: AppStatus
-    size?: 'small' | 'medium' | 'large' | 'tiny'
-  }>(),
-  {
-    size: 'small'
-  }
-)
-
-const STATUS_TYPE_MAP = {
-  [AppStatus.BANNED]: 'error' as const,
-  [AppStatus.CLOSED]: undefined,
-  [AppStatus.RUNNING]: 'info' as const
-}
+defineOptions({ name: 'AppStatus' })
+defineProps<{ status: AppStatus }>()
+const variants = {
+  [AppStatus.BANNED]: 'destructive',
+  [AppStatus.CLOSED]: 'secondary',
+  [AppStatus.RUNNING]: 'success'
+} as const
 </script>
+
+<template>
+  <UiBadge :variant="variants[status]">{{ STATUS_NAME_MAP[status] }}</UiBadge>
+</template>

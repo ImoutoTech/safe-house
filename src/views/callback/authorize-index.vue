@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import UiAlert from '@/components/ui/ui-alert.vue'
+import UiAvatar from '@/components/ui/ui-avatar.vue'
+import UiButton from '@/components/ui/ui-button.vue'
+import UiCard from '@/components/ui/ui-card.vue'
+import UiSpinner from '@/components/ui/ui-spinner.vue'
 import { useOidcInteraction } from '@/composables/useOidcInteraction'
 import { useUserData } from '@/composables/useUserData'
 
@@ -11,111 +16,69 @@ const { loading: userLoading, userData } = useUserData(true)
 const pageLoading = computed(() => loading.value || userLoading.value)
 const scopes = computed(() => interaction.value?.scope.split(' ').filter(Boolean) ?? [])
 const userName = computed(() => userData.value.nickname || userData.value.email)
-const avatarFallback = computed(() => userName.value.slice(0, 1).toUpperCase())
-
 const scopeDescriptions: Record<string, string> = {
   openid: '确认你的身份',
   profile: '查看你的基本资料',
   email: '查看你的邮箱地址',
   offline_access: '在你离开后继续访问已授权的信息'
 }
-
-const decide = async (approved: boolean) => {
-  await complete(approved)
-}
 </script>
 
 <template>
-  <n-spin :show="pageLoading">
-    <n-result
-      v-if="interactionError"
-      status="warning"
-      title="授权请求不可用"
-      :description="interactionError.message"
+  <div v-if="pageLoading && !interaction" class="grid justify-items-center py-20">
+    <UiSpinner label="正在读取授权范围" />
+  </div>
+  <UiCard v-else-if="interactionError" class="w-[min(92vw,32rem)]"
+    ><div class="grid gap-4">
+      <UiAlert variant="warning" title="授权请求不可用">{{ interactionError.message }}</UiAlert
+      ><UiButton variant="outline" @click="refresh()">重试</UiButton>
+    </div></UiCard
+  >
+  <UiCard v-else-if="interaction" class="w-[min(92vw,34rem)]"
+    ><template #header
+      ><div class="grid w-full justify-items-center gap-4 text-center">
+        <UiAvatar
+          :src="userData.avatar"
+          :alt="userName"
+          :fallback="userName.slice(0, 1).toUpperCase()"
+          size="lg"
+        />
+        <div class="grid gap-1">
+          <h1 class="text-xl font-semibold">登录到 {{ interaction.client.name }}</h1>
+          <p class="text-sm text-muted-foreground">
+            将使用 <strong class="text-foreground">{{ userName }}</strong> 完成授权
+          </p>
+        </div>
+      </div></template
     >
-      <template #footer><n-button @click="refresh()">重试</n-button></template>
-    </n-result>
-    <main v-else-if="interaction" class="interaction-page">
-      <n-flex vertical align="center" :size="24">
-        <n-avatar v-if="userData.avatar" round :size="72" :src="userData.avatar" />
-        <n-avatar v-else round :size="72">
-          {{ avatarFallback }}
-        </n-avatar>
-        <p class="login-relation">
-          <strong>{{ userName }}</strong>
-          正在登录到
-          <strong>{{ interaction.client.name }}</strong>
-        </p>
-        <p v-if="interaction.client.description" class="client-description">
-          {{ interaction.client.description }}
-        </p>
-        <section class="permission-section" aria-labelledby="permission-title">
-          <h2 id="permission-title" class="permission-title">相关权限</h2>
-          <n-table :single-line="false" size="small">
-            <thead>
-              <tr>
-                <th>权限</th>
-                <th>说明</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="scope in scopes" :key="scope">
-                <td>{{ scope }}</td>
-                <td>{{ scopeDescriptions[scope] || '使用此权限范围内的信息' }}</td>
-              </tr>
-            </tbody>
-          </n-table>
-        </section>
-        <n-alert v-if="completionError" class="completion-error" type="error" title="提交失败">
-          {{ completionError.message }}，请重试。
-        </n-alert>
-        <n-flex class="interaction-actions" :wrap="false">
-          <n-button block :disabled="pageLoading" @click="decide(false)">取消</n-button>
-          <n-button block type="primary" :loading="pageLoading" @click="decide(true)">
-            继续
-          </n-button>
-        </n-flex>
-      </n-flex>
-    </main>
-  </n-spin>
+    <div class="grid gap-5">
+      <p v-if="interaction.client.description" class="text-center text-sm text-muted-foreground">
+        {{ interaction.client.description }}
+      </p>
+      <section class="overflow-hidden rounded-lg border" aria-labelledby="permission-title">
+        <h2 id="permission-title" class="border-b bg-muted/40 px-4 py-3 text-sm font-medium">
+          请求的权限
+        </h2>
+        <dl class="divide-y">
+          <div
+            v-for="scope in scopes"
+            :key="scope"
+            class="grid gap-1 px-4 py-3 sm:grid-cols-[9rem_1fr]"
+          >
+            <dt class="font-mono text-sm">{{ scope }}</dt>
+            <dd class="text-sm text-muted-foreground">
+              {{ scopeDescriptions[scope] || '使用此权限范围内的信息' }}
+            </dd>
+          </div>
+        </dl>
+      </section>
+      <UiAlert v-if="completionError" variant="destructive" title="提交失败"
+        >{{ completionError.message }}，请重试。</UiAlert
+      >
+      <div class="grid grid-cols-2 gap-3">
+        <UiButton variant="outline" :disabled="pageLoading" @click="complete(false)">拒绝</UiButton
+        ><UiButton :loading="pageLoading" @click="complete(true)">批准并继续</UiButton>
+      </div>
+    </div></UiCard
+  >
 </template>
-
-<style scoped lang="scss">
-.interaction-page {
-  width: min(92vw, 520px);
-  padding: 32px 0;
-}
-
-.login-relation {
-  margin: 0;
-  text-align: center;
-  font-size: 18px;
-}
-
-.client-description {
-  margin: -12px 0 0;
-  opacity: 0.72;
-  text-align: center;
-}
-
-.permission-section,
-.completion-error,
-.interaction-actions {
-  width: 100%;
-}
-
-.permission-title {
-  margin: 0 0 12px;
-  font-size: 16px;
-}
-
-.interaction-actions :deep(.n-button) {
-  flex: 1;
-}
-
-@media (max-width: 768px) {
-  .interaction-page {
-    padding: 24px 16px;
-  }
-}
-</style>

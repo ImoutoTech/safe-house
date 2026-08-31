@@ -6,6 +6,7 @@ import {
 } from '@/api/oauth'
 import type { ExternalProvider } from '@/types'
 import { useRequest } from 'alova'
+import { useFeedback } from './useFeedback'
 
 export const useExternalIdentities = () => {
   const listRequest = useRequest(getLinkedIdentities)
@@ -18,25 +19,26 @@ export const useExternalIdentities = () => {
       startExternalBinding(provider, returnTo),
     { immediate: false }
   )
-  const message = useMessage()
+  const feedback = useFeedback()
 
   const identities = computed(() => listRequest.data.value?.data ?? [])
 
   const bind = async (token: string) => {
     await bindRequest.send(token)
     await listRequest.send()
-    message.success('身份绑定成功')
+    feedback.success('身份绑定成功')
   }
 
   const unbind = async (id: number) => {
     try {
       await unbindRequest.send(id)
       await listRequest.send()
-      message.success('已解绑身份')
+      feedback.success('已解绑身份')
     } catch (error) {
-      message.error(error instanceof Error ? error.message : '解绑失败')
-      throw error
+      feedback.error(error instanceof Error ? error.message : '解绑失败')
+      return false
     }
+    return true
   }
 
   const startBinding = async (provider: ExternalProvider, returnTo: string) => {
@@ -44,7 +46,7 @@ export const useExternalIdentities = () => {
       const response = await startRequest.send({ provider, returnTo })
       window.location.assign(response.data.authorizationUrl)
     } catch (error) {
-      message.error(error instanceof Error ? error.message : '无法发起身份绑定')
+      feedback.error(error instanceof Error ? error.message : '无法发起身份绑定')
     }
   }
 

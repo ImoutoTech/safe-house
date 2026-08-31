@@ -15,7 +15,7 @@ const { onAuthRequired, onResponseRefreshToken } = createServerTokenAuthenticati
   refreshTokenOnError: {
     isExpired: (error, method) => {
       return (
-        error.response.data.code === BUSINESS_ERROR_CODE.EXPIRED_TOKEN &&
+        error.response?.data?.code === BUSINESS_ERROR_CODE.EXPIRED_TOKEN &&
         method.meta?.authRole !== 'refreshToken'
       )
     },
@@ -23,7 +23,6 @@ const { onAuthRequired, onResponseRefreshToken } = createServerTokenAuthenticati
     handler: async () => {
       const res = await refreshToken()
       const userStore = useUserStore()
-      console.log('token刷新成功')
       userStore.updateToken(res.data.token, userStore.refresh_token)
     }
   }
@@ -51,17 +50,17 @@ const alovaInstance = createAlova({
       return res.data
     },
     onError: (e) => {
-      if (e.response.data.code === BUSINESS_ERROR_CODE.ACCESS_FORBIDDEN) {
+      if (e.response?.data?.code === BUSINESS_ERROR_CODE.ACCESS_FORBIDDEN) {
         throw new Error('无权限')
       }
 
-      if (e.response.data.code === BUSINESS_ERROR_CODE.EXPIRED_TOKEN) {
+      if (e.response?.data?.code === BUSINESS_ERROR_CODE.EXPIRED_TOKEN) {
         const userStore = useUserStore()
         userStore.updateToken()
         userStore.updateUserData()
       }
 
-      throw new Error(e?.response?.data?.msg || e)
+      throw new Error(e?.response?.data?.msg || e?.message || '网络请求失败')
     }
   }),
   localCache: null

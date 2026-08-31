@@ -1,97 +1,88 @@
-<template>
-  <n-modal v-model:show="visible">
-    <n-card
-      class="common-dialog"
-      title="编辑子应用"
-      :bordered="false"
-      role="dialog"
-      aria-modal="true"
-    >
-      <n-form ref="formRef" :model="params" :rules="formRules">
-        <n-form-item label="应用名" path="name">
-          <n-input v-model:value="params.name" placeholder="新的子应用"></n-input>
-        </n-form-item>
-        <n-form-item label="描述" path="description">
-          <n-input v-model:value="params.description" placeholder="本地/测试/正式"></n-input>
-        </n-form-item>
-        <n-form-item label="状态" path="status">
-          <n-radio-group v-model:value="params.status">
-            <n-flex>
-              <n-radio
-                v-for="item in appStatusOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </n-flex>
-          </n-radio-group>
-        </n-form-item>
-        <n-form-item label="回调地址" path="callback">
-          <n-input v-model:value="params.callback" placeholder="https://example.com"></n-input>
-        </n-form-item>
-      </n-form>
-      <n-button :loading="loading" block secondary type="info" @click="handleSubmit">保存</n-button>
-    </n-card>
-  </n-modal>
-</template>
 <script setup lang="ts">
+import { z } from 'zod'
+import UiButton from '@/components/ui/ui-button.vue'
+import UiDialog from '@/components/ui/ui-dialog.vue'
+import UiField from '@/components/ui/ui-field.vue'
+import UiInput from '@/components/ui/ui-input.vue'
 import { useEditApp } from '@/composables/useEditApp'
-import { AppStatus, type AppInfo } from '@/types'
+import { useFormValidation } from '@/composables/useFormValidation'
+import { AppStatus, type AppInfo, type UserAppUpdateParams } from '@/types'
 import { STATUS_NAME_MAP } from '@/utils/constants'
-import type { FormInst } from 'naive-ui'
 
-defineOptions({
-  name: 'UpdateUserApp'
-})
-
+defineOptions({ name: 'UpdateUserApp' })
 const visible = defineModel('visible', { type: Boolean })
-const formRef = ref<FormInst>()
-const props = defineProps<{
-  app?: AppInfo
-}>()
-
-const emit = defineEmits<{
-  (e: 'update'): void
-}>()
-
-const formRules = {
-  name: [{ required: true, message: '请输入应用名' }],
-  callback: [{ required: true, message: '请输入回调地址' }]
-}
-
-const appStatusOptions = [
-  {
-    label: STATUS_NAME_MAP[AppStatus.RUNNING],
-    value: AppStatus.RUNNING
-  },
-  {
-    label: STATUS_NAME_MAP[AppStatus.CLOSED],
-    value: AppStatus.CLOSED
-  }
+const props = defineProps<{ app?: AppInfo }>()
+const emit = defineEmits<{ update: [] }>()
+const schema = z.object({
+  name: z.string().trim().min(1, '请输入应用名'),
+  description: z.string(),
+  callback: z.string().trim().url('请输入有效的回调地址'),
+  status: z.enum(AppStatus)
+})
+const { errors, validate, clear } = useFormValidation<UserAppUpdateParams>(schema)
+const options = [
+  { label: STATUS_NAME_MAP[AppStatus.RUNNING], value: AppStatus.RUNNING },
+  { label: STATUS_NAME_MAP[AppStatus.CLOSED], value: AppStatus.CLOSED }
 ]
-
 const { params, loading, submit, setApp } = useEditApp(() => {
   visible.value = false
   emit('update')
 })
-
 const handleSubmit = () => {
-  formRef.value?.validate((errors) => {
-    if (errors) return
-
-    submit()
-  })
+  if (validate({ ...params.value })) submit()
 }
-
 watch(
-  () => visible.value,
-  () => {
-    if (props.app) {
+  visible,
+  (shown) => {
+    if (shown && props.app) {
       setApp(props.app)
+      clear()
     }
   },
-  {
-    immediate: true
-  }
+  { immediate: true }
 )
 </script>
+
+<template>
+  <UiDialog
+    v-model:open="visible"
+    title="编辑子应用"
+    description="更新展示信息、运行状态和回调地址。"
+    ><form class="grid gap-4" @submit.prevent="handleSubmit">
+      <UiField label="应用名" for="edit-app-name" :error="errors.name"
+        ><template #default="field"
+          ><UiInput
+            id="edit-app-name"
+            v-model="params.name"
+            :invalid="field.invalid"
+            :aria-describedby="field.describedBy"
+            @update:model-value="clear('name')" /></template></UiField
+      ><UiField label="描述" for="edit-app-description"
+        ><UiInput id="edit-app-description" v-model="params.description"
+      /></UiField>
+      <fieldset class="grid gap-2">
+        <legend class="text-sm font-medium leading-none">状态</legend>
+        <div class="flex gap-4">
+          <label v-for="item in options" :key="item.value" class="flex items-center gap-2 text-sm"
+            ><input
+              v-model="params.status"
+              type="radio"
+              :value="item.value"
+              class="size-4 accent-foreground"
+            />{{ item.label }}</label
+          >
+        </div>
+      </fieldset>
+      <UiField label="回调地址" for="edit-app-callback" :error="errors.callback"
+        ><template #default="field"
+          ><UiInput
+            id="edit-app-callback"
+            v-model="params.callback"
+            type="url"
+            :invalid="field.invalid"
+            :aria-describedby="field.describedBy"
+            @update:model-value="clear('callback')" /></template></UiField
+      ><UiButton type="submit" block :loading="loading">保存</UiButton>
+    </form></UiDialog
+  >
+</template>

@@ -1,8 +1,9 @@
 import { GetUserApp } from '@/api/app'
 import { usePagination } from '@alova/scene-vue'
+import { useFeedback } from './useFeedback'
 
 export const useAppList = () => {
-  const msg = useMessage()
+  const feedback = useFeedback()
   const searchValue = ref('')
 
   const { refresh, data, loading, page, pageSize, total, onError } = usePagination(
@@ -25,26 +26,9 @@ export const useAppList = () => {
     }
   )
 
-  const pageBindings = computed(() => ({
-    page: page.value,
-    itemCount: total.value,
-    pageSize: pageSize.value,
-    'on-update:page': (val: number) => (page.value = val),
-    'on-update:page-size': (val: number) => (pageSize.value = val),
-    loading: loading.value,
-    disabled: loading.value
-  }))
-
-  const searchBindings = computed(() => ({
-    value: searchValue.value,
-    'on-input': (val: string) => (searchValue.value = val),
-    loading: loading.value,
-    disabled: loading.value
-  }))
-
   onError((e) => {
-    msg.error(e.error.message)
+    feedback.error(e.error.message)
   })
 
-  return { refresh, loading, data, searchBindings, pageBindings }
+  return { refresh, loading, data, searchValue, page, pageSize, total }
 }

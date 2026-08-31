@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { useProviderAdmin } from '@/composables/useProviderAdmin'
+import UiAlert from '@/components/ui/ui-alert.vue'
+import UiButton from '@/components/ui/ui-button.vue'
+import UiSpinner from '@/components/ui/ui-spinner.vue'
 import { useNotificationAdmin } from '@/composables/useNotificationAdmin'
+import { useProviderAdmin } from '@/composables/useProviderAdmin'
 import { useUserStore } from '@/stores/user'
 import type { NotificationTemplate, NotificationTemplateCreate } from '@/types'
 import { UserRole } from '@reus-able/types'
@@ -18,63 +21,31 @@ const canManageProvider = computed(
     userStore.userPermissions.includes('oauth-provider-admin')
 )
 const { providers, loading, error, save, refresh } = useProviderAdmin(false)
-const {
-  canManageChannel,
-  canManageTemplates,
-  canManagePolicies,
-  channel,
-  templates,
-  templateOptions,
-  apps,
-  policy,
-  selectedAppId,
-  channelLoading,
-  templateLoading,
-  policyLoading,
-  channelError,
-  templateError,
-  policyError,
-  refreshChannel,
-  saveChannel,
-  refreshTemplates,
-  refreshTemplateOptions,
-  saveTemplate,
-  toggleTemplate,
-  refreshApps,
-  selectPolicyApp,
-  savePolicy
-} = useNotificationAdmin()
-
+const admin = useNotificationAdmin()
 const templateFormVisible = shallowRef(false)
 const editingTemplate = shallowRef<NotificationTemplate>()
 const hasManagementSection = computed(
   () =>
     canManageProvider.value ||
-    canManageChannel.value ||
-    canManageTemplates.value ||
-    canManagePolicies.value
+    admin.canManageChannel.value ||
+    admin.canManageTemplates.value ||
+    admin.canManagePolicies.value
 )
-
 const openCreateTemplate = () => {
   editingTemplate.value = undefined
   templateFormVisible.value = true
 }
-
 const openEditTemplate = (template: NotificationTemplate) => {
   editingTemplate.value = template
   templateFormVisible.value = true
 }
-
 const handleSaveTemplate = async (draft: NotificationTemplateCreate) => {
-  const saved = await saveTemplate(draft, editingTemplate.value)
-  if (saved) templateFormVisible.value = false
+  if (await admin.saveTemplate(draft, editingTemplate.value)) templateFormVisible.value = false
 }
-
 const retryPolicy = async () => {
-  await Promise.all([refreshApps(), refreshTemplateOptions()])
-  if (selectedAppId.value) await selectPolicyApp(selectedAppId.value)
+  await Promise.all([admin.refreshApps(), admin.refreshTemplateOptions()])
+  if (admin.selectedAppId.value) await admin.selectPolicyApp(admin.selectedAppId.value)
 }
-
 watch(
   canManageProvider,
   (allowed) => {
@@ -85,82 +56,82 @@ watch(
 </script>
 
 <template>
-  <main class="manage-page">
-    <n-alert v-if="!hasManagementSection" type="warning" title="无管理权限">
-      当前账号没有可用的管理配置权限。
-    </n-alert>
-    <n-collapse :default-expanded-names="['login-config', 'notification-channel']">
-      <n-collapse-item v-if="canManageProvider" name="login-config" title="登录配置">
-        <n-flex v-if="error" vertical align="start">
-          <n-alert type="error" title="配置操作失败">{{ error.message }}</n-alert>
-          <n-button @click="refresh()">重试</n-button>
-        </n-flex>
-        <n-spin :show="loading">
-          <n-grid cols="1 768:2" :x-gap="16" :y-gap="16">
-            <n-grid-item v-for="provider in providers" :key="provider.provider">
-              <ProviderConfigCard :provider="provider" :loading="loading" @save="save" />
-            </n-grid-item>
-          </n-grid>
-        </n-spin>
-      </n-collapse-item>
-      <n-collapse-item v-if="canManageChannel" name="notification-channel" title="通信渠道">
-        <n-alert v-if="channelError" type="error" title="SMTP 配置加载失败">
-          {{ channelError.message }}
-        </n-alert>
-        <NotificationChannelForm
-          :config="channel"
-          :loading="channelLoading"
-          @save="saveChannel"
-          @retry="refreshChannel"
+  <main class="grid gap-5">
+    <UiAlert v-if="!hasManagementSection" variant="warning" title="无管理权限"
+      >当前账号没有可用的管理配置权限。</UiAlert
+    >
+    <section v-if="canManageProvider" class="grid gap-4 rounded-xl border p-5">
+      <header>
+        <h2 class="font-semibold">外部登录</h2>
+        <p class="mt-1 text-sm text-muted-foreground">配置 GitHub 与 Google 登录入口。</p>
+      </header>
+      <div v-if="error" class="grid gap-3">
+        <UiAlert variant="destructive" title="配置操作失败">{{ error.message }}</UiAlert
+        ><UiButton variant="outline" class="w-fit" @click="refresh()">重试</UiButton>
+      </div>
+      <div v-if="loading && !providers.length" class="py-5 text-center"><UiSpinner /></div>
+      <div v-else class="grid gap-4 md:grid-cols-2">
+        <ProviderConfigCard
+          v-for="provider in providers"
+          :key="provider.provider"
+          :provider="provider"
+          :loading="loading"
+          @save="save"
         />
-      </n-collapse-item>
-      <n-collapse-item v-if="canManageTemplates" name="notification-templates" title="消息模板">
-        <NotificationTemplateList
-          :templates="templates"
-          :loading="templateLoading"
-          :error="templateError"
-          @create="openCreateTemplate"
-          @edit="openEditTemplate"
-          @toggle="toggleTemplate"
-          @retry="refreshTemplates"
-        />
-      </n-collapse-item>
-      <n-collapse-item v-if="canManagePolicies" name="notification-policy" title="应用通知权限">
-        <AppNotificationPolicy
-          :apps="apps"
-          :templates="templateOptions"
-          :policy="policy"
-          :selected-app-id="selectedAppId"
-          :loading="policyLoading"
-          :error="policyError"
-          @select="selectPolicyApp"
-          @save="savePolicy"
-          @retry="retryPolicy"
-        />
-      </n-collapse-item>
-    </n-collapse>
+      </div>
+    </section>
+    <section v-if="admin.canManageChannel.value" class="grid gap-4 rounded-xl border p-5">
+      <header>
+        <h2 class="font-semibold">通信渠道</h2>
+        <p class="mt-1 text-sm text-muted-foreground">维护通知邮件的 SMTP 出口。</p>
+      </header>
+      <UiAlert v-if="admin.channelError.value" variant="destructive" title="SMTP 配置加载失败">{{
+        admin.channelError.value.message
+      }}</UiAlert
+      ><NotificationChannelForm
+        :config="admin.channel.value"
+        :loading="admin.channelLoading.value"
+        @save="admin.saveChannel"
+        @retry="admin.refreshChannel"
+      />
+    </section>
+    <section v-if="admin.canManageTemplates.value" class="grid gap-4 rounded-xl border p-5">
+      <header>
+        <h2 class="font-semibold">消息模板</h2>
+        <p class="mt-1 text-sm text-muted-foreground">管理通知主题、正文和允许变量。</p>
+      </header>
+      <NotificationTemplateList
+        :templates="admin.templates.value"
+        :loading="admin.templateLoading.value"
+        :error="admin.templateError.value"
+        @create="openCreateTemplate"
+        @edit="openEditTemplate"
+        @toggle="admin.toggleTemplate"
+        @retry="admin.refreshTemplates"
+      />
+    </section>
+    <section v-if="admin.canManagePolicies.value" class="grid gap-4 rounded-xl border p-5">
+      <header>
+        <h2 class="font-semibold">应用通知权限</h2>
+        <p class="mt-1 text-sm text-muted-foreground">按子应用收紧模板和收件人能力。</p>
+      </header>
+      <AppNotificationPolicy
+        :apps="admin.apps.value"
+        :templates="admin.templateOptions.value"
+        :policy="admin.policy.value"
+        :selected-app-id="admin.selectedAppId.value"
+        :loading="admin.policyLoading.value"
+        :error="admin.policyError.value"
+        @select="admin.selectPolicyApp"
+        @save="admin.savePolicy"
+        @retry="retryPolicy"
+      />
+    </section>
     <NotificationTemplateForm
       v-model:visible="templateFormVisible"
       :template="editingTemplate"
-      :loading="templateLoading"
+      :loading="admin.templateLoading.value"
       @save="handleSaveTemplate"
     />
   </main>
 </template>
-
-<style scoped>
-.manage-page {
-  width: 100%;
-  margin-top: 12px;
-}
-
-.manage-page :deep(.n-collapse-item__header-main) {
-  color: rgb(31, 34, 37);
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.manage-page :deep(.n-collapse-item__content-inner) {
-  padding-top: 20px;
-}
-</style>

@@ -1,6 +1,7 @@
 import { exchangeExternalResult, getEnabledProviders, startExternalLogin } from '@/api/oauth'
 import type { ExternalCallbackOutcome, ExternalProvider } from '@/types'
 import { useRequest } from 'alova'
+import { useFeedback } from './useFeedback'
 
 export const normalizeLocalReturnTo = (value: unknown, fallback = '/user') => {
   if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) return fallback
@@ -16,7 +17,7 @@ export const useExternalLogin = () => {
   const startRequest = useRequest((provider: ExternalProvider) => startExternalLogin(provider), {
     immediate: false
   })
-  const message = useMessage()
+  const feedback = useFeedback()
 
   const enabledProviders = computed(() =>
     (providersRequest.data.value?.data ?? []).filter((item) => item.enabled)
@@ -30,7 +31,7 @@ export const useExternalLogin = () => {
       const response = await startRequest.send(provider)
       window.location.assign(response.data.authorizationUrl)
     } catch (error) {
-      message.error(error instanceof Error ? error.message : '无法发起外部登录')
+      feedback.error(error instanceof Error ? error.message : '无法发起外部登录')
     } finally {
       activeProvider.value = null
     }

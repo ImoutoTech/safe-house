@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import type { ProviderProjection } from '../src/types/oauth.js'
-import { projectAdminProviders } from '../src/utils/providerAdmin.js'
+import type { ProviderProjection } from '../src/types/oauth.ts'
+import { projectAdminProviders } from '../src/utils/providerAdmin.ts'
 
 test('nests provider management under the protected user management route', () => {
   const cardSource = readFileSync(
@@ -23,7 +23,7 @@ test('nests provider management under the protected user management route', () =
   assert.doesNotMatch(routerSource, /path:\s*['"]admin\/providers['"]/)
   assert.match(
     userRoutesSource,
-    /path:\s*['"]manage['"][\s\S]*?permission:\s*['"]oauth-provider-admin['"]/m
+    /path:\s*['"]manage['"][\s\S]*?permissions:\s*\[[\s\S]*?['"]oauth-provider-admin['"]/m
   )
   assert.match(userViewSource, /userData\.value\.role\s*===\s*UserRole\.ADMIN/)
   assert.match(userViewSource, /userPermissions\.value\.includes\(permission\)/)

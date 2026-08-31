@@ -1,15 +1,9 @@
 import { userRegister } from '@/api/user'
 import type { UserRegisterParams } from '@/types'
 import { useRequest } from 'alova'
-import type { FormRules } from 'naive-ui'
 import { Md5 } from 'ts-md5'
 import { useEmailVerification } from './useEmailVerification'
-
-const formRules: FormRules = {
-  email: [{ required: true, message: '请输入邮箱' }],
-  password: [{ required: true, message: '请输入密码' }],
-  nickname: [{ required: true, message: '请输入用户名' }]
-}
+import { useFeedback } from './useFeedback'
 
 export const useUserRegister = () => {
   const regParam = reactive<UserRegisterParams>({
@@ -21,7 +15,7 @@ export const useUserRegister = () => {
   const code = ref('')
   const verification = useEmailVerification('register')
 
-  const msg = useMessage()
+  const feedback = useFeedback()
   const router = useRouter()
 
   const handleUpdateVal = (key: keyof UserRegisterParams, val: string) => {
@@ -34,14 +28,17 @@ export const useUserRegister = () => {
   }
 
   const requestCode = async () => {
-    await verification.requestCode(regParam.email)
-    msg.success('验证码已发送')
+    const sent = await verification.requestCode(regParam.email)
+    if (sent) feedback.success('验证码已发送')
+    return sent
   }
 
   const verifyCode = async () => {
-    await verification.verifyCode(code.value)
+    const verified = await verification.verifyCode(code.value)
+    if (!verified) return false
     regParam.verificationProof = verification.proof.value
-    msg.success('邮箱验证成功')
+    feedback.success('邮箱验证成功')
+    return true
   }
 
   const { send, loading, data, onSuccess, onError } = useRequest(
@@ -61,18 +58,17 @@ export const useUserRegister = () => {
   }
 
   onSuccess(() => {
-    msg.success('注册成功')
+    feedback.success('注册成功')
     router.push({ name: 'login' })
   })
 
   onError((e) => {
-    msg.error(e.error.message)
+    feedback.error(e.error.message)
   })
 
   return {
     loading,
     data,
-    formRules,
     regParam: readonly(regParam),
     code,
     sendingCode: verification.sending,

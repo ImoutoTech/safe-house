@@ -1,53 +1,13 @@
-<template>
-  <n-modal v-model:show="visible">
-    <n-card
-      class="oidc-guide-dialog"
-      title="接入说明"
-      :bordered="false"
-      role="dialog"
-      aria-modal="true"
-      closable
-      @close="visible = false"
-    >
-      <n-tabs v-model:value="activeGuide" class="integration-guide-tabs" type="line">
-        <n-tab name="login">登录接入</n-tab>
-        <n-tab name="notification">通知服务</n-tab>
-      </n-tabs>
-      <iframe
-        class="oidc-guide-frame"
-        :src="currentGuide.path"
-        :title="currentGuide.iframeTitle"
-      ></iframe>
-
-      <template #footer>
-        <n-flex class="oidc-guide-toolbar" justify="end">
-          <n-button secondary @click="copyGuideLink">
-            <template #icon>
-              <n-icon :component="LinkOutline" />
-            </template>
-            复制链接
-          </n-button>
-          <n-button tag="a" secondary :href="currentGuide.path" :download="currentGuide.fileName">
-            <template #icon>
-              <n-icon :component="DownloadOutline" />
-            </template>
-            下载 HTML
-          </n-button>
-        </n-flex>
-      </template>
-    </n-card>
-  </n-modal>
-</template>
-
 <script setup lang="ts">
-import { DownloadOutline, LinkOutline } from '@vicons/ionicons5'
+import { Download, Link } from 'lucide-vue-next'
+import { TabsContent, TabsList, TabsRoot, TabsTrigger } from 'reka-ui'
+import UiButton from '@/components/ui/ui-button.vue'
+import UiDialog from '@/components/ui/ui-dialog.vue'
+import { useFeedback } from '@/composables/useFeedback'
 
-defineOptions({
-  name: 'OidcIntegrationGuide'
-})
-
+defineOptions({ name: 'OidcIntegrationGuide' })
 const visible = defineModel('visible', { type: Boolean })
-const message = useMessage()
+const feedback = useFeedback()
 const activeGuide = shallowRef<'login' | 'notification'>('login')
 const guides = {
   login: {
@@ -62,68 +22,61 @@ const guides = {
   }
 } as const
 const currentGuide = computed(() => guides[activeGuide.value])
-
-watch(visible, (isVisible) => {
-  if (isVisible) activeGuide.value = 'login'
+watch(visible, (shown) => {
+  if (shown) activeGuide.value = 'login'
 })
-
 const copyGuideLink = async () => {
-  const guideUrl = new URL(currentGuide.value.path, window.location.href).href
-
   try {
-    await navigator.clipboard.writeText(guideUrl)
-    message.success('说明链接已复制')
+    await navigator.clipboard.writeText(new URL(currentGuide.value.path, window.location.href).href)
+    feedback.success('说明链接已复制')
   } catch {
-    message.error('复制失败，请稍后重试')
+    feedback.error('复制失败，请稍后重试')
   }
 }
 </script>
 
-<style scoped lang="scss">
-.oidc-guide-dialog {
-  display: flex;
-  flex-direction: column;
-  width: min(1200px, calc(100vw - 48px));
-  height: calc(100vh - 48px);
-  height: calc(100dvh - 48px);
-  border-radius: 3px;
-
-  :deep(.n-card__content) {
-    display: flex;
-    flex: 1;
-    min-height: 0;
-    padding: 0;
-    flex-direction: column;
-  }
-}
-
-.integration-guide-tabs {
-  flex: none;
-  padding: 0 20px;
-}
-
-.oidc-guide-frame {
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  border: 0;
-  background: #fff;
-}
-
-.oidc-guide-toolbar {
-  flex-wrap: wrap;
-  padding-top: 12px;
-}
-
-@media (max-width: 768px) {
-  .oidc-guide-dialog {
-    width: calc(100vw - 16px);
-    height: calc(100vh - 16px);
-    height: calc(100dvh - 16px);
-  }
-
-  .oidc-guide-toolbar :deep(.n-button) {
-    flex: 1;
-  }
-}
-</style>
+<template>
+  <UiDialog
+    v-model:open="visible"
+    title="接入说明"
+    description="在登录接入与通知服务指南之间切换。"
+    class="h-[calc(100vh-2rem)] h-[calc(100dvh-2rem)] max-w-6xl"
+    ><TabsRoot v-model="activeGuide" class="flex h-full min-h-0 flex-col">
+      <TabsList class="flex border-b" aria-label="接入说明类型">
+        <TabsTrigger
+          value="login"
+          class="border-b-2 border-transparent px-4 py-2 text-sm font-medium text-muted-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[state=active]:border-foreground data-[state=active]:text-foreground"
+          >登录接入</TabsTrigger
+        ><TabsTrigger
+          value="notification"
+          class="border-b-2 border-transparent px-4 py-2 text-sm font-medium text-muted-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[state=active]:border-foreground data-[state=active]:text-foreground"
+          >通知服务</TabsTrigger
+        >
+      </TabsList>
+      <TabsContent value="login" class="min-h-0 flex-1 outline-none">
+        <iframe
+          class="size-full border-0 bg-white"
+          :src="guides.login.path"
+          :title="guides.login.iframeTitle"
+        />
+      </TabsContent>
+      <TabsContent value="notification" class="min-h-0 flex-1 outline-none">
+        <iframe
+          class="size-full border-0 bg-white"
+          :src="guides.notification.path"
+          :title="guides.notification.iframeTitle"
+        />
+      </TabsContent>
+    </TabsRoot>
+    <template #footer
+      ><UiButton variant="outline" @click="copyGuideLink"><Link />复制链接</UiButton
+      ><UiButton
+        as="a"
+        variant="outline"
+        :href="currentGuide.path"
+        :download="currentGuide.fileName"
+        ><Download />下载 HTML</UiButton
+      ></template
+    ></UiDialog
+  >
+</template>

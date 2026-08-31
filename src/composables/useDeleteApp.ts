@@ -1,37 +1,26 @@
 import { delUserApp } from '@/api/app'
 import type { AppInfo } from '@/types'
 import { useRequest } from 'alova'
+import { useFeedback } from './useFeedback'
 
 export const useDeleteApp = (app: AppInfo, callback?: () => void) => {
-  const msg = useMessage()
-  const dialog = useDialog()
+  const feedback = useFeedback()
 
-  const { send } = useRequest(delUserApp(app.id), {
+  const { send, loading } = useRequest(delUserApp(app.id), {
     immediate: false
   })
 
-  const submit = () => {
-    const d = dialog.warning({
-      title: '子应用删除',
-      content: `确定要删除「${app.name}」吗？`,
-      positiveText: '确认',
-      negativeText: '取消',
-      onPositiveClick: () => {
-        d.loading = true
-        return new Promise((rs) => {
-          send()
-            .then(() => {
-              msg.success('删除成功')
-              callback?.()
-            })
-            .catch((e) => {
-              msg.error(e.message)
-            })
-            .then(rs)
-        })
-      }
-    })
+  const submit = async () => {
+    try {
+      await send()
+      feedback.success('删除成功')
+      callback?.()
+    } catch (error) {
+      feedback.error(error instanceof Error ? error.message : '删除失败')
+      return false
+    }
+    return true
   }
 
-  return { submit }
+  return { submit, loading }
 }

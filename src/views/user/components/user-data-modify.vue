@@ -1,147 +1,116 @@
-<template>
-  <n-modal v-model:show="visible">
-    <n-card
-      class="common-dialog"
-      title="编辑信息"
-      :bordered="false"
-      role="dialog"
-      aria-modal="true"
-    >
-      <n-form ref="formRef" :model="value" :rules="formRules">
-        <n-form-item label="用户名" path="nickname">
-          <n-input v-model:value="value.nickname" :placeholder="userData.nickname"></n-input>
-        </n-form-item>
-        <n-form-item label="更新头像" path="avatar">
-          <n-flex style="width: 100%" vertical>
-            <n-radio-group v-model:value="avatarType" name="radiogroup">
-              <n-flex>
-                <n-radio value="qq"> QQ </n-radio>
-                <n-radio value="gravatar"> Gravatar </n-radio>
-              </n-flex>
-            </n-radio-group>
-            <n-text depth="3">{{ avatarHint }}</n-text>
-            <n-input v-model:value="avatar" :placeholder="avatarPlaceholder"></n-input>
-          </n-flex>
-        </n-form-item>
-      </n-form>
-      <n-flex class="security-actions" vertical>
-        <n-button block secondary type="primary" aria-haspopup="dialog" @click="openEmailModal">
-          更换邮箱
-        </n-button>
-        <n-button block secondary type="warning" aria-haspopup="dialog" @click="openPasswordModal">
-          {{ userData.hasPassword ? '修改密码' : '设置密码' }}
-        </n-button>
-      </n-flex>
-      <n-button :loading="loading" block secondary type="info" @click="handleSubmit">保存</n-button>
-    </n-card>
-  </n-modal>
-  <change-email-modal v-model:visible="emailVisible" />
-  <change-password-modal v-model:visible="passwordVisible" />
-</template>
 <script setup lang="ts">
+import { z } from 'zod'
+import UiButton from '@/components/ui/ui-button.vue'
+import UiDialog from '@/components/ui/ui-dialog.vue'
+import UiField from '@/components/ui/ui-field.vue'
+import UiInput from '@/components/ui/ui-input.vue'
+import { useEditUser } from '@/composables/useEditUser'
+import { useFormValidation } from '@/composables/useFormValidation'
 import { useUserData } from '@/composables/useUserData'
-import type { FormInst } from 'naive-ui'
+import type { UserModifyParams } from '@/types'
 import { ENV } from '@/utils/constants'
 import { Md5 } from 'ts-md5'
-import type { UserModifyParams } from '@/types'
-import { useEditUser } from '@/composables/useEditUser'
 import ChangeEmailModal from './change-email-modal.vue'
 import ChangePasswordModal from './change-password-modal.vue'
 
-defineOptions({
-  name: 'UserDataModify'
-})
-
+defineOptions({ name: 'UserDataModify' })
 type AvatarType = 'gravatar' | 'qq'
-
 const visible = defineModel('visible', { type: Boolean })
 const { userData } = useUserData()
-const formRef = ref<FormInst>()
-const avatarType = ref<AvatarType>('gravatar')
-const avatar = ref('')
-const emailVisible = ref(false)
-const passwordVisible = ref(false)
-const { loading, submit } = useEditUser(() => (visible.value = false))
-
+const avatarType = shallowRef<AvatarType>('gravatar')
+const avatar = shallowRef('')
+const emailVisible = shallowRef(false)
+const passwordVisible = shallowRef(false)
 const value = ref({ ...userData.value })
-
-const formRules = {
-  nickname: [{ required: true, message: '请输入用户名' }]
-}
-
+const { loading, submit } = useEditUser(() => (visible.value = false))
+const schema = z.object({ nickname: z.string().trim().min(1, '请输入用户名') })
+const { errors, validate, clear } = useFormValidation(schema)
 const avatarPlaceholder = computed(() =>
-  avatarType.value === 'gravatar' ? '请输入自定义邮箱' : '请输入QQ号'
+  avatarType.value === 'gravatar' ? '请输入自定义邮箱' : '请输入 QQ 号'
 )
-
 const avatarHint = computed(() =>
   avatarType.value === 'gravatar'
-    ? '默认根据当前用户邮箱获取Gravatar头像'
-    : '在下方输入QQ号获取对应账号头像'
+    ? '默认根据当前用户邮箱获取 Gravatar 头像'
+    : '输入 QQ 号获取对应头像'
 )
-
-const getUserAvatarUrl = (type: AvatarType, val: string) => {
-  if (type === 'gravatar') {
-    return `${ENV.AVATAR.GRAVATAR}${Md5.hashStr(val || value.value.email)}?s=640`
-  } else {
-    return `${ENV.AVATAR.QQ}${val}`
-  }
-}
-
+const getUserAvatarUrl = (type: AvatarType, val: string) =>
+  type === 'gravatar'
+    ? `${ENV.AVATAR.GRAVATAR}${Md5.hashStr(val || value.value.email)}?s=640`
+    : `${ENV.AVATAR.QQ}${val}`
 const handleSubmit = () => {
-  formRef.value?.validate((errors) => {
-    if (errors) return
-
-    const submitData: Partial<UserModifyParams> = {
-      nickname: value.value.nickname
-    }
-
-    if (avatarType.value !== 'qq' || avatar.value) {
-      submitData.avatar = getUserAvatarUrl(avatarType.value, avatar.value)
-    }
-
-    submit(submitData)
-  })
+  if (!validate({ nickname: value.value.nickname })) return
+  const data: Partial<UserModifyParams> = { nickname: value.value.nickname }
+  if (avatarType.value !== 'qq' || avatar.value)
+    data.avatar = getUserAvatarUrl(avatarType.value, avatar.value)
+  submit(data)
 }
-
 const openSecurityModal = async (target: 'email' | 'password') => {
-  passwordVisible.value = false
-  emailVisible.value = false
   visible.value = false
   await nextTick()
   emailVisible.value = target === 'email'
   passwordVisible.value = target === 'password'
 }
-
-const openEmailModal = () => openSecurityModal('email')
-
-const openPasswordModal = () => openSecurityModal('password')
-
-const restoreData = () => {
+const restore = () => {
   value.value = { ...userData.value }
+  avatar.value = ''
+  clear()
 }
-
-watch(
-  () => userData.value,
-  () => {
-    restoreData()
-  },
-  {
-    deep: true
-  }
-)
-
-watch(visible, (val) => {
-  if (val) restoreData()
-  else {
-    avatar.value = ''
-    emailVisible.value = false
-    passwordVisible.value = false
-  }
+watch(userData, restore, { deep: true })
+watch(visible, (shown) => {
+  if (shown) restore()
 })
 </script>
-<style lang="scss" scoped>
-.security-actions {
-  width: 100%;
-  margin-bottom: 12px;
-}
-</style>
+
+<template>
+  <UiDialog
+    v-model:open="visible"
+    title="编辑资料"
+    description="更新显示名称、头像来源和账号安全设置。"
+    ><form class="grid gap-5" @submit.prevent="handleSubmit">
+      <UiField label="用户名" for="profile-nickname" :error="errors.nickname"
+        ><template #default="field"
+          ><UiInput
+            id="profile-nickname"
+            v-model="value.nickname"
+            :placeholder="userData.nickname"
+            :invalid="field.invalid"
+            :aria-describedby="field.describedBy"
+            @update:model-value="clear('nickname')" /></template
+      ></UiField>
+      <fieldset class="grid gap-3">
+        <legend class="text-sm font-medium leading-none">更新头像</legend>
+        <p class="text-xs leading-relaxed text-muted-foreground">{{ avatarHint }}</p>
+        <div class="grid gap-3">
+          <div class="flex gap-4">
+            <label
+              v-for="type in ['gravatar', 'qq'] as const"
+              :key="type"
+              class="flex items-center gap-2 text-sm"
+              ><input
+                v-model="avatarType"
+                type="radio"
+                :value="type"
+                class="size-4 accent-foreground"
+              />{{ type === 'qq' ? 'QQ' : 'Gravatar' }}</label
+            >
+          </div>
+          <UiInput
+            v-model="avatar"
+            :placeholder="avatarPlaceholder"
+            :aria-label="avatarType === 'qq' ? 'QQ 号' : 'Gravatar 邮箱'"
+          />
+        </div>
+      </fieldset>
+      <div class="grid grid-cols-2 gap-2">
+        <UiButton type="button" variant="outline" @click="openSecurityModal('email')"
+          >更换邮箱</UiButton
+        ><UiButton type="button" variant="outline" @click="openSecurityModal('password')">{{
+          userData.hasPassword ? '修改密码' : '设置密码'
+        }}</UiButton>
+      </div>
+      <UiButton type="submit" block :loading="loading">保存资料</UiButton>
+    </form></UiDialog
+  ><ChangeEmailModal v-model:visible="emailVisible" /><ChangePasswordModal
+    v-model:visible="passwordVisible"
+  />
+</template>
