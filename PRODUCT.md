@@ -32,7 +32,7 @@ Safe House 将自托管 SSO 的核心能力与鲜明的个人项目表达结合�
 - 保留 GitHub、Google 外部身份登录与账号绑定能力。
 - 保留 OAuth/OIDC 客户端、授权交互、回调和密钥管理能力。
 - 保留基于角色与权限码的功能访问控制，以及外部提供商管理能力。
-- 产品是基于 Vue 3、TypeScript、Vite、Pinia、Vue Router 与 Naive UI 的响应式 Web 应用。
+- 产品是基于 Vue 3、TypeScript、Vite、Pinia、Vue Router，以及项目自有的 Origin UI Vue/Tailwind/Reka UI 组件层构建的响应式 Web 应用。
 - 后端 API、运行时首页文案、版权信息和部分品牌标题由环境变量或远程配置提供，前端不能假定固定值。
 
 ## Brand Commitments

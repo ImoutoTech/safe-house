@@ -16,15 +16,15 @@ The application is TypeScript-first. Vue SFC scripts use `lang="ts"`, and `pnpm 
 
 - Parameterize every Alova method with its full response type, for example `API.Get<Restful<AppInfo>>` in `src/api/app.ts`.
 - Use `Partial<T>` only for genuinely partial updates, as in `updateUserData` and `useEditUser`.
-- Type Vue boundaries with generic `defineProps`, `defineEmits`, and `withDefaults`. Type Naive UI refs and rules with library types (`FormInst`, `FormRules`).
+- Type Vue boundaries with generic `defineProps`, `defineEmits`, `defineModel`, and `withDefaults`. Source-owned UI primitives expose narrow literal variants and typed props/emits; feature components must not bypass those contracts with assertions.
 - Use `keyof` for keyed mutation helpers. `handleUpdateVal(key: keyof UserLoginParams, val: string)` prevents invalid form field names.
 - Use `as const` when a third-party prop expects a narrow literal, as in the status and role tag maps.
 
 ## Runtime Validation
 
-There is no schema-validation library. Runtime checks currently occur at boundaries through Naive UI form rules, router normalization (`String(route.query...)`), enum/permission comparisons, and API error handling. Do not claim that TypeScript types validate server responses at runtime.
+Zod provides runtime form validation. `useFormValidation<T>()` is the project-owned adapter for schemas whose parsed shape matches the existing feature/API payload; it stores at most one message per top-level key and never replaces server-response validation. Router normalization (`String(route.query...)`), enum/permission comparisons, and API error handling remain separate boundary checks. Do not claim that TypeScript or a form schema validates server responses at runtime.
 
-When adding a form, follow the existing `FormInst.validate` flow before submission. When adding a new external/untrusted payload whose shape cannot be trusted, introduce explicit validation as part of that feature rather than relying on an assertion.
+When adding a form, define a typed Zod schema, validate before submission, keep server errors separate from field errors, and associate each rendered error with its control. Use the local adapter instead of adding a second form-state owner. When adding a new external/untrusted payload whose shape cannot be trusted, introduce explicit response validation as part of that feature rather than relying on an assertion.
 
 ## Avoid
 

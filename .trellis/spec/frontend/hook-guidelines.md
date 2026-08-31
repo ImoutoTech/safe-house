@@ -13,7 +13,7 @@ The project calls Vue Composition API helpers “composables” and stores them 
 
 - Use Alova's `useRequest` for one request, `useSerialRequest` for dependent requests, and `usePagination` for paginated collections.
 - Set `{ immediate: false }` when submission is user-triggered. Immediate reads either pass a method directly or calculate `immediate` from existing store state, as in `useConfig` and `useUserData`.
-- Register lifecycle callbacks (`onSuccess`, `onError`) beside request creation. Update Pinia state and show Naive UI messages there.
+- Register lifecycle callbacks (`onSuccess`, `onError`) beside request creation. Update Pinia state there and route user-facing toast feedback through `useFeedback`; keep destructive confirmation state in the presenting component.
 - Expose combined loading as `computed` when several operations contribute. `useAppSecret` and `useUserData` are the reference patterns.
 - Keep loading cleanup in `finally` for manually managed Promise operations (`useAppSecret`).
 

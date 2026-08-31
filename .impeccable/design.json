@@ -1,111 +1,100 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-04T00:00:00+08:00",
+  "generatedAt": "2026-08-31T17:25:31+08:00",
   "title": "Design System: Safe House",
   "extensions": {
     "colorMeta": {
-      "primary-key-green": { "role": "primary", "displayName": "钥匙绿", "canonical": "#18a058", "tonalRamp": ["#062218", "#0a3b26", "#0c5a34", "#0c7a43", "#18a058", "#36ad6a", "#8bd4a7", "#e8f7ed"] },
-      "primary-key-green-hover": { "role": "primary", "displayName": "亮钥匙绿", "canonical": "#36ad6a", "tonalRamp": ["#08271a", "#0d4329", "#126239", "#18824b", "#36ad6a", "#69c58a", "#a4dfb7", "#ebf8ef"] },
-      "primary-key-green-pressed": { "role": "primary", "displayName": "深钥匙绿", "canonical": "#0c7a43", "tonalRamp": ["#041c12", "#06321e", "#084a2b", "#0a6337", "#0c7a43", "#3e9c69", "#8bc4a3", "#e6f3eb"] },
-      "info-link-blue": { "role": "secondary", "displayName": "链接蓝", "canonical": "#2080f0", "tonalRamp": ["#071d3b", "#0b315e", "#104785", "#155fac", "#2080f0", "#5ca5f6", "#a2cafb", "#edf6ff"] },
-      "warning-amber": { "role": "tertiary", "displayName": "门铃琥珀", "canonical": "#f0a020", "tonalRamp": ["#352208", "#56370b", "#7a4d0d", "#a36612", "#d48619", "#f0a020", "#f8cf83", "#fff5df"] },
-      "danger-red": { "role": "tertiary", "displayName": "警戒红", "canonical": "#d03050", "tonalRamp": ["#350915", "#571020", "#79162d", "#9c203b", "#d03050", "#e36c82", "#efabb8", "#fcecef"] },
-      "canvas-white": { "role": "neutral", "displayName": "门厅白", "canonical": "#ffffff", "tonalRamp": ["#262626", "#454545", "#666666", "#888888", "#aaaaaa", "#cccccc", "#e8e8e8", "#ffffff"] },
-      "text-strong": { "role": "neutral", "displayName": "墨黑标题", "canonical": "rgb(31, 34, 37)", "tonalRamp": ["#121416", "#1f2225", "#373b3f", "#54595e", "#767c82", "#a0a5aa", "#ced1d4", "#f2f3f4"] },
-      "text-body": { "role": "neutral", "displayName": "石墨正文", "canonical": "rgb(51, 54, 57)", "tonalRamp": ["#17191b", "#333639", "#4d5155", "#696e73", "#898e93", "#adb1b5", "#d3d5d7", "#f4f5f5"] },
-      "text-muted": { "role": "neutral", "displayName": "雾灰辅助字", "canonical": "rgb(118, 124, 130)", "tonalRamp": ["#202326", "#393d41", "#555b60", "#767c82", "#969ba0", "#b7bbbe", "#d9dbdd", "#f5f6f6"] },
-      "border-soft": { "role": "neutral", "displayName": "软边界灰", "canonical": "rgb(224, 224, 230)", "tonalRamp": ["#26262a", "#46464b", "#68686e", "#8d8d93", "#b1b1b7", "#d0d0d5", "#e0e0e6", "#f7f7f9"] },
-      "divider-faint": { "role": "neutral", "displayName": "微分隔灰", "canonical": "rgb(239, 239, 245)", "tonalRamp": ["#29292d", "#4a4a4f", "#6e6e74", "#94949a", "#babac0", "#d9d9de", "#efeff5", "#fafafd"] },
-      "surface-subtle": { "role": "neutral", "displayName": "浅层表面灰", "canonical": "rgb(250, 250, 252)", "tonalRamp": ["#2b2b2e", "#4d4d51", "#727276", "#99999d", "#c0c0c4", "#dfdfe2", "#fafafc", "#ffffff"] }
+      "background": {"role":"neutral","displayName":"门厅白","canonical":"oklch(1 0 0)","tonalRamp":["oklch(0.15 0 0)","oklch(0.27 0 0)","oklch(0.4 0 0)","oklch(0.54 0 0)","oklch(0.68 0 0)","oklch(0.8 0 0)","oklch(0.92 0 0)","oklch(1 0 0)"]},
+      "foreground": {"role":"neutral","displayName":"深墨前景","canonical":"oklch(0.145 0 0)","tonalRamp":["oklch(0.145 0 0)","oklch(0.25 0 0)","oklch(0.38 0 0)","oklch(0.52 0 0)","oklch(0.66 0 0)","oklch(0.78 0 0)","oklch(0.9 0 0)","oklch(0.97 0 0)"]},
+      "primary": {"role":"primary","displayName":"中性主动作","canonical":"oklch(0.205 0 0)","tonalRamp":["oklch(0.15 0 0)","oklch(0.205 0 0)","oklch(0.32 0 0)","oklch(0.46 0 0)","oklch(0.6 0 0)","oklch(0.74 0 0)","oklch(0.87 0 0)","oklch(0.985 0 0)"]},
+      "primary-foreground": {"role":"neutral","displayName":"主动作反白","canonical":"oklch(0.985 0 0)","tonalRamp":["oklch(0.15 0 0)","oklch(0.27 0 0)","oklch(0.4 0 0)","oklch(0.54 0 0)","oklch(0.68 0 0)","oklch(0.8 0 0)","oklch(0.92 0 0)","oklch(0.985 0 0)"]},
+      "muted": {"role":"neutral","displayName":"柔灰表面","canonical":"oklch(0.97 0 0)","tonalRamp":["oklch(0.16 0 0)","oklch(0.28 0 0)","oklch(0.41 0 0)","oklch(0.55 0 0)","oklch(0.69 0 0)","oklch(0.81 0 0)","oklch(0.9 0 0)","oklch(0.97 0 0)"]},
+      "muted-foreground": {"role":"neutral","displayName":"辅助文字灰","canonical":"oklch(0.556 0 0)","tonalRamp":["oklch(0.15 0 0)","oklch(0.25 0 0)","oklch(0.36 0 0)","oklch(0.47 0 0)","oklch(0.556 0 0)","oklch(0.7 0 0)","oklch(0.83 0 0)","oklch(0.95 0 0)"]},
+      "border": {"role":"neutral","displayName":"精确边界灰","canonical":"oklch(0.922 0 0)","tonalRamp":["oklch(0.16 0 0)","oklch(0.29 0 0)","oklch(0.42 0 0)","oklch(0.56 0 0)","oklch(0.7 0 0)","oklch(0.82 0 0)","oklch(0.922 0 0)","oklch(0.98 0 0)"]},
+      "destructive": {"role":"tertiary","displayName":"危险操作红","canonical":"oklch(0.577 0.245 27.325)","tonalRamp":["oklch(0.2 0.09 27.325)","oklch(0.3 0.14 27.325)","oklch(0.4 0.19 27.325)","oklch(0.5 0.23 27.325)","oklch(0.577 0.245 27.325)","oklch(0.7 0.18 27.325)","oklch(0.82 0.1 27.325)","oklch(0.94 0.04 27.325)"]}
     },
     "typographyMeta": {
-      "display": { "displayName": "欢迎语", "purpose": "首页的斜体低对比欢迎标题。" },
-      "headline": { "displayName": "产品标题", "purpose": "全局页头中的 Safe House 标题。" },
-      "title": { "displayName": "任务标题", "purpose": "卡片、授权与结果标题。" },
-      "body": { "displayName": "界面正文", "purpose": "表单、按钮、说明与列表内容。" },
-      "label": { "displayName": "紧凑标签", "purpose": "状态、身份编号和构建信息。" }
+      "family":{"displayName":"系统无衬线","purpose":"所有产品界面正文与标题的稳定跨平台字体栈。"},
+      "body":{"displayName":"界面正文","purpose":"表单、按钮、说明和列表内容。"},
+      "title":{"displayName":"任务标题","purpose":"认证卡片、对话框和功能区标题。"},
+      "display":{"displayName":"欢迎标题","purpose":"首页与关键入口的最高层级标题。"}
     },
     "shadows": [
-      { "name": "light-overlay", "value": "0 1px 2px -2px rgba(0,0,0,.08), 0 3px 6px 0 rgba(0,0,0,.06), 0 5px 12px 4px rgba(0,0,0,.04)", "purpose": "小型弹出内容和轻浮层。" },
-      { "name": "medium-overlay", "value": "0 3px 6px -4px rgba(0,0,0,.12), 0 6px 16px 0 rgba(0,0,0,.08), 0 9px 28px 8px rgba(0,0,0,.05)", "purpose": "下拉菜单和覆盖页面内容的浮层。" },
-      { "name": "high-overlay", "value": "0 6px 16px -9px rgba(0,0,0,.08), 0 9px 28px 0 rgba(0,0,0,.05), 0 12px 48px 16px rgba(0,0,0,.03)", "purpose": "模态等最高层交互。" }
+      {"name":"control","value":"0 1px 2px 0 rgb(0 0 0 / 0.05)","purpose":"按钮与输入的轻微触感，不承担页面层级。"},
+      {"name":"card","value":"0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)","purpose":"任务卡片与认证面板的克制深度。"},
+      {"name":"overlay","value":"0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)","purpose":"对话框等真正浮于页面之上的交互层。"}
     ],
     "motion": [
-      { "name": "ease-standard", "value": "cubic-bezier(.4, 0, .2, 1)", "purpose": "默认控件状态过渡。" },
-      { "name": "route-fade", "value": "opacity 0.5s ease", "purpose": "路由内容淡入淡出。" },
-      { "name": "reveal-fast", "value": "opacity 0.1s ease-in-out", "purpose": "卡片悬停时显露次要操作。" }
+      {"name":"state-fast","value":"150ms cubic-bezier(0.4, 0, 0.2, 1)","purpose":"控件颜色、边框和焦点状态切换。"},
+      {"name":"overlay-enter","value":"200ms cubic-bezier(0.16, 1, 0.3, 1)","purpose":"对话框与浮层进入。"},
+      {"name":"reduced-motion","value":"1ms linear","purpose":"用户要求减少动态时保留状态变化而移除装饰动画。"}
     ],
     "breakpoints": [
-      { "name": "narrow-dialog", "value": "400px" },
-      { "name": "mobile", "value": "768px" }
+      {"name":"sm","value":"640px"},
+      {"name":"account","value":"768px"}
     ]
   },
   "components": [
     {
-      "name": "Primary Button",
-      "kind": "button",
-      "refersTo": "button-primary",
-      "description": "操作组中唯一的继续、保存或批准动作。",
-      "html": "<button class=\"ds-btn-primary\">开门</button>",
-      "css": ".ds-btn-primary{height:34px;padding:0 14px;border:1px solid #18a058;border-radius:3px;background:#18a058;color:#fff;font:400 14px/1.6 Lato,system-ui,sans-serif;cursor:pointer;transition:background .2s cubic-bezier(.4,0,.2,1),border-color .2s cubic-bezier(.4,0,.2,1)}.ds-btn-primary:hover,.ds-btn-primary:focus-visible{background:#36ad6a;border-color:#36ad6a}.ds-btn-primary:focus-visible{outline:2px solid rgba(24,160,88,.2);outline-offset:2px}.ds-btn-primary:active{background:#0c7a43;border-color:#0c7a43}"
+      "name":"Primary Button",
+      "kind":"button",
+      "description":"每个操作组中唯一的继续、保存或批准动作。",
+      "html":"<button class=\"ds-btn-primary\">开门</button>",
+      "css":".ds-btn-primary{height:36px;padding:0 16px;border:0;border-radius:calc(var(--radius) - 2px);background:var(--primary);color:var(--primary-foreground);font:500 14px/1 ui-sans-serif,system-ui,sans-serif;box-shadow:0 1px 2px rgb(0 0 0/.05);cursor:pointer;transition:background 150ms cubic-bezier(.4,0,.2,1)}.ds-btn-primary:hover{background:color-mix(in oklab,var(--primary) 90%,transparent)}.ds-btn-primary:focus-visible{outline:3px solid color-mix(in oklab,var(--ring) 50%,transparent);outline-offset:2px}.ds-btn-primary:active{box-shadow:none}"
     },
     {
-      "name": "Secondary Button",
-      "kind": "button",
-      "refersTo": "button-secondary",
-      "description": "拒绝、取消和普通次要操作。",
-      "html": "<button class=\"ds-btn-secondary\">拒绝</button>",
-      "css": ".ds-btn-secondary{height:34px;padding:0 14px;border:1px solid rgb(224,224,230);border-radius:3px;background:transparent;color:rgb(51,54,57);font:400 14px/1.6 Lato,system-ui,sans-serif;cursor:pointer;transition:color .2s cubic-bezier(.4,0,.2,1),border-color .2s cubic-bezier(.4,0,.2,1),background .2s cubic-bezier(.4,0,.2,1)}.ds-btn-secondary:hover,.ds-btn-secondary:focus-visible{color:#36ad6a;border-color:#36ad6a;background:rgba(46,51,56,.05)}.ds-btn-secondary:focus-visible{outline:2px solid rgba(24,160,88,.2);outline-offset:2px}.ds-btn-secondary:active{color:#0c7a43;border-color:#0c7a43;background:rgba(46,51,56,.09)}"
+      "name":"Outline Button",
+      "kind":"button",
+      "description":"取消、拒绝和普通次要动作。",
+      "html":"<button class=\"ds-btn-outline\">取消</button>",
+      "css":".ds-btn-outline{height:36px;padding:0 16px;border:1px solid var(--input);border-radius:calc(var(--radius) - 2px);background:var(--background);color:var(--foreground);font:500 14px/1 ui-sans-serif,system-ui,sans-serif;box-shadow:0 1px 2px rgb(0 0 0/.05);cursor:pointer;transition:background 150ms cubic-bezier(.4,0,.2,1)}.ds-btn-outline:hover{background:var(--accent)}.ds-btn-outline:focus-visible{outline:3px solid color-mix(in oklab,var(--ring) 50%,transparent);outline-offset:2px}.ds-btn-outline:active{box-shadow:none}"
     },
     {
-      "name": "Danger Text Button",
-      "kind": "button",
-      "description": "删除、解绑等危险但紧凑的操作。",
-      "html": "<button class=\"ds-btn-danger\">解绑</button>",
-      "css": ".ds-btn-danger{padding:4px 6px;border:0;border-radius:3px;background:transparent;color:#d03050;font:400 14px/1.6 Lato,system-ui,sans-serif;cursor:pointer}.ds-btn-danger:hover,.ds-btn-danger:focus-visible{background:rgba(208,48,80,.1);color:#de576d}.ds-btn-danger:focus-visible{outline:2px solid rgba(208,48,80,.2);outline-offset:1px}.ds-btn-danger:active{color:#ab1f3f}"
+      "name":"Text Field",
+      "kind":"input",
+      "description":"邮箱、用户名、密钥和配置字段，始终带可见标签。",
+      "html":"<label class=\"ds-field\"><span>邮箱</span><input class=\"ds-input\" placeholder=\"i@example.com\"></label>",
+      "css":".ds-field{display:grid;gap:8px;color:var(--foreground);font:500 14px/1 ui-sans-serif,system-ui,sans-serif}.ds-input{height:36px;padding:4px 12px;border:1px solid var(--input);border-radius:calc(var(--radius) - 2px);background:transparent;color:var(--foreground);font:400 14px/1.4 ui-sans-serif,system-ui,sans-serif;box-shadow:0 1px 2px rgb(0 0 0/.05);outline:0;transition:border-color 150ms cubic-bezier(.4,0,.2,1),box-shadow 150ms cubic-bezier(.4,0,.2,1)}.ds-input::placeholder{color:var(--muted-foreground)}.ds-input:hover{border-color:var(--ring)}.ds-input:focus-visible{border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in oklab,var(--ring) 50%,transparent)}"
     },
     {
-      "name": "Text Input",
-      "kind": "input",
-      "refersTo": "input-default",
-      "description": "邮箱、用户名、密钥和配置字段。",
-      "html": "<label class=\"ds-field\"><span>📮 邮箱</span><input class=\"ds-input\" placeholder=\"i@example.com\"></label>",
-      "css": ".ds-field{display:grid;gap:6px;color:rgb(51,54,57);font:400 14px/1.6 Lato,system-ui,sans-serif}.ds-input{height:34px;padding:0 12px;border:1px solid rgb(224,224,230);border-radius:3px;background:transparent;color:rgb(51,54,57);font:400 14px/1.6 Lato,system-ui,sans-serif;outline:0;transition:border-color .2s cubic-bezier(.4,0,.2,1),box-shadow .2s cubic-bezier(.4,0,.2,1)}.ds-input::placeholder{color:rgba(0,0,0,.24)}.ds-input:hover{border-color:#36ad6a}.ds-input:focus-visible{border-color:#36ad6a;box-shadow:0 0 0 2px rgba(24,160,88,.2)}"
+      "name":"Status Badge",
+      "kind":"chip",
+      "description":"身份编号、角色与运行状态的紧凑标记。",
+      "html":"<span class=\"ds-badge\">#42</span>",
+      "css":".ds-badge{display:inline-flex;align-items:center;min-height:20px;padding:2px 10px;border:1px solid var(--border);border-radius:9999px;background:transparent;color:var(--foreground);font:500 12px/1.25 ui-sans-serif,system-ui,sans-serif}.ds-badge:hover{background:var(--muted)}.ds-badge:focus-visible{outline:3px solid color-mix(in oklab,var(--ring) 50%,transparent);outline-offset:2px}"
     },
     {
-      "name": "Identity Tag",
-      "kind": "chip",
-      "description": "身份编号、角色和运行状态。",
-      "html": "<span class=\"ds-tag-info\">#42</span>",
-      "css": ".ds-tag-info{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border:1px solid rgba(32,128,240,.3);border-radius:9999px;background:rgba(32,128,240,.12);color:#2080f0;font:500 12px/1.6 Lato,system-ui,sans-serif}.ds-tag-info:hover{background:rgba(32,128,240,.18)}.ds-tag-info:focus-visible{outline:2px solid rgba(32,128,240,.2);outline-offset:2px}"
+      "name":"Task Card",
+      "kind":"card",
+      "description":"认证、授权与设置任务的单层容器。",
+      "html":"<section class=\"ds-card\"><h3>登录到「示例应用」</h3><p>应用将请求访问你的基本身份信息。</p></section>",
+      "css":".ds-card{box-sizing:border-box;width:min(100%,384px);padding:24px;border:1px solid var(--border);border-radius:calc(var(--radius) + 4px);background:var(--card);color:var(--card-foreground);font:400 14px/1.5 ui-sans-serif,system-ui,sans-serif;box-shadow:0 1px 3px rgb(0 0 0/.1),0 1px 2px -1px rgb(0 0 0/.1)}.ds-card h3{margin:0 0 8px;font-size:20px;font-weight:600}.ds-card p{margin:0;color:var(--muted-foreground)}.ds-card:hover{border-color:var(--ring)}.ds-card:focus-within{outline:3px solid color-mix(in oklab,var(--ring) 50%,transparent);outline-offset:2px}"
     },
     {
-      "name": "Task Card",
-      "kind": "card",
-      "refersTo": "card-default",
-      "description": "用户资料、授权请求和提供商配置的主要容器。",
-      "html": "<section class=\"ds-card\"><h3>登录到「示例应用」</h3><p>应用将请求访问你的基本身份信息。</p></section>",
-      "css": ".ds-card{box-sizing:border-box;width:min(100%,460px);padding:19px 24px 20px;border:1px solid rgb(239,239,245);border-radius:3px;background:#fff;color:rgb(51,54,57);font:400 14px/1.6 Lato,system-ui,sans-serif}.ds-card h3{margin:0 0 12px;color:rgb(31,34,37);font-size:16px;font-weight:500}.ds-card p{margin:0;color:rgb(118,124,130)}.ds-card:hover{border-color:rgb(224,224,230)}.ds-card:focus-within{outline:2px solid rgba(24,160,88,.16);outline-offset:2px}"
+      "name":"Account Navigation",
+      "kind":"nav",
+      "description":"账号工作区中可横向滚动的轻量页签。",
+      "html":"<nav class=\"ds-tabs\"><button class=\"is-active\">基本信息</button><button>子应用</button><button>登录方式</button></nav>",
+      "css":".ds-tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--border);font:500 14px/1 ui-sans-serif,system-ui,sans-serif}.ds-tabs button{flex:none;padding:12px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--muted-foreground);font:inherit;cursor:pointer}.ds-tabs button:hover{color:var(--foreground)}.ds-tabs button:focus-visible{outline:3px solid color-mix(in oklab,var(--ring) 50%,transparent);outline-offset:-3px}.ds-tabs button.is-active{border-bottom-color:var(--foreground);color:var(--foreground)}"
     },
     {
-      "name": "Line Tabs",
-      "kind": "nav",
-      "description": "用户工作区内的轻量页级导航。",
-      "html": "<nav class=\"ds-tabs\"><button class=\"is-active\">🧐 基本信息</button><button>📦 子应用</button><button>🔗 登录方式</button></nav>",
-      "css": ".ds-tabs{display:flex;gap:24px;border-bottom:1px solid rgb(239,239,245);font:400 14px/1.6 Lato,system-ui,sans-serif}.ds-tabs button{position:relative;padding:8px 0;border:0;background:transparent;color:rgb(51,54,57);font:inherit;cursor:pointer}.ds-tabs button:hover,.ds-tabs button:focus-visible{color:#36ad6a;outline:0}.ds-tabs button:focus-visible{box-shadow:0 2px 0 #36ad6a}.ds-tabs button.is-active{color:#18a058}.ds-tabs button.is-active::after{position:absolute;right:0;bottom:-1px;left:0;height:2px;background:#18a058;content:\"\"}"
+      "name":"Credential Snippet",
+      "kind":"custom",
+      "description":"一次性密钥与 API Key 的深色、可复制、默认遮蔽表面。",
+      "html":"<div class=\"ds-snippet\"><div class=\"ds-snippet-bar\"><span>Client Secret</span><button aria-label=\"复制凭据\">复制</button></div><code>••••••••••••••••••••••••</code></div>",
+      "css":".ds-snippet{overflow:hidden;border:1px solid rgb(255 255 255/.1);border-radius:var(--radius);background:#09090b;color:#f4f4f5;font:400 14px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}.ds-snippet-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid rgb(255 255 255/.1);color:#a1a1aa;font:400 12px/1.25 ui-sans-serif,system-ui,sans-serif}.ds-snippet button{height:28px;padding:0 8px;border:0;border-radius:calc(var(--radius) - 2px);background:transparent;color:#d4d4d8;cursor:pointer}.ds-snippet button:hover{background:rgb(255 255 255/.1);color:#fff}.ds-snippet button:focus-visible{outline:2px solid #d4d4d8;outline-offset:1px}.ds-snippet code{display:block;overflow-x:auto;padding:12px 16px;white-space:nowrap}"
     }
   ],
   "narrative": {
-    "northStar": "数字门厅",
-    "overview": "Safe House 的界面像一处明亮、安静的数字门厅：用户可以迅速辨认入口、钥匙、身份与即将进入的应用。大量白色空间和低对比度边界让界面退居幕后，绿色主操作像清晰可见的开门信号，中文微文案和少量 emoji 则保留个人项目特有的轻松感。\n\n这套系统轻巧而俏皮，但不靠堆叠装饰制造个性。俏皮来自“钥匙”“开门”“加入”等贴合产品的语言、适度的 emoji 和简短反馈；操作结构仍遵循清楚、克制、可预测的工具界面逻辑。",
-    "keyCharacteristics": ["明亮白底、低饱和中性色和稀疏的状态色。", "居中窄栏、轻量卡片、明确的纵向任务流。", "紧凑的 Lato 正文字体与少量斜体、emoji 个性点。", "轻圆角、细边界和只在必要处出现的柔和阴影。", "中文优先，技术信息清楚但不过度企业化。"],
-    "rules": [
-      { "name": "The One Key Rule", "body": "同一操作组只让一个主要动作使用钥匙绿；其他动作保持中性，危险动作使用警戒红。", "section": "colors" },
-      { "name": "The Semantic Blue Rule", "body": "蓝色只表达信息和链接，不把整个产品染成企业蓝。", "section": "colors" },
-      { "name": "The Quiet Hierarchy Rule", "body": "优先用 400/500/600 三档字重、字号和灰度建立层级，不用大面积粗体或全大写制造压迫感。", "section": "typography" },
-      { "name": "The Flat Hall Rule", "body": "页面与普通卡片默认保持平面；只有真正浮在内容之上的交互层才获得阴影。", "section": "elevation" }
+    "northStar":"安静清晰的数字门厅",
+    "overview":"Safe House 使用 Origin UI Vue 的 New York、neutral、CSS variables 默认语言。中性表面与精确边界让认证、授权和凭据操作成为视觉中心，中文“钥匙”“开门”等产品文案保留个人项目气质。设计优先级依次是安全后果可见、任务结构清楚、键盘与移动端可用、视觉一致。",
+    "keyCharacteristics":["Origin New York 的中性表面、精确边界与克制阴影。","认证面板、空状态与凭据 snippet 采用 Extended 同源组合。","中文产品语言保留钥匙与门厅隐喻，图标统一使用 Lucide。","账号工作区保持扁平框架，功能卡片只出现单层。","危险操作、权限缺失和一次性凭据优先表达后果。"],
+    "rules":[
+      {"name":"The Semantic Token Rule","body":"主题 token 的唯一实现入口是 src/assets/base.css，组件不复制旧品牌色。","section":"colors"},
+      {"name":"The Single Layer Rule","body":"页面框架保持平面，任务卡片只出现单层，浮层才获得更强阴影。","section":"elevation"},
+      {"name":"The One State Owner Rule","body":"现有 feature/composable state 是表单唯一数据源，Zod 只在提交边界验证。","section":"components"}
     ],
-    "dos": ["Do 使用居中窄栏和明确的单任务卡片，让一般用户一眼理解当前动作。", "Do 在中文微文案中保留 Safe House 的钥匙与门厅隐喻，并让 emoji 服务于识别。", "Do 使用钥匙绿表示唯一主要动作，链接蓝、门铃琥珀和警戒红保持语义专用。", "Do 以 8、12、16、24px 的紧凑节奏组织组件，并在移动端让容器退让至视口。", "Do 对授权范围、客户端、密钥和危险操作使用直接、清楚的语言。"],
-    "donts": ["Don't 把界面做成大面积企业蓝、通用 SaaS 仪表盘或匿名后台模板。", "Don't 使用厚重阴影、深色安全产品外壳或庞大的控制台侧栏制造“安全感”。", "Don't 依靠渐变、玻璃拟态、巨型圆角、装饰插画或无关动效堆叠个性。", "Don't 在同一操作组放置多个同等醒目的钥匙绿按钮。", "Don't 让俏皮隐喻取代授权、错误与危险操作所需的准确说明。"]
+    "dos":["Do 保留中文产品语言和真实权限、错误、空状态。","Do 显式导入本地 UI 组件并优先使用语义 token 与已有 variants。","Do 让授权范围、客户端和敏感值比装饰更醒目。","Do 在窄屏让长 URL、凭据、页签和操作组换行、截断或横向滚动。"],
+    "donts":["Don't 复刻 Naive UI 绿色主题或建立兼容组件壳。","Don't 混用第二套通用组件库或在业务 composable 中打开对话框。","Don't 使用 placeholder 代替表单标签。","Don't 新增无真实数据的指标卡、装饰性渐变、玻璃拟态或无关插画。"]
   }
 }
