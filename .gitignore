@@ -28,3 +28,8 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+.pnpm-store/
+
+.impeccable/reviews/
+.impeccable/config.local.json
