@@ -27,6 +27,34 @@ const userAppItemSource = readFileSync(
   new URL('../src/views/user/components/user-app-item.vue', import.meta.url),
   'utf8'
 )
+const tooltipSource = readFileSync(
+  new URL('../src/components/ui/ui-tooltip.vue', import.meta.url),
+  'utf8'
+)
+const baseLayoutSource = readFileSync(
+  new URL('../src/layout/BaseLayout.vue', import.meta.url),
+  'utf8'
+)
+const tabsSource = readFileSync(
+  new URL('../src/components/ui/ui-tabs.vue', import.meta.url),
+  'utf8'
+)
+const tabsListSource = readFileSync(
+  new URL('../src/components/ui/ui-tabs-list.vue', import.meta.url),
+  'utf8'
+)
+const tabsTriggerSource = readFileSync(
+  new URL('../src/components/ui/ui-tabs-trigger.vue', import.meta.url),
+  'utf8'
+)
+const tabsContentSource = readFileSync(
+  new URL('../src/components/ui/ui-tabs-content.vue', import.meta.url),
+  'utf8'
+)
+const userViewSource = readFileSync(
+  new URL('../src/views/user/view-index.vue', import.meta.url),
+  'utf8'
+)
 
 test('keeps non-submit actions safe inside forms', () => {
   assert.match(buttonSource, /type\?: 'button' \| 'submit' \| 'reset'/)
@@ -61,4 +89,68 @@ test('uses the project-owned Zod validation adapter', () => {
   assert.match(validationSource, /schema: z\.ZodType<T>/)
   assert.match(validationSource, /schema\.safeParse\(value\)/)
   assert.match(validationSource, /Partial<Record<keyof T, string>>/)
+})
+
+test('owns a domain-free Origin tooltip primitive', () => {
+  assert.match(tooltipSource, /defineOptions\(\{\s*name: 'UiTooltip'/)
+  assert.match(tooltipSource, /from 'reka-ui'/)
+  assert.match(tooltipSource, /TooltipProvider/)
+  assert.match(tooltipSource, /TooltipTrigger as-child/)
+  assert.match(tooltipSource, /bg-foreground/)
+  assert.match(tooltipSource, /text-background/)
+  assert.match(tooltipSource, /px-3 py-1\.5/)
+  assert.doesNotMatch(tooltipSource, /from '@\/utils\/constants'/)
+  assert.doesNotMatch(tooltipSource, /useUserStore/)
+  assert.doesNotMatch(tooltipSource, /from '@\/api\//)
+})
+
+test('keeps global chrome as an identity plaque without session or build badge', () => {
+  assert.match(baseLayoutSource, /<RouterLink/)
+  assert.match(baseLayoutSource, /to="\/"/)
+  assert.match(baseLayoutSource, /ENV\.TITLE/)
+  assert.match(baseLayoutSource, /ENV\.COPYRIGHT\.NAME/)
+  assert.match(baseLayoutSource, /ENV\.COPYRIGHT\.YEAR/)
+  assert.match(baseLayoutSource, /ENV\.BUILD\.COMMIT/)
+  assert.match(baseLayoutSource, /ENV\.BUILD\.BRANCH/)
+  assert.match(baseLayoutSource, /Made with ❤️ by youranreus/)
+  assert.match(baseLayoutSource, /UiTooltip/)
+  assert.match(baseLayoutSource, /max-w-4xl/)
+  assert.doesNotMatch(baseLayoutSource, /useUserStore/)
+  assert.doesNotMatch(baseLayoutSource, /UiBadge/)
+  assert.doesNotMatch(baseLayoutSource, /<strong/)
+  assert.doesNotMatch(baseLayoutSource, /hidden sm:inline/)
+  assert.doesNotMatch(baseLayoutSource, /KeyRound/)
+  assert.doesNotMatch(baseLayoutSource, /border-t/)
+  assert.doesNotMatch(baseLayoutSource, /sticky/)
+})
+
+test('owns a domain-free Origin tabs primitive used by account chrome', () => {
+  for (const source of [tabsSource, tabsListSource, tabsTriggerSource, tabsContentSource]) {
+    assert.match(source, /from 'reka-ui'/)
+    assert.doesNotMatch(source, /useUserStore/)
+    assert.doesNotMatch(source, /from '@\/utils\/constants'/)
+    assert.doesNotMatch(source, /from '@\/api\//)
+    assert.doesNotMatch(source, /UserRole/)
+  }
+  assert.match(tabsSource, /defineOptions\(\{\s*name: 'UiTabs'/)
+  assert.match(tabsSource, /activationMode\?: 'automatic' \| 'manual'/)
+  assert.match(tabsListSource, /defineOptions\(\{\s*name: 'UiTabsList'/)
+  assert.match(tabsTriggerSource, /defineOptions\(\{\s*name: 'UiTabsTrigger'/)
+  assert.match(tabsContentSource, /defineOptions\(\{\s*name: 'UiTabsContent'/)
+  assert.match(tabsTriggerSource, /type="button"/)
+  assert.match(tabsTriggerSource, /value: string \| number/)
+  assert.match(tabsContentSource, /value: string \| number/)
+  assert.match(userViewSource, /UiTabs/)
+  assert.match(userViewSource, /items-start/)
+  assert.match(userViewSource, /activation-mode="manual"/)
+  assert.match(userViewSource, /data-\[state=active\]:bg-muted/)
+  assert.match(userViewSource, /data-\[state=active\]:shadow-none/)
+  assert.match(userViewSource, /bg-transparent/)
+  assert.match(userViewSource, /overflow-x-auto/)
+  assert.match(userViewSource, /p-1\.5/)
+  assert.match(userViewSource, /router\.push\(\{ name: next \}\)/)
+  assert.match(userViewSource, /<router-view \/>/)
+  assert.match(userViewSource, /hideTabWithoutPermission/)
+  assert.match(userViewSource, /userPermissions\.value\.includes/)
+  assert.doesNotMatch(userViewSource, /UiTabsContent/)
 })

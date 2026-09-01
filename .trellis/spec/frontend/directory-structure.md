@@ -28,6 +28,7 @@ Evidence: `src/main.ts`, `src/router/index.ts`, `src/api/api.ts`, and `src/store
 - Put stateful or side-effect-heavy logic in `src/composables/`, leaving views to compose UI and handle small local presentation state. `src/views/user/pages/user-app.vue` delegates list loading to `src/composables/useAppList.ts`.
 - Put HTTP method construction in `src/api/`, not in components or stores. Domain interfaces belong in `src/types/` and are re-exported by `src/types/index.ts`.
 - Layout shells belong in `src/layout/`; router configuration belongs in `src/router/`. Route-specific child records may be split out, as in `src/router/user-routes.ts`.
+- `src/layout/BaseLayout.vue` is product chrome only: centered `ENV.TITLE` → `/`, footer facts, no session/nav/store. Session chrome belongs in the feature view (for example `src/views/user/view-index.vue`), not the shell.
 
 ## Naming
 

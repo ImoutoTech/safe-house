@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import UiAvatar from '@/components/ui/ui-avatar.vue'
 import UiBadge from '@/components/ui/ui-badge.vue'
+import UiTabs from '@/components/ui/ui-tabs.vue'
+import UiTabsList from '@/components/ui/ui-tabs-list.vue'
+import UiTabsTrigger from '@/components/ui/ui-tabs-trigger.vue'
 import UserRoleTag from '@/components/user-role-tag.vue'
 import { useUserData } from '@/composables/useUserData'
 import { userRoutes } from '@/router/user-routes'
@@ -10,6 +13,13 @@ defineOptions({ name: 'UserIndex' })
 const route = useRoute()
 const router = useRouter()
 const { userData, userPermissions } = useUserData(true)
+const activeTab = computed({
+  get: () => String(route.name ?? ''),
+  set: (name: string | number) => {
+    const next = String(name)
+    if (next && next !== String(route.name ?? '')) void router.push({ name: next })
+  }
+})
 const tabList = computed(() =>
   userRoutes
     .filter((item) => {
@@ -46,21 +56,21 @@ const tabList = computed(() =>
         <div class="mt-2"><UserRoleTag :role="userData.role" /></div>
       </div>
     </header>
-    <nav class="mb-6 flex gap-1 overflow-x-auto border-b" aria-label="账号设置">
-      <button
-        v-for="item in tabList"
-        :key="item.value"
-        :class="[
-          'shrink-0 border-b-2 px-3 py-3 text-sm font-medium outline-none transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/50',
-          route.name === item.value
-            ? 'border-foreground text-foreground'
-            : 'border-transparent text-muted-foreground hover:text-foreground'
-        ]"
-        @click="router.push({ name: item.value })"
+    <UiTabs v-model="activeTab" class="mb-6 items-start" activation-mode="manual">
+      <UiTabsList
+        class="h-auto max-w-full overflow-x-auto bg-transparent p-1.5"
+        aria-label="账号设置"
       >
-        {{ item.name }}
-      </button>
-    </nav>
+        <UiTabsTrigger
+          v-for="item in tabList"
+          :key="item.value"
+          :value="item.value"
+          class="shrink-0 data-[state=active]:bg-muted data-[state=active]:shadow-none"
+        >
+          {{ item.name }}
+        </UiTabsTrigger>
+      </UiTabsList>
+    </UiTabs>
     <router-view />
   </div>
 </template>

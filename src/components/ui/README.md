@@ -2,9 +2,9 @@
 
 This directory is the Safe House-owned UI layer based on Origin UI Vue's New York/neutral conventions.
 
-- Audited registry items: `button.json`, `input.json`, `label.json`, `textarea.json`, `alert.json`, `avatar.json`, `badge.json`, `card.json`, `dialog.json`, `alert-dialog.json`, `switch.json`, `tabs.json`, `sonner.json`, `radio-group.json`, and `comp-164.json` under `https://www.originui-vue.com/r/`
+- Audited registry items: `button.json`, `input.json`, `label.json`, `textarea.json`, `alert.json`, `avatar.json`, `badge.json`, `card.json`, `dialog.json`, `alert-dialog.json`, `switch.json`, `tabs.json`, `sonner.json`, `radio-group.json`, `comp-164.json`, `tooltip.json`, `comp-354.json`, and `comp-427.json` under `https://www.originui-vue.com/r/`
 - Upstream repository: `https://github.com/misbahansori/originui-vue`
-- Snapshot reviewed: 2026-08-31
+- Snapshot reviewed: 2026-09-01
 - Interaction primitives: Reka UI 2.x
 - Styling: Tailwind CSS 4 with semantic CSS variables
 
