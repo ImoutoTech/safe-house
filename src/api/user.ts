@@ -10,7 +10,10 @@ import type {
   EmailProofResult,
   EmailVerificationPurpose,
   ChangeEmailParams,
-  ChangePasswordParams
+  ChangePasswordParams,
+  UserOverview,
+  UserActivityCategory,
+  UserActivityPage
 } from '@/types'
 import api from './api'
 import type { UserJwtPayload } from '@reus-able/types'
@@ -57,3 +60,10 @@ export const changeUserEmail = (id: number, data: ChangeEmailParams) =>
 
 export const changeUserPassword = (id: number, data: ChangePasswordParams, md5 = true) =>
   api.Put<Restful<UserInfo>>(`/user/${id}/password?md5=${md5}`, data)
+
+export const getUserOverview = () => api.Get<Restful<UserOverview>>('/user/me/overview')
+
+export const getUserActivity = (page = 1, size = 20, category?: UserActivityCategory) =>
+  api.Get<Restful<UserActivityPage>>('/user/me/activity', {
+    params: { page, size, ...(category ? { category } : {}) }
+  })

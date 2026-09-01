@@ -1,46 +1,87 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
+import UiAlert from '@/components/ui/ui-alert.vue'
 import UiButton from '@/components/ui/ui-button.vue'
+import { useUserActivity } from '@/composables/useUserActivity'
 import { useUserData } from '@/composables/useUserData'
+import { useUserOverview } from '@/composables/useUserOverview'
 import { useUserStore } from '@/stores/user'
-import { PERMISSION_CODE_MAP } from '@/utils/constants'
+import DeveloperMetrics from '../components/developer-metrics.vue'
+import UserAccountDetails from '../components/user-account-details.vue'
+import UserActivityList from '../components/user-activity-list.vue'
 import UserDataModify from '../components/user-data-modify.vue'
+import UserSecurityOverview from '../components/user-security-overview.vue'
 
 defineOptions({ name: 'UserInfo' })
 const router = useRouter()
 const { userData } = useUserData()
+const {
+  overview,
+  loading: overviewLoading,
+  error: overviewError,
+  refresh: refreshOverview
+} = useUserOverview()
+const {
+  items: activityItems,
+  loading: activityLoading,
+  error: activityError,
+  hasMore: activityHasMore,
+  loadMore: loadMoreActivity,
+  retry: retryActivity
+} = useUserActivity()
 const { updateUserData, updateToken, updateUserPermissions } = useUserStore()
 const modifyVisible = shallowRef(false)
-const facts = computed(() => [
-  { label: '邮箱', value: userData.value.email },
-  { label: '用户 ID', value: userData.value.id },
-  { label: '加入时间', value: dayjs(userData.value.created_at).format('YYYY-MM-DD') },
-  { label: '上次编辑', value: dayjs(userData.value.updated_at).format('YYYY-MM-DD') }
-])
 const logout = () => {
   updateUserData()
   updateToken()
   updateUserPermissions([])
-  router.push('/')
+  void router.push('/')
 }
+const openUserTab = (name: 'user-app' | 'user-identities') => void router.push({ name })
 </script>
 
 <template>
-  <section class="grid gap-6">
-    <dl class="grid gap-px overflow-hidden rounded-lg border bg-border sm:grid-cols-2">
-      <div v-for="fact in facts" :key="fact.label" class="grid gap-1 bg-background p-4">
-        <dt class="text-xs font-medium text-muted-foreground">{{ fact.label }}</dt>
-        <dd class="break-all text-sm">{{ fact.value }}</dd>
-      </div>
-    </dl>
-    <div class="flex flex-wrap justify-between gap-3">
-      <UiButton
-        v-permission="PERMISSION_CODE_MAP['修改用户']"
-        variant="outline"
-        @click="modifyVisible = true"
-        >编辑资料</UiButton
-      ><UiButton variant="destructive" @click="logout">退出登录</UiButton>
+  <section class="grid gap-8">
+    <div class="grid gap-4 md:grid-cols-2">
+      <UserAccountDetails
+        :email="userData.email"
+        :created-at="userData.created_at"
+        :updated-at="userData.updated_at"
+        @edit="modifyVisible = true"
+        @logout="logout"
+      />
+      <UserSecurityOverview
+        :account="overview?.account"
+        :fallback-email-verified="userData.emailVerified"
+        :fallback-has-password="userData.hasPassword"
+        :loading="overviewLoading && !overview"
+        @manage-identities="openUserTab('user-identities')"
+      />
     </div>
+
+    <UiAlert v-if="overviewError" variant="warning" title="账号概览加载失败">
+      <div class="grid justify-items-start gap-3">
+        <span>账号资料仍可使用，安全关联信息和子应用指标暂不可用。</span>
+        <UiButton variant="outline" size="sm" :loading="overviewLoading" @click="refreshOverview"
+          >重试</UiButton
+        >
+      </div>
+    </UiAlert>
+
+    <DeveloperMetrics
+      v-if="overview?.apps"
+      :apps="overview.apps"
+      :window-days="overview.windowDays"
+      @manage-apps="openUserTab('user-app')"
+    />
+
+    <UserActivityList
+      :items="activityItems"
+      :loading="activityLoading"
+      :error="activityError"
+      :has-more="activityHasMore"
+      @load-more="loadMoreActivity"
+      @retry="retryActivity"
+    />
   </section>
   <UserDataModify v-model:visible="modifyVisible" />
 </template>
