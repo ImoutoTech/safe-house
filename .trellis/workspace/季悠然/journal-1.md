@@ -196,3 +196,24 @@ Moved provider administration to /user/manage, added permission-aware user-cente
 ### Status
 
 [OK] **Completed**
+
+
+## Session 10: 重设计顶栏与页脚
+
+**Date**: 2026-09-01
+**Task**: 重设计顶栏与页脚
+**Branch**: `master`
+
+### Summary
+
+将 BaseLayout 收成居中身份门牌与无顶线页脚，构建号只放在署名 tooltip；账号页导航改为 Origin comp-427 Tabs，左对齐且手动激活以免方向键误切路由。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `beb1c76` | (see git log) |
+
+### Status
+
+[OK] **Completed**
